@@ -24,7 +24,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={cn('font-sans antialiased mx-auto', fontSans.variable)}>
+      <body
+        className={cn(
+          'font-sans antialiased mx-auto selection:bg-[#20b8cd] selection:text-lightBlue',
+          fontSans.variable
+        )}
+      >
         <NavBar />
         {children}
       </body>

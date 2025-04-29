@@ -37,77 +37,75 @@ export function NavBar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <div className="w-full bg-lightBlue">
-      <div className="max-w-7xl mx-auto flex items-center justify-start h-26">
-        <Navbar>
-          {/* Desktop Navigation */}
-          <NavBody>
+    <nav className="w-full h-18 bg-lightBlue flex items-center justify-between">
+      <Navbar>
+        {/* Desktop Navigation */}
+        <NavBody>
+          <Link href="/" className="text-4xl">
+            <Image
+              className="pl-6"
+              src="/logo.png"
+              alt="logo"
+              width={130}
+              height={20}
+            />
+          </Link>
+          <NavItems items={navItems} />
+          <div className="flex items-center gap-2">
+            <NavbarButton variant="secondary" className=" text-darkBlue">
+              Login
+            </NavbarButton>
+            <NavbarButton variant="primary" className=" text-darkBlue">
+              Register
+            </NavbarButton>
+          </div>
+        </NavBody>
+
+        {/* Mobile Navigation */}
+        <MobileNav>
+          <MobileNavHeader>
             <Link href="/" className="text-4xl">
-              <Image
-                className="pl-6"
-                src="/logo.png"
-                alt="logo"
-                width={130}
-                height={20}
-              />
+              <Image src="/logo.png" alt="logo" width={100} height={20} />
             </Link>
-            <NavItems items={navItems} />
-            <div className="flex items-center gap-4">
-              <NavbarButton variant="secondary" className=" text-darkBlue">
+            <MobileNavToggle
+              isOpen={isMobileMenuOpen}
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            />
+          </MobileNavHeader>
+
+          <MobileNavMenu
+            isOpen={isMobileMenuOpen}
+            onClose={() => setIsMobileMenuOpen(false)}
+          >
+            {navItems.map((item, idx) => (
+              <a
+                key={`mobile-link-${idx}`}
+                href={item.link}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="relative text-neutral-600 dark:text-neutral-300"
+              >
+                <span className="block">{item.name}</span>
+              </a>
+            ))}
+            <div className="flex w-full flex-col gap-4">
+              <NavbarButton
+                onClick={() => setIsMobileMenuOpen(false)}
+                variant="primary"
+                className="w-full"
+              >
                 Login
               </NavbarButton>
-              <NavbarButton variant="primary" className=" text-darkBlue">
+              <NavbarButton
+                onClick={() => setIsMobileMenuOpen(false)}
+                variant="primary"
+                className="w-full"
+              >
                 Register
               </NavbarButton>
             </div>
-          </NavBody>
-
-          {/* Mobile Navigation */}
-          <MobileNav>
-            <MobileNavHeader>
-              <Link href="/" className="text-4xl">
-                <Image src="/logo.png" alt="logo" width={100} height={20} />
-              </Link>
-              <MobileNavToggle
-                isOpen={isMobileMenuOpen}
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              />
-            </MobileNavHeader>
-
-            <MobileNavMenu
-              isOpen={isMobileMenuOpen}
-              onClose={() => setIsMobileMenuOpen(false)}
-            >
-              {navItems.map((item, idx) => (
-                <a
-                  key={`mobile-link-${idx}`}
-                  href={item.link}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="relative text-neutral-600 dark:text-neutral-300"
-                >
-                  <span className="block">{item.name}</span>
-                </a>
-              ))}
-              <div className="flex w-full flex-col gap-4">
-                <NavbarButton
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  variant="primary"
-                  className="w-full"
-                >
-                  Login
-                </NavbarButton>
-                <NavbarButton
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  variant="primary"
-                  className="w-full"
-                >
-                  Register
-                </NavbarButton>
-              </div>
-            </MobileNavMenu>
-          </MobileNav>
-        </Navbar>
-      </div>
-    </div>
+          </MobileNavMenu>
+        </MobileNav>
+      </Navbar>
+    </nav>
   );
 }
