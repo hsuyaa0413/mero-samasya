@@ -5,7 +5,7 @@ import { InteractiveHoverButton } from './magicui/interactive-hover-button';
 
 export default function Hero() {
   return (
-    <div className="relative w-full min-h-11/12 pt-24 pb-16 overflow-hidden">
+    <div className="relative w-full min-h-11/12 pt-16 pb-16 overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -18,7 +18,7 @@ export default function Hero() {
       </div>
 
       {/* Content Card */}
-      <div className="max-w-7xl relative z-10 min-h-full md:p-8 lg:p-12 flex items-center justify-start mx-auto">
+      <div className="max-w-7xl container relative z-10 min-h-full md:p-8 lg:p-12 flex items-center justify-start mx-auto">
         <div className="max-w-2xl rounded-3xl bg-lightBlue md:p-10 shadow-lg">
           <p className="text-skyBlue font-medium mb-4">
             Mero समस्या : Your Voice, Our Action
