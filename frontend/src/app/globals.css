@@ -46,8 +46,19 @@
   --color-skyBlue: #0e46a3;
   --color-greyBlue: #9ac8cd;
   --color-lightBlue: #e1f7f5;
+  --animate-pulse: pulse var(--duration) ease-out infinite;
+  @keyframes pulse {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 var(--pulse-color);
+    }
+    50% {
+      box-shadow: 0 0 0 4px var(--pulse-color);
+    }
+  }
   --color-lightBlue-75: rgba(225, 247, 245, 0.75);
   --animate-rippling: rippling var(--duration) ease-out;
+
   @keyframes rippling {
     0% {
       opacity: 1;
