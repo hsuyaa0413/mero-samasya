@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
 import { IconArrowLeft, IconArrowRight } from '@tabler/icons-react';
@@ -14,7 +15,7 @@ type Testimonial = {
 };
 export const AnimatedTestimonials = ({
   testimonials,
-  autoplay = false,
+  autoplay = true,
 }: {
   testimonials: Testimonial[];
   autoplay?: boolean;
@@ -35,7 +36,7 @@ export const AnimatedTestimonials = ({
 
   useEffect(() => {
     if (autoplay) {
-      const interval = setInterval(handleNext, 5000);
+      const interval = setInterval(handleNext, 3000);
       return () => clearInterval(interval);
     }
   }, [autoplay]);
