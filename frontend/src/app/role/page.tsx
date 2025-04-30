@@ -5,11 +5,13 @@ import { InteractiveHoverButton } from '@/components/magicui/interactive-hover-b
 
 export default function RoleSelectionPage() {
   return (
-    <div className="min-h-screen flex flex-col ">
+    <div className="min-h-screen flex flex-col bg-lightBlue border-t-1  border-gray-400">
       <main className="flex-1 container mx-auto px-4 py-8 max-w-6xl">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-2">Who are you?</h1>
-          <p className="text-gray-600">
+          <h1 className="text-4xl font-bold mb-2 text-darkBlue">
+            Who are you?
+          </h1>
+          <p className="text-zinc-600">
             Select your role to continue to the appropriate area of the platform
           </p>
         </div>
@@ -33,8 +35,8 @@ export default function RoleSelectionPage() {
                   authority to develop your city.
                 </p>
               </div>
-              <div className="flex justify-center md:justify-start">
-                <InteractiveHoverButton className="w-fit">
+              <div className="flex justify-center mx-auto md:justify-start">
+                <InteractiveHoverButton className="w-fit ">
                   <Link href="/register" className="text-sm px-4 py-2">
                     Continue as User
                   </Link>
@@ -63,12 +65,9 @@ export default function RoleSelectionPage() {
                   ensure the well-being of citizens.
                 </p>
               </div>
-              <div className="flex justify-center md:justify-start">
-                <InteractiveHoverButton className="w-fit">
-                  <Link
-                    href="/dashboard/authority"
-                    className="text-sm px-4 py-2"
-                  >
+              <div className="flex justify-center mx-auto md:justify-start">
+                <InteractiveHoverButton className="w-fit ">
+                  <Link href="/aregister" className="text-sm px-4 py-2">
                     Continue as Authority
                   </Link>
                 </InteractiveHoverButton>
@@ -77,10 +76,10 @@ export default function RoleSelectionPage() {
           </div>
         </div>
 
-        <div className="text-center">
+        <div className="text-center ">
           <Link
             href="/"
-            className="inline-flex items-center text-gray-600 hover:text-gray-900 text-sm"
+            className="inline-flex items-center text-lightBlue font-semibold hover:text-darkBlue hover:bg-lightBlue hover:border-2  hover:border-darkBlue text-sm bg-darkBlue p-3 rounded-lg transition duration-200 ease-in-out"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Return to homepage
