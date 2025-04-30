@@ -125,17 +125,14 @@ export default function MagicCardDemo() {
               />
             </div>
 
-            <div className="flex text-center pl-7 items-center space-x-2">
+            <div className="flex pl-2 sm:pl-0 space-x-2">
               <Checkbox id="terms" />
               <Label htmlFor="terms" className="text-sm">
-                I agree to the{' '}
-                <Link href="#" className="text-indigo-600 hover:underline">
-                  Terms of Service
-                </Link>{' '}
-                and{' '}
-                <Link href="#" className="text-indigo-600 hover:underline">
-                  Privacy Policy
-                </Link>
+                <p>
+                  I agree to the
+                  <span className="text-skyBlue"> Terms of Service </span>
+                  and <span className="text-skyBlue">Privacy Policy</span>
+                </p>
               </Label>
             </div>
 

@@ -7,6 +7,9 @@ import {
   useScroll,
   useMotionValueEvent,
 } from 'motion/react';
+import { Url } from 'next/dist/shared/lib/router/router';
+import Image from 'next/image';
+import Link from 'next/link';
 
 import React, { useRef, useState } from 'react';
 
@@ -125,7 +128,7 @@ export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => {
       )}
     >
       {items.map((item, idx) => (
-        <a
+        <Link
           onMouseEnter={() => setHovered(idx)}
           onClick={onItemClick}
           className="relative px-4 py-2 text-darkBlue dark:text-neutral-300"
@@ -146,7 +149,7 @@ export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => {
           >
             {item.name}
           </span>
-        </a>
+        </Link>
       ))}
     </motion.div>
   );
@@ -202,8 +205,8 @@ export const MobileNavMenu = ({
   children,
   className,
   isOpen,
-  onClose,
-}: MobileNavMenuProps) => {
+}: // onClose,
+MobileNavMenuProps) => {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -239,30 +242,25 @@ export const MobileNavToggle = ({
 
 export const NavbarLogo = () => {
   return (
-    <a
-      href="#"
-      className="relative z-20 mr-4 flex items-center space-x-2 px-2 py-1 text-sm font-normal text-black"
+    <Link
+      href="/"
+      className="relative z-20 mr-4 flex items-center space-x-2 px-9 py-1 text-sm font-normal text-black"
     >
-      <img
-        src="https://assets.aceternity.com/logo-dark.png"
-        alt="logo"
-        width={30}
-        height={30}
-      />
-      <span className="font-medium text-black dark:text-white">Startup</span>
-    </a>
+      <Image src="/logo.png" alt="logo" width={100} height={20} />
+      {/* <span className="font-medium text-black dark:text-white">Startup</span> */}
+    </Link>
   );
 };
 
 export const NavbarButton = ({
   href,
-  as: Tag = 'a',
+  as: TagProp,
   children,
   className,
   variant = 'primary',
   ...props
 }: {
-  href?: string;
+  href?: Url | string;
   as?: React.ElementType;
   children: React.ReactNode;
   className?: string;
@@ -282,6 +280,22 @@ export const NavbarButton = ({
     gradient:
       'bg-gradient-to-b from-blue-500 to-blue-700 text-white shadow-[0px_2px_0px_0px_rgba(255,255,255,0.3)_inset]',
   };
+
+  const combinedClassName = cn(baseStyles, variantStyles[variant], className);
+  const useNextLink = href && (!TagProp || TagProp === 'a');
+  const Tag = TagProp || (href ? 'a' : 'button');
+
+  if (useNextLink) {
+    const { ...anchorProps } = props as Omit<
+      React.ComponentPropsWithoutRef<'a'>,
+      'href'
+    >;
+    return (
+      <Link href={href} className={combinedClassName} {...anchorProps}>
+        {children}
+      </Link>
+    );
+  }
 
   return (
     <Tag
