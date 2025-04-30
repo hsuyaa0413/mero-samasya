@@ -2,7 +2,7 @@
 
 import { IconArrowLeft, IconArrowRight } from '@tabler/icons-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { div } from 'motion/react-client';
+import Image from 'next/image';
 
 import { useEffect, useState } from 'react';
 
@@ -44,8 +44,8 @@ export const AnimatedTestimonials = ({
     return Math.floor(Math.random() * 21) - 10;
   };
   return (
-    <div className="w-full bg-lightBlue">
-      <div className="text-center pt-12">
+    <div className="w-full bg-lightBlue p-2 pt-10 sm:p-0">
+      <div className="text-center sm:pt-12">
         <h2 className="text-3xl md:text-4xl font-bold mb-4">
           <span className="text-skyBlue">What Our Users Are Saying</span>
         </h2>
@@ -92,7 +92,7 @@ export const AnimatedTestimonials = ({
                     }}
                     className="absolute inset-0 origin-bottom"
                   >
-                    <img
+                    <Image
                       src={testimonial.src}
                       alt={testimonial.name}
                       width={500}
