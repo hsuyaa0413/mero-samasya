@@ -11,7 +11,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { PulsatingButton } from '@/components/magicui/pulsating-button';
 import { IconBrandGoogle } from '@tabler/icons-react';
 
-export default function MagicCardDemo() {
+export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { theme } = useTheme();
@@ -125,17 +125,20 @@ export default function MagicCardDemo() {
               />
             </div>
 
-            <div className="flex text-center pl-7 items-center space-x-2">
+            <div className="flex sm:items-center space-x-2  ">
               <Checkbox id="terms" />
-              <Label htmlFor="terms" className="text-sm">
-                I agree to the{' '}
-                <Link href="#" className="text-indigo-600 hover:underline">
+              <Label
+                htmlFor="terms"
+                className="text-xs flex flex-row flex-wrap sm:text-sm"
+              >
+                I agree to the
+                <span className="text-indigo-600 hover:underline">
                   Terms of Service
-                </Link>{' '}
-                and{' '}
-                <Link href="#" className="text-indigo-600 hover:underline">
+                </span>
+                and
+                <span className="text-indigo-600 hover:underline">
                   Privacy Policy
-                </Link>
+                </span>
               </Label>
             </div>
 
