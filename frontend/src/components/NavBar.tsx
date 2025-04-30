@@ -11,6 +11,7 @@ import {
   MobileNavHeader,
   MobileNavToggle,
   MobileNavMenu,
+  NavbarLogo,
 } from '@/components/ui/resizable-navbar';
 import { useState } from 'react';
 
@@ -18,7 +19,7 @@ export function NavBar() {
   const navItems = [
     {
       name: 'Home',
-      link: '#features',
+      link: '/',
     },
     {
       name: 'About',
@@ -37,25 +38,26 @@ export function NavBar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <nav className="w-full h-18 bg-lightBlue flex items-center justify-between">
+    <nav className="w-full h-16 sm:h-18 bg-lightBlue flex items-center justify-between">
       <Navbar>
         {/* Desktop Navigation */}
         <NavBody>
-          <Link href="/" className="text-4xl">
-            <Image
-              className="pl-6"
-              src="/logo.png"
-              alt="logo"
-              width={130}
-              height={20}
-            />
-          </Link>
+          <NavbarLogo />
           <NavItems items={navItems} />
           <div className="flex items-center gap-2">
-            <NavbarButton variant="secondary" className=" text-darkBlue">
+            <NavbarButton
+              href="/"
+              variant="secondary"
+              className=" text-darkBlue"
+            >
               Login
             </NavbarButton>
-            <NavbarButton variant="primary" className=" text-darkBlue">
+
+            <NavbarButton
+              href="/register"
+              variant="primary"
+              className=" text-darkBlue"
+            >
               Register
             </NavbarButton>
           </div>
@@ -63,7 +65,7 @@ export function NavBar() {
 
         {/* Mobile Navigation */}
         <MobileNav>
-          <MobileNavHeader>
+          <MobileNavHeader className="h-12">
             <Link href="/" className="text-4xl">
               <Image src="/logo.png" alt="logo" width={100} height={20} />
             </Link>
@@ -77,28 +79,32 @@ export function NavBar() {
             isOpen={isMobileMenuOpen}
             onClose={() => setIsMobileMenuOpen(false)}
           >
-            {navItems.map((item, idx) => (
-              <a
-                key={`mobile-link-${idx}`}
-                href={item.link}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="relative text-neutral-600 dark:text-neutral-300"
-              >
-                <span className="block">{item.name}</span>
-              </a>
-            ))}
+            <div className="flex flex-col items-center w-full gap-5 pb-2">
+              {navItems.map((item, idx) => (
+                <Link
+                  key={`mobile-link-${idx}`}
+                  href={item.link}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="relative text-neutral-600 dark:text-neutral-300"
+                >
+                  <span className="block">{item.name}</span>
+                </Link>
+              ))}
+            </div>
             <div className="flex w-full flex-col gap-4">
               <NavbarButton
                 onClick={() => setIsMobileMenuOpen(false)}
                 variant="primary"
-                className="w-full"
+                className="w-full text-darkBlue bg-lightBlue"
+                href="/register"
               >
                 Login
               </NavbarButton>
               <NavbarButton
                 onClick={() => setIsMobileMenuOpen(false)}
                 variant="primary"
-                className="w-full"
+                className="w-full bg-darkBlue text-lightBlue"
+                href="/register"
               >
                 Register
               </NavbarButton>
