@@ -15,7 +15,7 @@ import {
 import { Eye, EyeOff } from 'lucide-react';
 import { MagicCard } from '@/components/magicui/magic-card';
 import { PulsatingButton } from '@/components/magicui/pulsating-button';
-import { IconBrandGoogle } from '@tabler/icons-react';
+import { Icons } from '@/components/icons';
 
 export default function AuthorityRegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -33,22 +33,22 @@ export default function AuthorityRegisterPage() {
     }
   };
   return (
-    <div className=" flex items-center justify-center min-h-screen mx-auto p-4 sm:p-6 bg-lightBlue">
+    <div className=" flex items-center justify-center min-h-screen mx-auto p-4 sm:p-6 bg-lightBlue rounded-lg border-t-1 border-gray-400">
       <MagicCard
         gradientColor={theme === 'dark' ? '#262626' : '#D9D9D955'}
-        className="p-0 "
+        className="px-4 py-6"
       >
-        <div className="bg-greyBlue text-darkBlue p-6 max-w-6xl rounded-lg shadow-lg">
+        <div className="bg-greyBlue text-darkBlue max-w-6xl sm:p-5 ">
           <div className="text-center mb-6">
             <h2 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">
-              Welcome to Mero<span className="text-lightBlue text-2xl">!</span>{' '}
-              समस्या
+              Welcome to
+              <span className="text-skyBlue text-xl"> Mero समस्या</span>
             </h2>
             <p className="mt-2 max-w-sm text-sm text-neutral-600 dark:text-neutral-300 mx-auto">
-              Register to know the local issues and reach out faster.
+              Register to resolve the local issues and reach out faster.
             </p>
             <h1 className="text-2xl font-bold mt-6 mb-3 text-darkBlue">
-              Create Your Account
+              Register Your Account
             </h1>
           </div>
           <form className="space-y-5">
@@ -213,12 +213,12 @@ export default function AuthorityRegisterPage() {
                 htmlFor="terms"
                 className="text-xs sm:text-sm font-normal text-gray-700 dark:text-gray-300"
               >
-                I agree to the{' '}
-                <Link href="#" className="text-indigo-600 hover:underline">
+                I agree to the
+                <Link href="#" className="text-skyBlue hover:underline">
                   Terms of Service
-                </Link>{' '}
-                and{' '}
-                <Link href="#" className="text-indigo-600 hover:underline">
+                </Link>
+                and
+                <Link href="#" className="text-skyBlue hover:underline">
                   Privacy Policy
                 </Link>
               </Label>
@@ -227,17 +227,14 @@ export default function AuthorityRegisterPage() {
               Register
             </PulsatingButton>
             <PulsatingButton className="flex justify-center h-10">
-              <IconBrandGoogle className="h-4 w-4 text-lightBlue  " />
+              <Icons.google className="size-5" />
               <span className="text-sm text-lightBlue">
                 Continue with Google
               </span>
             </PulsatingButton>
             <div className="text-center text-sm text-darkBlue">
               Already have an account?{' '}
-              <Link
-                href="/asignin"
-                className="text-indigo-600 hover:underline font-semibold"
-              >
+              <Link href="/login" className="text-skyBlue hover:underline">
                 Login
               </Link>
             </div>

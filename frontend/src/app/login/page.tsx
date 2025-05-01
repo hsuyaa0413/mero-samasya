@@ -1,47 +1,85 @@
 'use client';
 
+import axios from 'axios';
 import { MagicCard } from '@/components/magicui/magic-card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useTheme } from 'next-themes';
 import { useState } from 'react';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Loader } from 'lucide-react';
 import Link from 'next/link';
 import { Checkbox } from '@/components/ui/checkbox';
 import { PulsatingButton } from '@/components/magicui/pulsating-button';
-import { IconBrandGoogle } from '@tabler/icons-react';
+import { Icons } from '@/components/icons';
+import { backendApi } from '@/lib/constant';
+import { useUserStore } from '@/store/userStore';
+import { Button } from '@/components/ui/button';
+// import { useRouter } from 'next/router';
 
 export default function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
-  const { theme } = useTheme();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { setUser } = useUserStore();
+  // const router = useRouter();
+
+  const [formInputs, setFormInputs] = useState({
+    email: '',
+    password: '',
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const changeEventHandler = (e: any) => {
+    setFormInputs({ ...formInputs, [e.target.name]: e.target.value });
+  };
+
+  async function formSubmitHandler(e: { preventDefault: () => void }) {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const res = await axios.post(`${backendApi}/auth/login`, formInputs, {
+        withCredentials: true,
+      });
+
+      if (res.status === 200) {
+        setUser(res.data.user);
+        // router.push(`/`);
+        window.location.replace(`/`);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
   return (
-    <div className=" flex items-center justify-center mx-auto rounded-lg border-t-1 min-h-[calc(100vh-72px)] border-gray-400 bg-lightBlue h-[calc(100vh-72px)]">
-      <MagicCard
-        gradientColor={theme === 'dark' ? '#262626' : '#D9D9D955'}
-        className="p-0 "
-      >
-        <div className="bg-greyBlue text-darkBlue max-w-6xl p-5">
+    <div className=" flex items-center justify-center mx-auto p-4 sm:p-6 bg-lightBlue rounded-lg border-t-1 border-gray-400 h-[calc(100vh-72px)] ">
+      <MagicCard gradientColor={'#D9D9D955'} className="px-4 py-6">
+        <div className="bg-greyBlue text-darkBlue max-w-6xl sm:p-5 ">
           <div className="p-4 items-center flex flex-col text-center">
             <h2 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">
-              Welcome to Mero
-              <span className="text-lightBlue text-2xl">!</span>
-              समस्या
+              Welcome to
+              <span className="text-skyBlue text-xl"> Mero समस्या</span>
             </h2>
-            <p className="mt-2 max-w-sm text-sm text-neutral-600 dark:text-neutral-300">
-              Login to report the local issues and help authorities to reach out
-              to you faster.
+            <p className="mt-2 max-w-sm text-sm text-gray-600 dark:text-neutral-300">
+              Login to report the local issues and reach out faster.
             </p>
             <h1 className="text-2xl font-bold mt-6 mb-3 ">
-              Welcome Back! Please Sign In
+              Welcome Back, Please Log In!
             </h1>
           </div>
-          <form className="space-y-4">
+
+          <form onSubmit={formSubmitHandler} className="space-y-4">
             <div>
               <Label htmlFor="email">Email Address</Label>
               <Input
                 id="email"
                 type="email"
-                className="mt-1  bg-lightBlue text-darkBlue"
+                name="email"
+                onChange={changeEventHandler}
+                value={formInputs.email}
+                placeholder="example@email.com"
+                className="mt-1 bg-lightBlue text-darkBlue"
               />
             </div>
 
@@ -51,7 +89,10 @@ export default function SignIn() {
                 <Input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
-                  className="pr-10  bg-lightBlue text-darkBlue"
+                  name="password"
+                  onChange={changeEventHandler}
+                  value={formInputs.password}
+                  className="pr-10 bg-lightBlue text-darkBlue"
                 />
                 <button
                   type="button"
@@ -70,20 +111,29 @@ export default function SignIn() {
                 className="text-xs flex flex-row flex-wrap sm:text-sm"
               >
                 I agree to the
-                <span className="text-indigo-600 hover:underline">
+                <span className="text-skyBlue hover:underline">
                   Terms of Service
                 </span>
                 and
-                <span className="text-indigo-600 hover:underline">
+                <span className="text-skyBlue hover:underline">
                   Privacy Policy
                 </span>
               </Label>
             </div>
 
-            <PulsatingButton className="mx-auto h-10">Login</PulsatingButton>
+            {isLoading ? (
+              <Button disabled className="w-full mt-4 mb-4">
+                <Loader className="mr-2 h-4 w-4 animate-spin" />
+                Please wait
+              </Button>
+            ) : (
+              <PulsatingButton type="submit" className="mx-auto h-10">
+                Login
+              </PulsatingButton>
+            )}
 
             <PulsatingButton className="flex justify-center h-10">
-              <IconBrandGoogle className="h-4 w-4 text-lightBlue  " />
+              <Icons.google className="size-4" />
               <span className="text-sm text-lightBlue">
                 Continue with Google
               </span>
@@ -91,14 +141,11 @@ export default function SignIn() {
 
             <div className="text-center text-sm">
               Don&apos;t have an account?{' '}
-              <Link
-                href="/register"
-                className="text-indigo-700 hover:underline font-semibold"
-              >
+              <Link href="/role" className="text-skyBlue hover:underline">
                 Register
               </Link>
             </div>
-          </form>{' '}
+          </form>
         </div>
       </MagicCard>
     </div>

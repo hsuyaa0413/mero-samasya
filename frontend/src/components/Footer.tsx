@@ -8,7 +8,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <h3 className="font-bold mb-4">ABOUT</h3>
-            <ul className="space-y-3">
+            <ul className="space-y-3 text-lightBlue-75">
               <li>
                 <Link href="#" className="hover:underline">
                   Our Mission
@@ -29,7 +29,7 @@ export default function Footer() {
 
           <div>
             <h3 className="font-bold mb-4">RESOURCES</h3>
-            <ul className="space-y-3">
+            <ul className="space-y-3 text-lightBlue-75">
               <li>
                 <Link href="#" className="hover:underline">
                   Help Center
@@ -50,7 +50,7 @@ export default function Footer() {
 
           <div>
             <h3 className="font-bold mb-4">LEGAL</h3>
-            <ul className="space-y-3">
+            <ul className="space-y-3 text-lightBlue-75">
               <li>
                 <Link href="#" className="hover:underline">
                   Privacy
@@ -71,7 +71,7 @@ export default function Footer() {
 
           <div>
             <h3 className="font-bold mb-4">CONNECT</h3>
-            <div className="flex space-x-4">
+            <div className="flex space-x-4 text-lightBlue-75">
               <Link href="#" className="hover:text-gray-200">
                 <Icons.facebook className="size-5" />
                 <span className="sr-only">Facebook</span>
@@ -96,8 +96,8 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-lightBlue mt-10 pt-6">
-          <div className="flex flex-col md:flex-row justify-between items-center">
+        <div className="border-t border-lightBlue-75 mt-10 pt-6">
+          <div className="flex flex-col md:flex-row justify-between items-center text-lightBlue-75">
             <p className="text-sm">
               © {new Date().getFullYear()} Mero समस्या. All rights reserved.
             </p>
