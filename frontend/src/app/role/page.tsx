@@ -1,7 +1,8 @@
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import { InteractiveHoverButton } from '@/components/magicui/interactive-hover-button';
+import { Button } from '@/components/ui/button';
 
 export default function RoleSelectionPage() {
   return (
@@ -36,11 +37,24 @@ export default function RoleSelectionPage() {
                 </p>
               </div>
               <div className="flex justify-center mx-auto md:justify-start">
-                <InteractiveHoverButton className="w-fit ">
-                  <Link href="/register" className="text-sm px-4 py-2">
+                <Link
+                  href="/register/user"
+                  className="text-sm px-4 py-2 hidden md:block"
+                >
+                  <InteractiveHoverButton className="w-fit ">
                     Continue as User
-                  </Link>
-                </InteractiveHoverButton>
+                  </InteractiveHoverButton>
+                </Link>
+
+                <Link
+                  href="/register/user"
+                  className="text-sm px-4 py-2 visible md:hidden"
+                >
+                  <Button className="w-fit bg-darkBlue border-[0.5px] border-lightBlue">
+                    Continue as User
+                    <ChevronRight />
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
@@ -66,17 +80,30 @@ export default function RoleSelectionPage() {
                 </p>
               </div>
               <div className="flex justify-center mx-auto md:justify-start">
-                <InteractiveHoverButton className="w-fit ">
-                  <Link href="/aregister" className="text-sm px-4 py-2">
+                <Link
+                  href="/register/authority"
+                  className="text-sm px-4 py-2 hidden md:block"
+                >
+                  <InteractiveHoverButton className="w-fit">
                     Continue as Authority
-                  </Link>
-                </InteractiveHoverButton>
+                  </InteractiveHoverButton>
+                </Link>
+
+                <Link
+                  href="/register/user"
+                  className="text-sm px-4 py-2 visible md:hidden"
+                >
+                  <Button className="w-fit bg-darkBlue border-[0.5px] border-lightBlue ">
+                    Continue as Authority
+                    <ChevronRight />
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="text-center ">
+        <div className="text-center invisible md:visible">
           <Link
             href="/"
             className="inline-flex items-center text-lightBlue font-semibold hover:text-darkBlue hover:bg-lightBlue hover:border-2  hover:border-darkBlue text-sm bg-darkBlue p-3 rounded-lg transition duration-200 ease-in-out"

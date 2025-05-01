@@ -2,6 +2,7 @@ import express from 'express';
 import authRoutes from './routes/auth.route.js';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import cors from 'cors';
 dotenv.config();
 mongoose
   .connect(process.env.MONGO)
@@ -18,6 +19,12 @@ app.use(express.json());
 app.listen(8000, () => {
   console.log('Server is running in port 8000');
 });
+
+const corsOptions = {
+  origin: process.env.NEXT_FRONTEND_URL,
+  credentials: true,
+};
+app.use(cors(corsOptions));
 
 app.use('/api/auth', authRoutes);
 app.use((err, req, res, next) => {
