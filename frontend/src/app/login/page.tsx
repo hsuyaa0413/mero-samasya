@@ -13,14 +13,14 @@ import { Icons } from '@/components/icons';
 import { backendApi } from '@/lib/constant';
 import { useUserStore } from '@/store/userStore';
 import { Button } from '@/components/ui/button';
-// import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 export default function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const { setUser } = useUserStore();
-  // const router = useRouter();
+  const router = useRouter();
 
   const [formInputs, setFormInputs] = useState({
     email: '',
@@ -43,8 +43,8 @@ export default function SignIn() {
 
       if (res.status === 200) {
         setUser(res.data.user);
-        // router.push(`/`);
-        window.location.replace(`/`);
+        router.push(`/`);
+        // window.location.replace(`/`);
       }
     } catch (error) {
       console.log(error);
