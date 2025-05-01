@@ -17,7 +17,7 @@ export default function SignIn() {
   return (
     // <Card className="p-0 max-w-sm w-full shadow-none border-none">
 
-    <div className=" flex items-center justify-center mx-auto p-6 bg-lightBlue rounded-lg border-t-1 min-h-[calc(100vh-72px)] border-gray-400">
+    <div className=" flex items-center justify-center mx-auto p-6 bg-lightBlue rounded-lg border-t-1 border-gray-400 min-h-[calc(100vh-72px)] ">
       {' '}
       <MagicCard
         gradientColor={theme === 'dark' ? '#262626' : '#D9D9D955'}
@@ -31,8 +31,7 @@ export default function SignIn() {
               समस्या
             </h2>
             <p className="mt-2 max-w-sm text-sm text-neutral-600 dark:text-neutral-300">
-              Login to report the local issues and help authorities to reach out
-              to you faster.
+              Login to know the local issues and reach out faster.
             </p>
             <h1 className="text-2xl font-bold mt-6 mb-3 ">
               Welcome Back! Please Sign In
@@ -95,7 +94,7 @@ export default function SignIn() {
             <div className="text-center text-sm">
               Don&apos;t have an account?{' '}
               <Link
-                href="/register"
+                href="/aregister"
                 className="text-indigo-700 hover:underline font-semibold"
               >
                 Register
