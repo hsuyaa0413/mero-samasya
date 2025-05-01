@@ -34,16 +34,19 @@ export default function Hero() {
           </p>
 
           <div className="flex sm:flex-row items-start sm:items-center gap-4">
-            <ShimmerButton
-              shimmerSize="0.13em"
-              background="rgb(14, 70, 163)"
-              className="bg-skyBlue text-white font-medium py-3 px-6 rounded-lg transition-colors"
-            >
-              Get Started
-            </ShimmerButton>
+            <Link href="/role">
+              <ShimmerButton
+                shimmerSize="0.13em"
+                background="rgb(14, 70, 163)"
+                className="bg-skyBlue text-white font-medium py-3 px-6 rounded-lg transition-colors"
+              >
+                Get Started
+              </ShimmerButton>
+            </Link>
 
             <Link
-              href="#"
+              href="#features"
+              scroll={true}
               className="flex items-center font-medium transition-colors"
             >
               <InteractiveHoverButton className="py-3.5">

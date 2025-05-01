@@ -9,27 +9,23 @@ import { Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
 import { Checkbox } from '@/components/ui/checkbox';
 import { PulsatingButton } from '@/components/magicui/pulsating-button';
-import { IconBrandGoogle } from '@tabler/icons-react';
+import { Icons } from '@/components/icons';
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { theme } = useTheme();
   return (
-    // <Card className="p-0 max-w-sm w-full shadow-none border-none">
-
-    <div className=" flex items-center justify-center mx-auto p-6 bg-lightBlue rounded-lg border-t-1 border-gray-400">
-      {' '}
+    <div className=" flex items-center justify-center min-h-screen mx-auto p-4 sm:p-6 bg-lightBlue rounded-lg border-t-1 border-gray-400">
       <MagicCard
         gradientColor={theme === 'dark' ? '#262626' : '#D9D9D955'}
-        className="p-0"
+        className="px-4 py-6"
       >
-        {' '}
-        <div className="bg-greyBlue text-darkBlue max-w-6xl p-5 ">
+        <div className="bg-greyBlue text-darkBlue max-w-6xl sm:p-5">
           <div className="p-4 items-center flex flex-col text-center">
             <h2 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">
-              Welcome to Mero<span className="text-lightBlue text-2xl">!</span>
-              समस्या
+              Welcome to
+              <span className="text-skyBlue text-xl"> Mero समस्या</span>
             </h2>
             <p className="mt-2 max-w-sm text-sm text-neutral-600 dark:text-neutral-300">
               Register to report the local issues and help authorities to reach
@@ -132,11 +128,11 @@ export default function Register() {
                 className="text-xs flex flex-row flex-wrap sm:text-sm"
               >
                 I agree to the
-                <span className="text-indigo-600 hover:underline">
+                <span className="text-skyBlue hover:underline">
                   Terms of Service
                 </span>
                 and
-                <span className="text-indigo-600 hover:underline">
+                <span className="text-skyBlue hover:underline">
                   Privacy Policy
                 </span>
               </Label>
@@ -145,26 +141,22 @@ export default function Register() {
             <PulsatingButton className="mx-auto h-10">Register</PulsatingButton>
 
             <PulsatingButton className="flex justify-center h-10">
-              <IconBrandGoogle className="h-4 w-4 text-lightBlue  " />
+              <Icons.google className="size-5" />
               <span className="text-sm text-lightBlue">
                 Continue with Google
               </span>
             </PulsatingButton>
 
             <div className="text-center text-sm">
-              Already have an account?{' '}
-              <Link
-                href="/signin"
-                className="text-indigo-700 hover:underline font-semibold"
-              >
+              Already have an account?
+              <Link href="/login" className="text-skyBlue hover:underline">
+                {' '}
                 Login
               </Link>
             </div>
-          </form>{' '}
+          </form>
         </div>
       </MagicCard>
     </div>
-
-    // </Card>
   );
 }

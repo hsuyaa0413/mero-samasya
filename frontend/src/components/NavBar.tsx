@@ -23,15 +23,15 @@ export function NavBar() {
     },
     {
       name: 'About',
-      link: '#pricing',
+      link: '#features',
     },
     {
       name: 'Services',
-      link: '#contact',
+      link: '#features',
     },
     {
       name: 'Contact',
-      link: '#contact',
+      link: '#contacts',
     },
   ];
 
@@ -46,7 +46,7 @@ export function NavBar() {
           <NavItems items={navItems} />
           <div className="flex items-center gap-2">
             <NavbarButton
-              href="/"
+              href="/login"
               variant="secondary"
               className=" text-darkBlue"
             >
@@ -96,7 +96,7 @@ export function NavBar() {
                 onClick={() => setIsMobileMenuOpen(false)}
                 variant="primary"
                 className="w-full text-darkBlue bg-lightBlue"
-                href="/register"
+                href="/login"
               >
                 Login
               </NavbarButton>
