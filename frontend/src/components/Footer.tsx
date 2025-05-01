@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Facebook, Twitter, Instagram, Linkedin, Youtube } from 'lucide-react';
+import { Icons } from './icons';
 
 export default function Footer() {
   return (
@@ -73,23 +73,23 @@ export default function Footer() {
             <h3 className="font-bold mb-4">CONNECT</h3>
             <div className="flex space-x-4">
               <Link href="#" className="hover:text-gray-200">
-                <Facebook size={20} />
+                <Icons.facebook className="size-5" />
                 <span className="sr-only">Facebook</span>
               </Link>
               <Link href="#" className="hover:text-gray-200">
-                <Twitter size={20} />
+                <Icons.x className="size-5" />
                 <span className="sr-only">Twitter</span>
               </Link>
               <Link href="#" className="hover:text-gray-200">
-                <Instagram size={20} />
+                <Icons.instagram className="size-5" />
                 <span className="sr-only">Instagram</span>
               </Link>
               <Link href="#" className="hover:text-gray-200">
-                <Linkedin size={20} />
+                <Icons.linkedin className="size-5" />
                 <span className="sr-only">LinkedIn</span>
               </Link>
               <Link href="#" className="hover:text-gray-200">
-                <Youtube size={20} />
+                <Icons.youtube className="size-5" />
                 <span className="sr-only">YouTube</span>
               </Link>
             </div>

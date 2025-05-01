@@ -15,19 +15,16 @@ export default function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
   const { theme } = useTheme();
   return (
-    // <Card className="p-0 max-w-sm w-full shadow-none border-none">
-
-    <div className=" flex items-center justify-center mx-auto p-6 bg-lightBlue rounded-lg border-t-1 border-gray-400">
-      {' '}
+    <div className=" flex items-center justify-center mx-auto rounded-lg border-t-1 border-gray-400 bg-lightBlue h-[calc(100vh-72px)]">
       <MagicCard
         gradientColor={theme === 'dark' ? '#262626' : '#D9D9D955'}
         className="p-0 "
       >
-        {' '}
-        <div className="bg-greyBlue text-darkBlue max-w-6xl p-5 ">
+        <div className="bg-greyBlue text-darkBlue max-w-6xl p-5">
           <div className="p-4 items-center flex flex-col text-center">
             <h2 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">
-              Welcome to Mero<span className="text-lightBlue text-2xl">!</span>
+              Welcome to Mero
+              <span className="text-lightBlue text-2xl">!</span>
               समस्या
             </h2>
             <p className="mt-2 max-w-sm text-sm text-neutral-600 dark:text-neutral-300">
@@ -105,7 +102,5 @@ export default function SignIn() {
         </div>
       </MagicCard>
     </div>
-
-    // </Card>
   );
 }

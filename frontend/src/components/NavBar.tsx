@@ -54,7 +54,7 @@ export function NavBar() {
             </NavbarButton>
 
             <NavbarButton
-              href="/register"
+              href="/role"
               variant="primary"
               className=" text-darkBlue"
             >
@@ -104,7 +104,7 @@ export function NavBar() {
                 onClick={() => setIsMobileMenuOpen(false)}
                 variant="primary"
                 className="w-full bg-darkBlue text-lightBlue"
-                href="/register"
+                href="/role"
               >
                 Register
               </NavbarButton>
