@@ -5,7 +5,7 @@ import { InteractiveHoverButton } from '@/components/magicui/interactive-hover-b
 
 export default function RoleSelectionPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-lightBlue border-t-1  border-gray-400">
+    <div className="flex flex-col bg-lightBlue pt-4 border-t-1 h-[calc(100vh-72px)] border-gray-400">
       <main className="flex-1 container mx-auto px-4 py-8 max-w-6xl">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold mb-2 text-darkBlue">
@@ -26,7 +26,7 @@ export default function RoleSelectionPage() {
               width={1920}
               height={1080}
             />
-            <div className="absolute inset-0 bg-black/60 z-10" />
+            <div className="absolute inset-0 bg-black/50 z-10" />
             <div className="relative z-10 p-4 flex flex-col justify-between h-full">
               <div className="mb-4">
                 <h2 className="text-2xl font-bold mb-1 text-white">User</h2>
@@ -54,7 +54,7 @@ export default function RoleSelectionPage() {
               width={1920}
               height={1080}
             />
-            <div className="absolute inset-0 bg-black/60 z-10" />
+            <div className="absolute inset-0 bg-black/50 z-10" />
             <div className="relative z-10 p-4 flex flex-col justify-between h-full">
               <div className="mb-4">
                 <h2 className="text-2xl font-bold mb-1 text-white">
