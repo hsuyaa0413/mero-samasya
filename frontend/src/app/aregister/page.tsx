@@ -235,7 +235,7 @@ export default function AuthorityRegisterPage() {
             <div className="text-center text-sm text-darkBlue">
               Already have an account?{' '}
               <Link
-                href="/sign-in"
+                href="/asignin"
                 className="text-indigo-600 hover:underline font-semibold"
               >
                 Login
