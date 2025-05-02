@@ -28,7 +28,9 @@ export const register = async (req, res, next) => {
   });
   try {
     await newUser.save();
-    res.status(201).json('User has been created successfully!');
+    res
+      .status(201)
+      .json({ status: 'success', message: 'User created successfully!' });
   } catch (error) {
     next(error);
   }
@@ -46,7 +48,7 @@ export const login = async (req, res, next) => {
     res
       .cookie('access_token', token, { httpOnly: true })
       .status(200)
-      .json(rest);
+      .json({ status: 'success', message: 'Login successful!', user: rest });
   } catch (error) {
     next(error);
   }
