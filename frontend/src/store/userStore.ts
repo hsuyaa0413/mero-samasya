@@ -7,6 +7,7 @@ export type User = {
   email: string;
   phoneNumber: number;
   address: string;
+  role: Role;
   localBody?: string;
   idCard?: string;
   createdAt?: string;
