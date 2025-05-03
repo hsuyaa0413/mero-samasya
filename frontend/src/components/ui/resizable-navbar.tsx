@@ -240,11 +240,14 @@ export const MobileNavToggle = ({
   );
 };
 
-export const NavbarLogo = () => {
+export const NavbarLogo = ({ className }: { className?: string }) => {
   return (
     <Link
       href="/"
-      className="relative z-20 mr-4 flex items-center space-x-2 px-9 py-1 text-sm font-normal text-black"
+      className={cn(
+        'relative z-20 mr-4 flex items-center space-x-2 px-9 py-1 text-sm font-normal text-black',
+        className
+      )}
     >
       <Image src="/logo.png" alt="logo" width={100} height={20} />
       {/* <span className="font-medium text-black dark:text-white">Startup</span> */}

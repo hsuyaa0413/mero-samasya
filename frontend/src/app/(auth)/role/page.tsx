@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 
 export default function RoleSelectionPage() {
   return (
-    <div className="flex flex-col bg-lightBlue pt-4 border-t-1 h-[calc(100vh-72px)] border-gray-400">
+    <div className="flex flex-col bg-lightBlue pt-4 border-t-1 min-h-screen sm:h-[calc(100vh-72px)] border-gray-400">
       <main className="flex-1 container mx-auto px-4 py-8 max-w-6xl">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold mb-2 text-darkBlue">
