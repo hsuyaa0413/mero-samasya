@@ -26,12 +26,14 @@ export default function AuthorityRegisterPage() {
   const handleDivClick = () => {
     fileInputRef.current?.click();
   };
+
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       console.log('Selected file:', file);
     }
   };
+
   return (
     <div className=" flex items-center justify-center min-h-screen mx-auto p-4 sm:p-6 bg-lightBlue rounded-lg border-t-1 border-gray-400">
       <MagicCard

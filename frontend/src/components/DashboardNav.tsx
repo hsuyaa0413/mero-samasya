@@ -116,9 +116,8 @@ export default function DashboardNav() {
         <MobileNav>
           <MobileNavHeader className="h-12">
             <Link href="/" className="text-4xl">
-              <Image src="/logo.png" alt="logo" width={100} height={20} />
+              <Image src="/logo.png" alt="logo" width={90} height={20} />
             </Link>
-
             {!user ? (
               <MobileNavToggle
                 isOpen={isMobileMenuOpen}

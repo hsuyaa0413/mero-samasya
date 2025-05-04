@@ -104,8 +104,8 @@ export function Testimonials() {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="hover:bg-greyBlue invisible sm:visible" />
-          <CarouselNext className="hover:bg-greyBlue invisible sm:visible" />
+          <CarouselPrevious className="hover:bg-greyBlue hidden sm:flex" />
+          <CarouselNext className="hover:bg-greyBlue hidden sm:flex" />
         </Carousel>
       </div>
     </div>
