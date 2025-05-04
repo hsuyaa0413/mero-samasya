@@ -1,9 +1,12 @@
 import express from 'express';
-import authRoutes from './routes/auth.route.js';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
+
+import cookieParser from 'cookie-parser';
+import authRoutes from './routes/auth.route.js';
 dotenv.config();
+
 mongoose
   .connect(process.env.MONGO)
   .then(() => {
@@ -14,7 +17,9 @@ mongoose
   });
 
 const app = express();
+app.use(cookieParser());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.listen(8000, () => {
   console.log('Server is running in port 8000');

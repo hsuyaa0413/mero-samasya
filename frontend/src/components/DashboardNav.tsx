@@ -21,25 +21,25 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { backendApi } from '@/lib/constant';
 
-export function DashboardNav() {
+export default function DashboardNav() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { user, setUser } = useUserStore();
+  const { user, logout } = useUserStore();
   const router = useRouter();
 
-  const handleLogOut = async () => {
+  async function handleLogOut() {
     try {
       const res = await axios.get(`${backendApi}/auth/logout`, {
         withCredentials: true,
       });
 
       if (res.status === 200) {
-        setUser(null);
+        logout();
         router.push('/');
       }
     } catch (e) {
       console.error(e);
     }
-  };
+  }
 
   return (
     <nav className="w-full h-16 sm:h-18 bg-lightBlue flex items-center justify-between">
@@ -144,7 +144,7 @@ export function DashboardNav() {
                   </Avatar>
                 </PopoverTrigger>
 
-                <PopoverContent className="flex justify-around items-center gap-2 w-fit">
+                <PopoverContent className="flex justify-around items-center gap-2 w-fit mr-2">
                   <div className="flex flex-col space-y-3">
                     <div className="border-b-2 pb-3 border-gray-200">
                       <h4 className="font-medium text-skyBlue text-sm">

@@ -49,9 +49,30 @@ export const login = async (req, res, next) => {
     const { password: pass, ...rest } = validUser._doc;
 
     res
-      .cookie('access_token', token, { httpOnly: true })
+      .cookie('jwt', token, {
+        expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        httpOnly: true,
+        sameSite: 'strict',
+      })
       .status(200)
       .json({ status: 'success', message: 'Login successful!', user: rest });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const logout = async (req, res, next) => {
+  try {
+    res
+      .cookie('jwt', '', {
+        expires: new Date(Date.now() - 1000),
+        httpOnly: true,
+      })
+      .status(200)
+      .json({
+        status: 'success',
+        message: 'Logged out successfully!',
+      });
   } catch (error) {
     next(error);
   }
