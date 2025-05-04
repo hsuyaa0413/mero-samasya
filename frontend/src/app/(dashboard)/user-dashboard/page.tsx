@@ -15,14 +15,14 @@ import {
 
 export default function UserDashboard() {
   return (
-    <div className="bg-lightBlue border-t-2 border-gray-300 h-screen">
+    <div className="bg-lightBlue text-darkBlue border-t-2 border-gray-300 min-h-screen">
       <div className="container max-w-7xl mx-auto py-8 px-4">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2">
+        <div className="flex flex-row justify-between items-end gap-10 mb-2">
           <div>
-            <h1 className="text-2xl font-bold text-gray-800">
+            <h1 className="text-xl sm:text-2xl font-bold text-darkBlue">
               Citizen Dashboard
             </h1>
-            <p className="text-gray-600">
+            <p className="text-sm text-gray-600">
               Track and manage your reported issues
             </p>
           </div>
@@ -75,7 +75,7 @@ export default function UserDashboard() {
           </div>
         </Card>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mt-6">
           <StatCard
             icon={
               <div className="bg-blue-100 p-2 rounded-full flex items-center justify-center">
@@ -162,7 +162,7 @@ function StatCard({
       <CardContent className="flex items-center gap-4">
         {icon}
         <div>
-          <p className="text-sm text-gray-500">{title}</p>
+          <p className="text-xs sm:text-sm text-gray-500">{title}</p>
           <p className="text-2xl font-bold">{count}</p>
         </div>
       </CardContent>
@@ -206,8 +206,8 @@ function IssueCard({
 
       <p className="px-4 text-gray-500">{description}</p>
 
-      <div className="flex items-center justify-between px-4 bg-gray-100 py-4 text-sm text-gray-600">
-        <div className="flex items-center gap-1 ">
+      <div className="flex items-center justify-between p-3 sm:p-4 bg-gray-100 text-sm text-gray-600">
+        <div className="flex items-center gap-0.5 sm:gap-1 ">
           <MapPin /> {location}
         </div>
         <div>Reported: {reportedDate}</div>
