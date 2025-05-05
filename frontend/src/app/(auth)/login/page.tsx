@@ -4,7 +4,7 @@ import axios from 'axios';
 import { MagicCard } from '@/components/magicui/magic-card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
 import { Eye, EyeOff, Loader } from 'lucide-react';
 import Link from 'next/link';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -27,12 +27,11 @@ export default function SignIn() {
     password: '',
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const changeEventHandler = (e: any) => {
+  const changeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
     setFormInputs({ ...formInputs, [e.target.name]: e.target.value });
   };
 
-  async function formSubmitHandler(e: { preventDefault: () => void }) {
+  async function formSubmitHandler(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setIsLoading(true);
 

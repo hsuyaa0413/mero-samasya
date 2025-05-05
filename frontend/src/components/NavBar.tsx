@@ -38,9 +38,9 @@ export function NavBar() {
       <Navbar>
         {/* Desktop Navigation */}
         <NavBody>
-          <NavbarLogo />
+          <NavbarLogo className="sm:pl-9" />
           <NavItems items={navItems} />
-          <div className="flex items-center gap-2">
+          <div>
             <NavbarButton
               href="/login"
               variant="secondary"
@@ -61,10 +61,11 @@ export function NavBar() {
 
         {/* Mobile Navigation */}
         <MobileNav>
-          <MobileNavHeader className="h-12">
+          <MobileNavHeader className="h-12 ">
             <Link href="/" className="text-4xl">
-              <Image src="/logo.png" alt="logo" width={100} height={20} />
+              <Image src="/logo.png" alt="logo" width={90} height={20} />
             </Link>
+
             <MobileNavToggle
               isOpen={isMobileMenuOpen}
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}

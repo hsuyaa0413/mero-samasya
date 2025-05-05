@@ -1,7 +1,5 @@
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Select } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
+'use client';
+
 import {
   Calendar,
   Check,
@@ -12,8 +10,16 @@ import {
   Search,
   TriangleAlert,
 } from 'lucide-react';
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Select } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import IssueReportForm from '@/components/IssueReportForm';
 
 export default function UserDashboard() {
+  const [open, setOpen] = useState(false);
+
   return (
     <div className="bg-lightBlue text-darkBlue border-t-2 border-gray-300 min-h-screen">
       <div className="container max-w-7xl mx-auto py-8 px-4">
@@ -26,7 +32,10 @@ export default function UserDashboard() {
               Track and manage your reported issues
             </p>
           </div>
-          <Button className="bg-red-200 text-red-900 hover:bg-red-300 mt-4 md:mt-0 cursor-pointer">
+          <Button
+            onClick={() => setOpen(true)}
+            className="bg-red-200 text-red-900 hover:bg-red-300 mt-4 md:mt-0 cursor-pointer"
+          >
             <Plus /> Report an Issue
           </Button>
         </div>
@@ -143,6 +152,8 @@ export default function UserDashboard() {
             description="A large pothole has formed on Main Street, causing damage to vehicles and posing a safety hazard."
           />
         </div>
+
+        <IssueReportForm open={open} setOpen={setOpen} />
       </div>
     </div>
   );

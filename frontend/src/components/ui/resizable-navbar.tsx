@@ -93,7 +93,7 @@ export const NavBody = ({ children, className, visible }: NavBodyProps) => {
         boxShadow: visible
           ? '0 0 24px rgba(34, 42, 53, 0.06), 0 1px 1px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(34, 42, 53, 0.04), 0 0 4px rgba(34, 42, 53, 0.08), 0 16px 68px rgba(47, 48, 55, 0.05), 0 1px 0 rgba(255, 255, 255, 0.1) inset'
           : 'none',
-        width: visible ? '40%' : '100%',
+        width: visible ? '65%' : '100%',
         y: visible ? 20 : 0,
       }}
       transition={{
@@ -175,8 +175,8 @@ export const MobileNav = ({ children, className, visible }: MobileNavProps) => {
         damping: 50,
       }}
       className={cn(
-        'relative z-50 mx-auto flex w-full max-w-[calc(100vw-2rem)] flex-col items-center justify-between bg-transparent px-0 py-2 lg:hidden',
-        visible && 'bg-white/80 dark:bg-neutral-950/80',
+        'relative z-50 mx-auto flex w-full max-w-[calc(100dvw-2rem)] flex-col items-center justify-between bg-transparent px-0 py-2 lg:hidden',
+        visible && 'bg-lightBlue-75 dark:bg-neutral-950/80',
         className
       )}
     >
@@ -245,12 +245,11 @@ export const NavbarLogo = ({ className }: { className?: string }) => {
     <Link
       href="/"
       className={cn(
-        'relative z-20 mr-4 flex items-center space-x-2 px-9 py-1 text-sm font-normal text-black',
+        'relative z-20 mr-4 flex items-center space-x-2 py-1 text-sm font-normal text-black',
         className
       )}
     >
       <Image src="/logo.png" alt="logo" width={100} height={20} />
-      {/* <span className="font-medium text-black dark:text-white">Startup</span> */}
     </Link>
   );
 };
