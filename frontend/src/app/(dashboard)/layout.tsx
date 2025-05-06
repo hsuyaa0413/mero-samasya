@@ -1,14 +1,9 @@
-import DashboardNav from '@/components/DashboardNav';
+// // import DashboardNav from '@/components/DashboardNav';
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <>
-      <DashboardNav />
-      {children}
-    </>
-  );
-}
+// export default function DashboardLayout({
+//   children,
+// }: {
+//   children: React.ReactNode;
+// }) {
+//   return <>{children}</>;
+// }

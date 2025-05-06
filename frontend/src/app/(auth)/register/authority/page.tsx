@@ -12,25 +12,40 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Upload, X } from 'lucide-react';
 import { MagicCard } from '@/components/magicui/magic-card';
 import { PulsatingButton } from '@/components/magicui/pulsating-button';
 import { Icons } from '@/components/icons';
+import { Button } from '@/components/ui/button';
 
 export default function AuthorityRegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null as File | null);
+
   const { theme } = useTheme();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleDivClick = () => {
-    fileInputRef.current?.click();
+    if (fileInputRef.current) {
+      fileInputRef.current?.click();
+    }
   };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       console.log('Selected file:', file);
+      setSelectedFile(file);
+    } else {
+      setSelectedFile(null);
+    }
+  };
+
+  const handleRemoveFile = () => {
+    setSelectedFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
 
@@ -168,43 +183,47 @@ export default function AuthorityRegisterPage() {
               <Label htmlFor="idCard" className="text-darkBlue">
                 ID Card Upload
               </Label>
-              <div className="mt-1 border border-gray-300 rounded-md p-4 text-center bg-lightBlue hover:border-gray-400 cursor-pointer">
-                <div
-                  className="flex flex-col items-center justify-center text-gray-600  "
-                  onClick={handleDivClick}
-                >
-                  <Input
-                    type="file"
-                    id="file-input"
-                    accept="image/*"
-                    ref={fileInputRef}
-                    onChange={handleFileChange}
-                    style={{ display: 'none' }}
-                  />
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="32"
-                    height="32"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="mb-2"
+              {!selectedFile ? (
+                <div className="mt-1 border-2 border-dashed border-gray-200 rounded-md p-8 text-center bg-lightBlue cursor-pointer">
+                  <div
+                    className="flex flex-col items-center justify-center text-gray-500"
+                    onClick={handleDivClick}
                   >
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                    <polyline points="17 8 12 3 7 8"></polyline>
-                    <line x1="12" y1="3" x2="12" y2="15"></line>
-                  </svg>
-                  <p className="text-sm text-gray-700">
-                    Upload a file or drag and drop
-                  </p>
-                  <p className="text-xs text-gray-500 mt-1">
-                    (PNG, JPG, PDF up to 10MB)
-                  </p>
+                    <Input
+                      type="file"
+                      id="media"
+                      accept="image/*"
+                      ref={fileInputRef}
+                      onChange={handleFileChange}
+                      style={{ display: 'none' }}
+                    />
+                    <Upload className="size-8 text-gray-400" />
+                    <p className="text-sm text-gray-500">
+                      Drag and drop files here or click to browse
+                    </p>
+                    <p className="text-xs text-gray-400 mt-1">
+                      Upload photos of the issue (max 5MB each)
+                    </p>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="mt-1 border border-gray-200 rounded-md p-4 flex items-center justify-between bg-lightBlue">
+                  <p
+                    className="text-sm font-medium text-gray-800 flex-wrap"
+                    title={selectedFile.name}
+                  >
+                    {selectedFile.name}
+                  </p>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="cursor-pointer"
+                    onClick={handleRemoveFile}
+                  >
+                    <X className="size-5 " />
+                  </Button>
+                </div>
+              )}
             </div>
             <div className="flex items-center space-x-2 pt-2">
               <Checkbox

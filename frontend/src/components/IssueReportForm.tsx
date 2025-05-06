@@ -16,7 +16,7 @@ import {
   DialogTitle,
 } from './ui/dialog';
 import { ChangeEvent, useRef, useState } from 'react';
-import { LocateFixed, Upload } from 'lucide-react';
+import { LocateFixed, Upload, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -30,16 +30,29 @@ export default function IssueReportForm({
   setOpen: (open: boolean) => void;
 }) {
   const [location, setLocation] = useState('');
+  const [selectedFile, setSelectedFile] = useState(null as File | null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleDivClick = () => {
-    fileInputRef.current?.click();
+    if (fileInputRef.current) {
+      fileInputRef.current?.click();
+    }
   };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       console.log('Selected file:', file);
+      setSelectedFile(file);
+    } else {
+      setSelectedFile(null);
+    }
+  };
+
+  const handleRemoveFile = () => {
+    setSelectedFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
 
@@ -82,44 +95,44 @@ export default function IssueReportForm({
           />
         </div>
 
-        {/* <div className="space-y-2">
-          <label className="block font-medium text-sm">Upload Media</label>
-          <div className="border-2 border-dashed border-gray-200 rounded-md p-8 text-center">
-            <div className="flex justify-center mb-2">
-              <Upload className="size-8 text-gray-400" />
-            </div>
-            <p className="text-sm text-gray-500">
-              Drag and drop files here or click to browse
-            </p>
-            <p className="text-xs text-gray-400 mt-1">
-              Upload photos or videos of the issue (max 5MB each)
-            </p>
-          </div>
-        </div> */}
         <div className="space-y-2">
           <Label htmlFor="media">Upload Media</Label>
-          <div className="mt-1 border-2 border-dashed border-gray-200 rounded-md p-8 text-center bg-gray-100 cursor-pointer">
-            <div
-              className="flex flex-col items-center justify-center text-gray-500"
-              onClick={handleDivClick}
-            >
-              <Input
-                type="file"
-                id="media"
-                accept="image/*"
-                ref={fileInputRef}
-                onChange={handleFileChange}
-                style={{ display: 'none' }}
-              />
-              <Upload className="size-8 text-gray-400" />
-              <p className="text-sm text-gray-500">
-                Drag and drop files here or click to browse
-              </p>
-              <p className="text-xs text-gray-400 mt-1">
-                Upload photos of the issue (max 5MB each)
-              </p>
+          {!selectedFile ? (
+            <div className="mt-1 border-2 border-dashed border-gray-200 rounded-md p-8 text-center bg-gray-100 cursor-pointer">
+              <div
+                className="flex flex-col items-center justify-center text-gray-500"
+                onClick={handleDivClick}
+              >
+                <Input
+                  type="file"
+                  id="media"
+                  accept="image/*"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  style={{ display: 'none' }}
+                />
+                <Upload className="size-8 text-gray-400" />
+                <p className="text-sm text-gray-500">
+                  Drag and drop files here or click to browse
+                </p>
+                <p className="text-xs text-gray-400 mt-1">
+                  Upload photos of the issue (max 5MB each)
+                </p>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="mt-1 border border-gray-200 rounded-md p-4 flex items-center justify-between bg-gray-50">
+              <p
+                className="text-sm font-medium text-gray-800 flex-wrap"
+                title={selectedFile.name}
+              >
+                {selectedFile.name}
+              </p>
+              <Button variant="ghost" size="icon" onClick={handleRemoveFile}>
+                <X className="size-5" />
+              </Button>
+            </div>
+          )}
         </div>
 
         <div className="space-y-2">

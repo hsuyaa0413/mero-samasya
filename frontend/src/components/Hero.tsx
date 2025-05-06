@@ -2,6 +2,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ShimmerButton } from './magicui/shimmer-button';
 import { InteractiveHoverButton } from './magicui/interactive-hover-button';
+import { Button } from './ui/button';
+import { ArrowRight } from 'lucide-react';
 
 export default function Hero() {
   return (
@@ -33,7 +35,7 @@ export default function Hero() {
             a more responsive and effective community.
           </p>
 
-          <div className="flex sm:flex-row items-start sm:items-center gap-4">
+          <div className="flex sm:flex-row items-center sm:items-center gap-4">
             <Link href="/role">
               <ShimmerButton
                 shimmerSize="0.13em"
@@ -47,11 +49,21 @@ export default function Hero() {
             <Link
               href="#features"
               scroll={true}
-              className="flex items-center font-medium transition-colors"
+              className="font-medium transition-colors hidden sm:flex"
             >
               <InteractiveHoverButton className="py-3.5">
                 Learn More
               </InteractiveHoverButton>
+            </Link>
+
+            <Link
+              href="#features"
+              scroll={true}
+              className="font-medium transition-colors visible sm:hidden"
+            >
+              <Button className="bg-gray-50 text-darkBlue text-md font-medium py-6 rounded-full w-[9.5rem]">
+                Learn More <ArrowRight />
+              </Button>
             </Link>
           </div>
         </div>

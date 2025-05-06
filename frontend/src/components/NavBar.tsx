@@ -23,11 +23,11 @@ export function NavBar() {
     },
     {
       name: 'About',
-      link: '#features',
+      link: '/#features',
     },
     {
       name: 'Contact',
-      link: '#contacts',
+      link: '/#contacts',
     },
   ];
 
