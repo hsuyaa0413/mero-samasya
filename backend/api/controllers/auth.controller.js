@@ -1,10 +1,11 @@
 import User from '../models/user.model.js';
 import { errorHandler } from '../utils/error.js';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
 
 export const register = async (req, res, next) => {
   const {
-    name,
+    fullName,
     email,
     phoneNumber,
     password,
@@ -14,36 +15,62 @@ export const register = async (req, res, next) => {
     localBody,
     idCard,
   } = req.body;
+
+  if (
+    !fullName ||
+    !email ||
+    !phoneNumber ||
+    !password ||
+    !confirmPassword ||
+    !address
+  ) {
+    return next(errorHandler(400, 'All fields are required!'));
+  }
+
+  if (password !== confirmPassword) {
+    return next(errorHandler(400, 'Passwords do not match!'));
+  }
+
+  const existingUser = await User.findOne({
+    $or: [{ email }, { phoneNumber }],
+  });
+  if (existingUser) {
+    return next(
+      errorHandler(400, 'User with this email or phone number already exists!')
+    );
+  }
+
   const newUser = new User({
-    name,
+    fullName,
     email,
     phoneNumber,
-    password,
-    confirmPassword,
+    password, 
     address,
     role,
     localBody,
     idCard,
   });
+
   try {
     await newUser.save();
     res
-      .status(201)
+      .status(200)
       .json({ status: 'success', message: 'User created successfully!' });
   } catch (error) {
-    next(error);
+    console.error('Error during user creation:', error); 
+    next(error); 
   }
 };
 
 export const login = async (req, res, next) => {
   const { email, password } = req.body;
+  console.log('Login request:', { email, password });
 
   try {
     const validUser = await User.findOne({ email });
     if (!validUser) return next(errorHandler(404, 'User not found!'));
-
     const validPassword = await validUser.matchPassword(password);
-    if (!validPassword) return next(errorHandler(400, 'Invalid credentials!'));
+    if (!validPassword) return next(errorHandler(400, 'Password does not match!'));
 
     const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
     const { password: pass, ...rest } = validUser._doc;

@@ -60,14 +60,14 @@ export default function DashboardNav() {
                       }`}
                     />
                     <AvatarFallback className="bg-greyBlue text-darkBlue">
-                      {user?.name
+                      {user?.fullName
                         .split(' ')
                         .map(n => n[0])
                         .join('')}
                     </AvatarFallback>
                   </Avatar>
                   <p className="font-medium text-skyBlue text-sm cursor-pointer">
-                    {user?.name}
+                    {user?.fullName}
                   </p>
                 </PopoverTrigger>
 
@@ -75,7 +75,7 @@ export default function DashboardNav() {
                   <div className="flex flex-col space-y-3">
                     <div className="border-b-2 pb-3 border-gray-200">
                       <h4 className="font-medium text-skyBlue text-sm">
-                        {user?.name}
+                        {user?.fullName}
                       </h4>
                       <p className="text-sm text-gray-500">{user?.role}</p>
                     </div>
@@ -135,7 +135,7 @@ export default function DashboardNav() {
                       }`}
                     />
                     <AvatarFallback className="bg-greyBlue text-darkBlue">
-                      {user?.name
+                      {user?.fullName
                         .split(' ')
                         .map(n => n[0])
                         .join('')}
@@ -147,7 +147,7 @@ export default function DashboardNav() {
                   <div className="flex flex-col space-y-3">
                     <div className="border-b-2 pb-3 border-gray-200">
                       <h4 className="font-medium text-skyBlue text-sm">
-                        {user?.name}
+                        {user?.fullName}
                       </h4>
                       <p className="text-sm text-gray-500">{user?.role}</p>
                     </div>
