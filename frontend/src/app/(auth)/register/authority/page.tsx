@@ -57,6 +57,7 @@ export default function AuthorityRegisterPage() {
 
   const [uploading, setUploading] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const { theme } = useTheme();
 
   const validateField = (name: string, value: string | boolean): string => {

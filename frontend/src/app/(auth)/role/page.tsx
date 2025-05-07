@@ -90,7 +90,7 @@ export default function RoleSelectionPage() {
                 </Link>
 
                 <Link
-                  href="/register/user"
+                  href="/register/authority"
                   className="text-sm px-4 py-2 visible md:hidden"
                 >
                   <Button className="w-fit bg-darkBlue border-[0.5px] border-lightBlue ">
