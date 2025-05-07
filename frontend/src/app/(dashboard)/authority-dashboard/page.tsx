@@ -49,7 +49,7 @@ export default function AuthorityDashboard() {
     <div className="flex h-screen bg-gray-50">
       {/* Sidebar */}
       <div className="w-2/12 bg-skyBlue text-white flex flex-col">
-        <div className="p-4 border-b border-lightBlue-75">
+        <div className="p-4 border-b border-lightBlue-75 h-18">
           <h1 className="font-bold text-xl">Mero Samasya</h1>
           <p className="text-sm text-lightBlue-75">Authority Dashboard</p>
         </div>
@@ -104,7 +104,7 @@ export default function AuthorityDashboard() {
 
       {/* Main Content */}
       <div className="flex-1 overflow-auto w-10/12">
-        <header className="bg-lightBlue p-4 border-b flex justify-between items-center sticky top-0 z-10 px-10">
+        <header className="bg-lightBlue p-4 border-b flex justify-between items-center sticky top-0 z-10 px-10 h-18">
           <h1 className="text-xl font-bold text-darkBlue">
             Issue Management Dashboard
           </h1>
@@ -245,7 +245,6 @@ export default function AuthorityDashboard() {
                     reported="5 hours ago"
                     reporter="Ramesh Nepali"
                     status="Pending"
-                    statusColor="yellow"
                     id="4324234234234"
                   />
 
@@ -255,7 +254,6 @@ export default function AuthorityDashboard() {
                     reported="12 hours ago"
                     reporter="Michael Brown"
                     status="Resolved"
-                    statusColor="green"
                     id="567575565"
                   />
 
@@ -430,7 +428,6 @@ function ResolutionTimeChart() {
 
 function IssueCard({
   status,
-  statusColor,
   title,
   reporter,
   reported,
@@ -438,25 +435,12 @@ function IssueCard({
   id,
 }: {
   status: string;
-  statusColor: 'yellow' | 'green' | 'blue' | 'red';
   title: string;
   reporter: string;
   reported: string;
   description: string;
   id: string;
 }) {
-  const statusColors: {
-    yellow: string;
-    green: string;
-    blue: string;
-    red: string;
-  } = {
-    yellow: 'bg-yellow-100 text-yellow-800',
-    green: 'bg-green-100 text-green-800',
-    blue: 'bg-blue-100 text-blue-800',
-    red: 'bg-red-100 text-red-800',
-  };
-
   return (
     <div className="overflow-hidden py-0 space-y-1">
       <div className="flex items-center justify-between px-4 pt-4">
@@ -464,7 +448,17 @@ function IssueCard({
 
         <div className="flex items-center gap-1">
           <Badge className="bg-red-100 text-red-800">Urgent</Badge>
-          <Badge className={`${statusColors[statusColor]}`}>{status}</Badge>
+          <Badge
+            className={
+              status === 'Pending'
+                ? 'bg-yellow-100 text-yellow-800'
+                : status === 'In Progress'
+                ? 'bg-blue-100 text-blue-800'
+                : 'bg-green-100 text-green-800'
+            }
+          >
+            {status}
+          </Badge>
         </div>
       </div>
 
