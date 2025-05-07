@@ -1,14 +1,7 @@
 'use client';
-import Image from 'next/image';
+
 import {
   Search,
-  Bell,
-  Mail,
-  Plus,
-  UserPlus,
-  CheckCircle,
-  MessageSquare,
-  Send,
   LayoutDashboard,
   FileText,
   ChevronUp,
@@ -16,8 +9,8 @@ import {
   ChevronDown,
   Clock,
   TriangleAlert,
+  LogOut,
 } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useUserStore } from '@/store/userStore';
 import {
@@ -29,15 +22,34 @@ import {
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
+import axios from 'axios';
+import { backendApi } from '@/lib/constant';
+import { useRouter } from 'next/navigation';
 
 export default function AuthorityDashboard() {
-  const { user } = useUserStore();
+  const { user, logout } = useUserStore();
+  const router = useRouter();
+
+  async function handleLogOut() {
+    try {
+      const res = await axios.get(`${backendApi}/auth/logout`, {
+        withCredentials: true,
+      });
+
+      if (res.status === 200) {
+        logout();
+        router.push('/');
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
 
   return (
     <div className="flex h-screen bg-gray-50">
       {/* Sidebar */}
       <div className="w-2/12 bg-skyBlue text-white flex flex-col">
-        <div className="p-4 border-b border-lightBlue-75">
+        <div className="p-4 border-b border-lightBlue-75 h-18">
           <h1 className="font-bold text-xl">Mero Samasya</h1>
           <p className="text-sm text-lightBlue-75">Authority Dashboard</p>
         </div>
@@ -64,29 +76,35 @@ export default function AuthorityDashboard() {
           </ul>
         </nav>
 
-        <div className="mt-auto p-4 border-t border-lightBlue-75 flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-gray-300 overflow-hidden">
-            <Avatar className="cursor-pointer">
-              <AvatarImage src="https://avatar.iran.liara.run/public/job/operator/male" />
-              <AvatarFallback className="bg-greyBlue text-darkBlue">
-                {user?.name
-                  .split(' ')
-                  .map(n => n[0])
-                  .join('')}
-              </AvatarFallback>
-            </Avatar>
+        <div className="mt-auto p-4 border-t border-lightBlue-75 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-gray-300 overflow-hidden">
+              <Avatar className="cursor-pointer">
+                <AvatarImage src="https://avatar.iran.liara.run/public/job/operator/male" />
+                <AvatarFallback className="bg-greyBlue text-darkBlue">
+                  {user?.name
+                    .split(' ')
+                    .map(n => n[0])
+                    .join('')}
+                </AvatarFallback>
+              </Avatar>
+            </div>
+
+            <div>
+              <div className="font-medium text-sm">{user?.name}</div>
+              <div className="text-xs text-lightBlue-75">Administrator</div>
+            </div>
           </div>
 
-          <div>
-            <div className="font-medium text-sm">{user?.name}</div>
-            <div className="text-xs text-lightBlue-75">Administrator</div>
-          </div>
+          <button onClick={handleLogOut} className="cursor-pointer">
+            <LogOut size={20} />
+          </button>
         </div>
       </div>
 
       {/* Main Content */}
       <div className="flex-1 overflow-auto w-10/12">
-        <header className="bg-lightBlue p-4 border-b flex justify-between items-center sticky top-0 z-10 px-10">
+        <header className="bg-lightBlue p-4 border-b flex justify-between items-center sticky top-0 z-10 px-10 h-18">
           <h1 className="text-xl font-bold text-darkBlue">
             Issue Management Dashboard
           </h1>
@@ -214,7 +232,7 @@ export default function AuthorityDashboard() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6" id="#issues">
             {/* Recent Issues */}
             <div className="lg:col-span-2">
-              <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+              <div className="bg-white rounded-lg shadow-sm min-h-10/12 overflow-y-scroll">
                 <div className="p-4 border-1 bg-gray-50">
                   <h2 className="text-lg font-medium ">Recent Issues</h2>
                 </div>
@@ -227,7 +245,6 @@ export default function AuthorityDashboard() {
                     reported="5 hours ago"
                     reporter="Ramesh Nepali"
                     status="Pending"
-                    statusColor="yellow"
                     id="4324234234234"
                   />
 
@@ -237,7 +254,6 @@ export default function AuthorityDashboard() {
                     reported="12 hours ago"
                     reporter="Michael Brown"
                     status="Resolved"
-                    statusColor="green"
                     id="567575565"
                   />
 
@@ -330,12 +346,10 @@ export default function AuthorityDashboard() {
 
             {/* Right Column */}
             <div className="space-y-6">
-              {/* Average Resolution Time */}
+              {/* Total Issues Reported */}
               <div className="bg-white rounded-lg shadow-sm overflow-hidden">
                 <div className="p-4 border-b">
-                  <h2 className="text-lg font-medium">
-                    Average Resolution Time
-                  </h2>
+                  <h2 className="text-lg font-medium">Total Issues Reported</h2>
                 </div>
                 <div className="p-4">
                   <div className="h-64">
@@ -378,25 +392,32 @@ export default function AuthorityDashboard() {
 
 function ResolutionTimeChart() {
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
-  const data = [3.1, 2.8, 2.3, 3.0, 2.7, 2.2];
+  const data = [32, 28, 23, 30, 34, 41];
   const maxValue = Math.max(...data);
 
   return (
     <div className="h-full flex flex-col">
       <div className="text-xs text-gray-500 mb-1">
-        Average Resolution Time (days)
+        Total Issues Reported (per month)
       </div>
       <div className="flex-1 flex items-end">
         {data.map((value, index) => (
-          <div key={index} className="flex-1 flex flex-col items-center">
+          <div
+            key={index}
+            className="flex flex-col flex-1 items-center justify-end h-full"
+          >
             <div
-              className="w-full bg-blue-200 mx-0.5"
+              className="w-full bg-blue-200 mx-0.5 hover:bg-blue-300 cursor-pointer group relative"
               style={{
                 height: `${(value / maxValue) * 100}%`,
                 maxWidth: '30px',
                 margin: '0 auto',
               }}
-            ></div>
+            >
+              <span className="inset-0 flex items-center justify-center invisible group-hover:visible text-xs text-darkBlue">
+                {value}
+              </span>
+            </div>
             <div className="text-xs mt-1">{months[index]}</div>
           </div>
         ))}
@@ -407,7 +428,6 @@ function ResolutionTimeChart() {
 
 function IssueCard({
   status,
-  statusColor,
   title,
   reporter,
   reported,
@@ -415,25 +435,12 @@ function IssueCard({
   id,
 }: {
   status: string;
-  statusColor: 'yellow' | 'green' | 'blue' | 'red';
   title: string;
   reporter: string;
   reported: string;
   description: string;
   id: string;
 }) {
-  const statusColors: {
-    yellow: string;
-    green: string;
-    blue: string;
-    red: string;
-  } = {
-    yellow: 'bg-yellow-100 text-yellow-800',
-    green: 'bg-green-100 text-green-800',
-    blue: 'bg-blue-100 text-blue-800',
-    red: 'bg-red-100 text-red-800',
-  };
-
   return (
     <div className="overflow-hidden py-0 space-y-1">
       <div className="flex items-center justify-between px-4 pt-4">
@@ -441,7 +448,17 @@ function IssueCard({
 
         <div className="flex items-center gap-1">
           <Badge className="bg-red-100 text-red-800">Urgent</Badge>
-          <Badge className={`${statusColors[statusColor]}`}>{status}</Badge>
+          <Badge
+            className={
+              status === 'Pending'
+                ? 'bg-yellow-100 text-yellow-800'
+                : status === 'In Progress'
+                ? 'bg-blue-100 text-blue-800'
+                : 'bg-green-100 text-green-800'
+            }
+          >
+            {status}
+          </Badge>
         </div>
       </div>
 
