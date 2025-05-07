@@ -3,16 +3,15 @@ import bcrypt from 'bcryptjs';
 
 const userSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true },
+    fullName: { type: String, required: true },
     email: { type: String, required: true, unique: true, lowercase: true },
-    phoneNumber: { type: Number, required: true, unique: true },
+    phoneNumber: { type: Number, required: true },
     password: { type: String, required: true },
     confirmPassword: {
       type: String,
-      required: true,
+
       validate: {
         validator: function (val) {
-          // 'this' only points on CREATE and SAVE!!!
           return val === this.password;
         },
         message: 'Passwords must match!',
@@ -39,13 +38,10 @@ const userSchema = new mongoose.Schema(
         return this.role === 'authority';
       },
     },
-
-    // --- Timestamps ---
   },
   { timestamps: true }
 );
 
-// Password hashing middleware
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
     return next();
@@ -56,7 +52,6 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-// Method to compare password
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
