@@ -503,12 +503,12 @@ export default function AuthorityRegisterPage() {
                     <Eye size={18} />
                   )}
                 </button>
-                {formErrors.confirmPassword && (
-                  <p className="text-xs text-red-500 mt-1">
-                    {formErrors.confirmPassword}
-                  </p>
-                )}
               </div>
+              {formErrors.confirmPassword && (
+                <p className="text-xs text-red-500 mt-1">
+                  {formErrors.confirmPassword}
+                </p>
+              )}
             </div>
             <div>
               <Label htmlFor="address" className="text-darkBlue">
