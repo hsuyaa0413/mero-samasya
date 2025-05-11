@@ -9,7 +9,6 @@ import { Eye, EyeOff, Loader } from 'lucide-react';
 import Link from 'next/link';
 import { Checkbox } from '@/components/ui/checkbox';
 import { PulsatingButton } from '@/components/magicui/pulsating-button';
-import { Icons } from '@/components/icons';
 import { backendApi } from '@/lib/constant';
 import { useUserStore } from '@/store/userStore';
 import { Button } from '@/components/ui/button';
@@ -130,13 +129,6 @@ export default function SignIn() {
                 Login
               </PulsatingButton>
             )}
-
-            <PulsatingButton className="flex justify-center h-10">
-              <Icons.google className="size-4" />
-              <span className="text-sm text-lightBlue">
-                Continue with Google
-              </span>
-            </PulsatingButton>
 
             <div className="text-center text-sm">
               Don&apos;t have an account?{' '}
