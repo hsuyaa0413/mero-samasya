@@ -469,7 +469,7 @@ function IssueCard({
           <Avatar className="cursor-pointer">
             <AvatarImage src="https://avatar.iran.liara.run/public/boy" />
             <AvatarFallback className="bg-greyBlue text-darkBlue">
-              {/* {user?.name
+              {/* {user?.fullName
                 .split(' ')
                 .map(n => n[0])
                 .join('')} */}{' '}
