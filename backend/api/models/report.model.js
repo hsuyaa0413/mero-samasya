@@ -21,6 +21,14 @@ const reportSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    lat: {
+      type: Number,
+      required: true,
+    },
+    lng: {
+      type: Number,
+      required: true,
+    },
     category: {
       type: String,
       required: true,
