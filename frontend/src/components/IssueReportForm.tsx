@@ -18,13 +18,42 @@ import {
   DialogTitle,
 } from './ui/dialog';
 import { ChangeEvent, useRef, useState, FormEvent } from 'react';
-import { LocateFixed, Upload } from 'lucide-react';
+import { Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';  
+import { Textarea } from '@/components/ui/textarea';
 import { Label } from './ui/label';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+// import LocationPicker from './LocationPicker';
+import dynamic from 'next/dynamic';
+
+// Dynamically import the map component to avoid SSR issues with Leaflet
+const LocationPickerMapWithNoSSR = dynamic(
+  () => import('@/components/LocationPickerMap'), // Adjust path if needed
+  { ssr: false }
+);
+
+interface FormDataState {
+  // ... your other form fields
+  title: string; // Example field
+  description: string; // Example field
+  location: string; // Text address
+  lat: number;
+  lng: number;
+  category: string;
+  mediaUrls: string[];
+}
+
+interface FormErrorsState {
+  // ... your other error fields
+  title?: string;
+  description?: string;
+  location?: string;
+  general?: string; // For general submission errors
+  category?: string;
+  mediaUrls?: string;
+}
 
 export default function IssueReportForm({
   open,
@@ -35,15 +64,17 @@ export default function IssueReportForm({
 }) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [files, setFiles] = useState<File[]>([]);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormDataState>({
     title: '',
     description: '',
     location: '',
+    lat: 0,
+    lng: 0,
     category: '',
     mediaUrls: [] as string[],
   });
 
-  const [formErrors, setFormErrors] = useState({
+  const [formErrors, setFormErrors] = useState<FormErrorsState>({
     title: '',
     description: '',
     location: '',
@@ -63,12 +94,38 @@ export default function IssueReportForm({
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
+  // This will hold the location text typed by the user, passed to the map
+  const [typedLocationForMap, setTypedLocationForMap] = useState('');
+
+  const handleLocationSelectFromMap = (
+    lat: number,
+    lng: number,
+    address: string,
+    autoFillInput: boolean = true // Flag to control if input field should be updated
+  ) => {
+    setFormData(prev => ({
+      ...prev,
+      lat,
+      lng,
+      location: autoFillInput ? address : prev.location, // Update text input if autoFill is true
+    }));
+    if (!autoFillInput) {
+      // If not auto-filling (e.g. geocoding from typed input),
+      // ensure typedLocationForMap matches current form location
+      setTypedLocationForMap(formData.location);
+    } else {
+      setTypedLocationForMap(address); // Keep typedLocation in sync if address came from map click/GPS
+    }
+    if (formErrors.location) {
+      setFormErrors(prev => ({ ...prev, location: undefined }));
+    }
+  };
+
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-
     // Live validation
     let error = '';
     if (name === 'title') {
@@ -178,11 +235,16 @@ export default function IssueReportForm({
         .catch(() => reject(new Error('Network error during upload.')));
     });
   };
+
   const handleRemoveImage = (indexToRemove: number) => {
     setFormData(prev => ({
       ...prev,
       mediaUrls: prev.mediaUrls.filter((_, index) => index !== indexToRemove),
     }));
+  };
+
+  const handleSelectChange = (value: string) => {
+    setFormData({ ...formData, category: value });
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -266,10 +328,6 @@ export default function IssueReportForm({
     }
   };
 
-  const handleSelectChange = (value: string) => {
-    setFormData({ ...formData, category: value });
-  };
-
   const isUploadDisabled =
     uploading ||
     files.length === 0 ||
@@ -300,7 +358,6 @@ export default function IssueReportForm({
               {statusMessage.text}
             </div>
           )}
-
           {/* Title */}
           <div className="space-y-1">
             <Label htmlFor="title">
@@ -318,7 +375,6 @@ export default function IssueReportForm({
               <p className="text-red-500 text-sm">{formErrors.title}</p>
             )}
           </div>
-
           {/* Description */}
           <div className="space-y-1">
             <Label htmlFor="description">
@@ -336,7 +392,6 @@ export default function IssueReportForm({
               <p className="text-red-500 text-sm">{formErrors.description}</p>
             )}
           </div>
-
           {/* Media Upload */}
           <div className="space-y-1">
             <Label htmlFor="media">
@@ -382,7 +437,7 @@ export default function IssueReportForm({
                   type="button"
                   onClick={handleUploadImages}
                   disabled={isUploadDisabled}
-                  className="mt-4 w-full"
+                  className="mt-4 w-full cursor-pointer"
                 >
                   {uploading
                     ? `Uploading...`
@@ -402,7 +457,7 @@ export default function IssueReportForm({
                       <button
                         type="button"
                         onClick={() => handleRemoveImage(index)}
-                        className="absolute top-1 right-1 bg-white text-red-700 rounded-full p-1 shadow-md"
+                        className="absolute top-1 right-1 bg-white text-red-700 rounded-full p-1 shadow-md cursor-pointer"
                         title="Remove"
                       >
                         <X className="h-4 w-4" />
@@ -419,7 +474,6 @@ export default function IssueReportForm({
               )}
             </div>
           </div>
-
           {/* Location */}
           <div className="space-y-1">
             <Label htmlFor="location">
@@ -430,7 +484,7 @@ export default function IssueReportForm({
               name="location"
               value={formData.location}
               onChange={handleInputChange}
-              placeholder="Enter location"
+              placeholder="Type address or click on map below"
               required
             />
             {formErrors.location && (
@@ -438,25 +492,26 @@ export default function IssueReportForm({
             )}
           </div>
 
-          {/* Map Placeholder */}
-          <div className="bg-blue-50 rounded-md p-4 relative">
-            <div className="h-40 flex items-center justify-center text-gray-500 text-sm">
-              Interactive map loading...
-            </div>
-            <div className="absolute bottom-2 left-0 right-0 px-4">
-              <div className="bg-white text-xs p-2 rounded-md text-center shadow-sm">
-                Click on the map to pin the exact location or use GPS to
-                automatically detect your location
-              </div>
-            </div>
-            <div className="absolute top-2 right-2">
-              <button
-                type="button"
-                className="bg-white p-1 rounded-full shadow-sm"
-              >
-                <LocateFixed className="text-red-500 size-5" />
-              </button>
-            </div>
+          {/* Map Placeholder Replaced by Actual Map */}
+          <div className="space-y-1">
+            <Label className="text-gray-700 font-medium mb-1 block">
+              Pin Location on Map
+            </Label>
+            <LocationPickerMapWithNoSSR
+              onLocationSelect={handleLocationSelectFromMap}
+              typedLocation={typedLocationForMap} // Pass the typed location to the map
+              initialCoordinates={
+                formData.lat && formData.lng
+                  ? { lat: formData.lat, lng: formData.lng }
+                  : undefined
+              }
+            />
+            {formData.lat && formData.lng && (
+              <p className="text-xs text-gray-600 mt-2">
+                Coordinates: Lat: {formData.lat.toFixed(5)}, Lng:{' '}
+                {formData.lng.toFixed(5)}
+              </p>
+            )}
           </div>
 
           {/* Category */}
@@ -486,7 +541,6 @@ export default function IssueReportForm({
               <p className="text-red-500 text-sm">{formErrors.category}</p>
             )}
           </div>
-
           <DialogFooter>
             <Button
               type="submit"
