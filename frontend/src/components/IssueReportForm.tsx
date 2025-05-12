@@ -304,6 +304,8 @@ export default function IssueReportForm({
           title: '',
           description: '',
           location: '',
+          lat: 0,
+          lng: 0,
           category: '',
           mediaUrls: [],
         });
