@@ -78,7 +78,7 @@ export function Sidebar() {
             <Avatar className="cursor-pointer">
               <AvatarImage src="https://avatar.iran.liara.run/public/job/operator/male" />
               <AvatarFallback className="bg-greyBlue text-darkBlue">
-                {user?.name
+                {user?.fullName
                   .split(' ')
                   .map(n => n[0])
                   .join('')}
@@ -87,7 +87,7 @@ export function Sidebar() {
           </div>
 
           <div>
-            <div className="font-medium text-sm">{user?.name}</div>
+            <div className="font-medium text-sm">{user?.fullName}</div>
             <div className="text-xs text-lightBlue-75">Super Admin</div>
           </div>
         </div>

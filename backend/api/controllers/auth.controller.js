@@ -1,7 +1,6 @@
 import User from '../models/user.model.js';
 import { errorHandler } from '../utils/error.js';
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
 
 export const register = async (req, res, next) => {
   const {
@@ -44,7 +43,7 @@ export const register = async (req, res, next) => {
     fullName,
     email,
     phoneNumber,
-    password, 
+    password,
     address,
     role,
     localBody,
@@ -57,22 +56,24 @@ export const register = async (req, res, next) => {
       .status(200)
       .json({ status: 'success', message: 'User created successfully!' });
   } catch (error) {
-    console.error('Error during user creation:', error); 
-    next(error); 
+    console.error('Error during user creation:', error);
+    next(error);
   }
 };
 
 export const login = async (req, res, next) => {
   const { email, password } = req.body;
-  console.log('Login request:', { email, password });
 
   try {
     const validUser = await User.findOne({ email });
     if (!validUser) return next(errorHandler(404, 'User not found!'));
     const validPassword = await validUser.matchPassword(password);
-    if (!validPassword) return next(errorHandler(400, 'Password does not match!'));
+    if (!validPassword)
+      return next(errorHandler(400, 'Password does not match!'));
 
-    const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
+    const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EXPIRES_IN,
+    });
     const { password: pass, ...rest } = validUser._doc;
 
     res
