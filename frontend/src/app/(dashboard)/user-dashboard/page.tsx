@@ -10,6 +10,7 @@ import {
   Search,
   TriangleAlert,
 } from 'lucide-react';
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -17,6 +18,7 @@ import { Select } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import IssueReportForm from '@/components/IssueReportForm';
 import DashboardNav from '@/components/DashboardNav';
+import IssuedCard from '@/components/IssuedCard';
 
 export default function UserDashboard() {
   const [open, setOpen] = useState(false);
@@ -128,8 +130,12 @@ export default function UserDashboard() {
               count={3}
             />
           </div>
+          <div className="mt-7">
+            <h1>Recent Reported Issues:</h1>
+            <IssuedCard></IssuedCard>
+          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+          {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
             <IssueCard
               status="Pending"
               statusColor="red"
@@ -154,7 +160,7 @@ export default function UserDashboard() {
               reportedDate="Jun 15, 2023"
               description="A large pothole has formed on Main Street, causing damage to vehicles and posing a safety hazard."
             />
-          </div>
+          </div> */}
 
           <IssueReportForm open={open} setOpen={setOpen} />
         </div>
@@ -185,48 +191,48 @@ function StatCard({
   );
 }
 
-function IssueCard({
-  status,
-  statusColor,
-  title,
-  location,
-  reportedDate,
-  description,
-}: {
-  status: string;
-  statusColor: 'yellow' | 'green' | 'blue' | 'red';
-  title: string;
-  location: string;
-  reportedDate: string;
-  description: string;
-}) {
-  const statusColors: {
-    yellow: string;
-    green: string;
-    blue: string;
-    red: string;
-  } = {
-    yellow: 'bg-yellow-100 text-yellow-800',
-    green: 'bg-green-100 text-green-800',
-    blue: 'bg-blue-100 text-blue-800',
-    red: 'bg-red-100 text-red-800',
-  };
+// function IssueCard({
+//   status,
+//   statusColor,
+//   title,
+//   location,
+//   reportedDate,
+//   description,
+// }: {
+//   status: string;
+//   statusColor: 'yellow' | 'green' | 'blue' | 'red';
+//   title: string;
+//   location: string;
+//   reportedDate: string;
+//   description: string;
+// }) {
+//   const statusColors: {
+//     yellow: string;
+//     green: string;
+//     blue: string;
+//     red: string;
+//   } = {
+//     yellow: 'bg-yellow-100 text-yellow-800',
+//     green: 'bg-green-100 text-green-800',
+//     blue: 'bg-blue-100 text-blue-800',
+//     red: 'bg-red-100 text-red-800',
+//   };
 
-  return (
-    <Card className="overflow-hidden py-0">
-      <div className="flex items-center justify-between px-4 pt-6">
-        <div className="text-md font-semibold">{title}</div>
-        <Badge className={`${statusColors[statusColor]}`}>{status}</Badge>
-      </div>
+//   return (
+//     <Card className="overflow-hidden py-0">
+//       <div className="flex items-center justify-between px-4 pt-6">
+//         <div className="text-md font-semibold">{title}</div>
+//         <Badge className={`${statusColors[statusColor]}`}>{status}</Badge>
+//       </div>
 
-      <p className="px-4 text-gray-500">{description}</p>
+//       <p className="px-4 text-gray-500">{description}</p>
 
-      <div className="flex items-center justify-between p-3 sm:p-4 bg-gray-100 text-sm text-gray-600">
-        <div className="flex items-center gap-0.5 sm:gap-1 ">
-          <MapPin /> {location}
-        </div>
-        <div>Reported: {reportedDate}</div>
-      </div>
-    </Card>
-  );
-}
+//       <div className="flex items-center justify-between p-3 sm:p-4 bg-gray-100 text-sm text-gray-600">
+//         <div className="flex items-center gap-0.5 sm:gap-1 ">
+//           <MapPin /> {location}
+//         </div>
+//         <div>Reported: {reportedDate}</div>
+//       </div>
+//     </Card>
+//   );
+// }
