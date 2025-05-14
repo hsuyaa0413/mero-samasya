@@ -1,14 +1,10 @@
-import { backendApi } from '@/lib/constant';
-import React, { useEffect, useState } from 'react';
-import { Card } from './ui/card';
-import { Badge } from './ui/badge';
 import { MapPin } from 'lucide-react';
+import { Badge } from './ui/badge';
 
-// Define the type for each reported issue
-interface ReportedIssue {
+export interface ReportedIssue {
+  _id: string;
   title: string;
-  status: 'pending' | 'resolved' | 'rejected';
-  statusColor: string;
+  status: 'pending' | 'resolved' | 'inProgress';
   description: string;
   location: string;
   updatedAt: string;
@@ -16,31 +12,14 @@ interface ReportedIssue {
 }
 
 const statusColors: { [key: string]: string } = {
-  pending: 'bg-yellow-100 text-yellow-800',
+  inProgress: 'bg-yellow-100 text-yellow-800',
   resolved: 'bg-green-100 text-green-800',
-  rejected: 'bg-red-100 text-red-800',
-  // Add more as needed
+  pending: 'bg-red-100 text-red-800',
 };
-
-export default function IssuedCard() {
-  const [reportedIssues, setReportedIssues] = useState<ReportedIssue[]>([]);
-
-  useEffect(() => {
-    const fetchReportedIssues = async () => {
-      const res = await fetch(`${backendApi}/report/get-reports`);
-      const data = await res.json();
-      // Ensure the response contains the 'data' field and it is an array
-      if (data && Array.isArray(data.data)) {
-        setReportedIssues(data.data); // Set the 'data' property
-        console.log('Reported Issues:', data.data);
-      } else {
-        console.error('Expected an array in data, but received:', data);
-      }
-    };
-    fetchReportedIssues();
-  }, []);
-
-  // Function to format the date to 'YYYY-MM-DD'
+interface IssuedCardProps {
+  issuedReports: ReportedIssue;
+}
+export default function IssuedCard({ issuedReports }: IssuedCardProps) {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const year = date.getFullYear();
@@ -50,40 +29,32 @@ export default function IssuedCard() {
   };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      {reportedIssues.length > 0 ? (
-        reportedIssues.map((issue, index) => (
-          <Card key={index} className="overflow-hidden py-0 ">
-            <div className="flex items-center justify-between px-4 pt-6  ">
-              <div className="text-md font-semibold ">{issue.title}</div>
-              <Badge
-                className={
-                  statusColors[issue.statusColor] || 'bg-gray-100 text-gray-800'
-                }
-              >
-                {issue.status}
-              </Badge>
-            </div>
+    <div className="overflow-hidden  rounded-xl border py-0 shadow-sm h-60 bg-white">
+      <div className="flex items-center justify-between mb-2 px-4 pt-6 h-12 border-b-1 border-gray-300 bg-gray-200 pb-5">
+        <div className="text-md font-semibold  ">{issuedReports.title}</div>
+        <Badge
+          className={
+            statusColors[issuedReports.status] || 'bg-gray-100 text-gray-800'
+          }
+        >
+          {issuedReports.status}
+        </Badge>
+      </div>
 
-            {/* {' '}
-              <div className="absolute inset-0 bg-black/35 backdrop-blur-sm z-0" /> */}
-            {/* Description text */}
-            <p className="text-darkBlue px-4">{issue.description}</p>
+      <p className="text-darkBlue px-4 h-30 line-clamp-5 ">
+        {issuedReports.description}
+      </p>
 
-            <div className="flex items-center justify-between p-3 sm:p-4 bg-gray-100 text-sm text-gray-600 mt-auto h-18">
-              <div className="flex-1 flex items-center gap-1 truncate pr-2">
-                <MapPin size={16} />
-                <span className="truncate">{issue.location}</span>
-              </div>
-              <div className="whitespace-nowrap text-right">
-                Reported: {formatDate(issue.updatedAt)}
-              </div>
-            </div>
-          </Card>
-        ))
-      ) : (
-        <div className="px-4 py-2 text-gray-500">No reports found.</div>
-      )}
+      <div className="flex items-center justify-between p-3 sm:p-4 bg-gray-100 text-sm text-gray-600 mb-0 h-16">
+        <div className="flex-1 flex items-start  line-clamp-2 text-green-800">
+          <MapPin size={16} className=" w-7" />
+          <span className="text-xs line-clamp-2">{issuedReports.location}</span>
+        </div>
+        <div className="whitespace-nowrap text-right text-xs flex-1 flex flex-col text-darkBlue ">
+          Reported At: {formatDate(issuedReports.updatedAt)}
+          <p className=" text-blue-700">View Details</p>
+        </div>
+      </div>
     </div>
   );
 }
