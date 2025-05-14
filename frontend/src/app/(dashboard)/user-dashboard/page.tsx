@@ -5,18 +5,16 @@ import {
   Check,
   Clock,
   FileText,
-  MapPin,
   Plus,
   Search,
   TriangleAlert,
 } from 'lucide-react';
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Select } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
 import IssueReportForm from '@/components/IssueReportForm';
 import DashboardNav from '@/components/DashboardNav';
+import { useState } from 'react';
 
 export default function UserDashboard() {
   const [open, setOpen] = useState(false);
@@ -130,11 +128,11 @@ export default function UserDashboard() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-            <IssueCard
+            {/* <IssuedCard
               status="Pending"
               statusColor="red"
               title="Pothole on Main Street"
-              location="123 Main St, Downtown"
+              location="123 Main St, Downtown kajhdfkasjdf aksjdhfkasjdhfkasjhfaskdjfh "
               reportedDate="Jun 15, 2023"
               description="A large pothole has formed on Main Street, causing damage to vehicles and posing a safety hazard."
             />
@@ -153,7 +151,7 @@ export default function UserDashboard() {
               location="123 Main St, Downtown"
               reportedDate="Jun 15, 2023"
               description="A large pothole has formed on Main Street, causing damage to vehicles and posing a safety hazard."
-            />
+            /> */}
           </div>
 
           <IssueReportForm open={open} setOpen={setOpen} />
@@ -185,48 +183,81 @@ function StatCard({
   );
 }
 
-function IssueCard({
-  status,
-  statusColor,
-  title,
-  location,
-  reportedDate,
-  description,
-}: {
-  status: string;
-  statusColor: 'yellow' | 'green' | 'blue' | 'red';
-  title: string;
-  location: string;
-  reportedDate: string;
-  description: string;
-}) {
-  const statusColors: {
-    yellow: string;
-    green: string;
-    blue: string;
-    red: string;
-  } = {
-    yellow: 'bg-yellow-100 text-yellow-800',
-    green: 'bg-green-100 text-green-800',
-    blue: 'bg-blue-100 text-blue-800',
-    red: 'bg-red-100 text-red-800',
-  };
+// function IssueCard({
+//   status,
+//   statusColor,
+//   title,
+//   location,
+//   reportedDate,
+//   description,
+// }: {
+//   status: string;
+//   statusColor: 'yellow' | 'green' | 'blue' | 'red';
+//   title: string;
+//   location: string;
+//   reportedDate: string;
+//   description: string;
+// }) {
+//   interface ReportedIssue {
+//     title: string;
+//     status: 'pending' | 'resolved' | 'rejected';
+//     statusColor: string;
+//     description: string;
+//     location: string;
+//     updatedAt: string;
+//     mediaUrls: string[];
+//   }
 
-  return (
-    <Card className="overflow-hidden py-0">
-      <div className="flex items-center justify-between px-4 pt-6">
-        <div className="text-md font-semibold">{title}</div>
-        <Badge className={`${statusColors[statusColor]}`}>{status}</Badge>
-      </div>
+//   const [reportedIssues, setReportedIssues] = useState<ReportedIssue[]>([]);
 
-      <p className="px-4 text-gray-500">{description}</p>
+//   useEffect(() => {
+//     const fetchReportedIssues = async () => {
+//       const res = await fetch(`${backendApi}/report/get-reports`);
+//       const data = await res.json();
+//       // Ensure the response contains the 'data' field and it is an array
+//       if (data && Array.isArray(data.data)) {
+//         setReportedIssues(data.data); // Set the 'data' property
+//         console.log('Reported Issues:', data.data);
+//       } else {
+//         console.error('Expected an array in data, but received:', data);
+//       }
+//     };
+//     fetchReportedIssues();
+//   }, []);
 
-      <div className="flex items-center justify-between p-3 sm:p-4 bg-gray-100 text-sm text-gray-600">
-        <div className="flex items-center gap-0.5 sm:gap-1 ">
-          <MapPin /> {location}
-        </div>
-        <div>Reported: {reportedDate}</div>
-      </div>
-    </Card>
-  );
-}
+//   const formatDate = (dateString: string) => {
+//     const date = new Date(dateString);
+//     const year = date.getFullYear();
+//     const month = String(date.getMonth() + 1).padStart(2, '0'); // Ensure two digits
+//     const day = String(date.getDate()).padStart(2, '0'); // Ensure two digits
+//     return `${year}-${month}-${day}`;
+//   };
+
+//   const statusColors: {
+//     [key: string]: string;
+//   } = {
+//     inprogress: 'bg-yellow-100 text-yellow-800',
+//     resolved: 'bg-green-100 text-green-800',
+//     // blue: 'bg-blue-100 text-blue-800',
+//     pending: 'bg-red-100 text-red-800',
+//   };
+
+//   return (
+//     <Card className="overflow-hidden py-0">
+//       <div className="flex items-center justify-between px-4 pt-6">
+//         <div className="text-md font-semibold">{title}</div>
+//         <Badge className={`${statusColors[statusColor]}`}>{status}</Badge>
+//       </div>
+
+//       <p className="px-4 text-gray-500">{description}</p>
+
+//       <div className="flex items-center justify-between p-3 sm:p-4 bg-gray-100 text-sm text-gray-600">
+//         <div className="flex-1 flex items-center gap-1 truncate pr-2">
+//           <MapPin size={16} />
+//           <span className="truncate">{issue.location}</span>
+//         </div>
+//         <div>Reported: {reportedDate}</div>
+//       </div>
+//     </Card>
+//   );
+// }
