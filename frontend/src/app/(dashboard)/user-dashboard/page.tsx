@@ -1,7 +1,6 @@
 'use client';
 
 import {
-  Calendar,
   Check,
   Clock,
   FileText,
@@ -13,7 +12,6 @@ import {
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Select } from '@/components/ui/select';
 import IssueReportForm from '@/components/IssueReportForm';
 import DashboardNav from '@/components/DashboardNav';
 import { backendApi } from '@/lib/constant';
@@ -33,7 +31,10 @@ interface ReportedIssue {
 export default function UserDashboard() {
   const [open, setOpen] = useState(false);
   const [reportedIssues, setReportedIssues] = useState<ReportedIssue[]>([]);
-
+  const [selectedStatus, setSelectedStatus] = useState('all');
+  const [visibleCount, setVisibleCount] = useState(6);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedDate, setSelectedDate] = useState('');
   useEffect(() => {
     const fetchReportedIssues = async () => {
       const res = await fetch(`${backendApi}/report/get-reports`);
@@ -47,6 +48,43 @@ export default function UserDashboard() {
     };
     fetchReportedIssues();
   }, []);
+  const totalReports = reportedIssues.length;
+  const inProgressCount = reportedIssues.filter(
+    r => r.status === 'inProgress'
+  ).length;
+  const resolvedCount = reportedIssues.filter(
+    r => r.status === 'resolved'
+  ).length;
+  const pendingCount = reportedIssues.filter(
+    r => r.status === 'pending'
+  ).length;
+  const filteredIssues =
+    selectedStatus === 'all'
+      ? reportedIssues
+      : reportedIssues.filter(issue => issue.status === selectedStatus);
+
+  const searchedIssues = filteredIssues
+    .filter(
+      issue =>
+        issue.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        issue.description.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .filter(issue => {
+      if (!selectedDate) return true;
+
+      const issueDate = new Date(issue.updatedAt);
+      const selected = new Date(selectedDate);
+
+      return (
+        issueDate.getFullYear() === selected.getFullYear() &&
+        issueDate.getMonth() === selected.getMonth() &&
+        issueDate.getDate() === selected.getDate()
+      );
+    });
+
+  const handleShowMore = () => {
+    setVisibleCount(prevCount => prevCount + 9);
+  };
 
   return (
     <>
@@ -72,16 +110,18 @@ export default function UserDashboard() {
 
           <Card className="mt-6 p-4 bg-white">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div>
+              <div className="">
                 <label className="block text-sm font-medium mb-2">Status</label>
-                <Select defaultValue="all">
-                  <select className="w-full border rounded-md p-2 bg-white">
-                    <option value="all">All Issues</option>
-                    <option value="pending">Pending</option>
-                    <option value="in-progress">In Progress</option>
-                    <option value="resolved">Resolved</option>
-                  </select>
-                </Select>
+                <select
+                  className="w-full border rounded-md p-2  bg-white"
+                  value={selectedStatus}
+                  onChange={e => setSelectedStatus(e.target.value)}
+                >
+                  <option value="all">All Issues</option>
+                  <option value="pending">Pending</option>
+                  <option value="inProgress">In Progress</option>
+                  <option value="resolved">Resolved</option>
+                </select>
               </div>
 
               <div>
@@ -90,11 +130,11 @@ export default function UserDashboard() {
                 </label>
                 <div className="relative">
                   <input
-                    type="text"
-                    placeholder="mm/dd/yyyy"
+                    type="date"
                     className="w-full border rounded-md p-2 pr-10"
+                    value={selectedDate}
+                    onChange={e => setSelectedDate(e.target.value)}
                   />
-                  <Calendar className="absolute right-3 top-2.5 h-5 w-5 text-gray-400" />
                 </div>
               </div>
 
@@ -108,6 +148,8 @@ export default function UserDashboard() {
                     type="text"
                     placeholder="Search by title or description"
                     className="w-full py-2 pl-10 pr-4 border border-gray-300 rounded-md"
+                    value={searchQuery}
+                    onChange={e => setSearchQuery(e.target.value)}
                   />
                 </div>
               </div>
@@ -122,7 +164,7 @@ export default function UserDashboard() {
                 </div>
               }
               title="Total Reports"
-              count={12}
+              count={totalReports}
             />
 
             <StatCard
@@ -132,7 +174,7 @@ export default function UserDashboard() {
                 </div>
               }
               title="In Progress"
-              count={5}
+              count={inProgressCount}
             />
 
             <StatCard
@@ -142,7 +184,7 @@ export default function UserDashboard() {
                 </div>
               }
               title="Resolved"
-              count={4}
+              count={resolvedCount}
             />
 
             <StatCard
@@ -152,26 +194,47 @@ export default function UserDashboard() {
                 </div>
               }
               title="Pending"
-              count={3}
+              count={pendingCount}
             />
           </div>
           <div className="mt-7">
             <h1>Recent Reported Issues:</h1>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {reportedIssues.length > 0 ? (
-                reportedIssues.map(issuedReports => (
-                  <IssuedCard
-                    key={issuedReports._id}
-                    issuedReports={issuedReports}
-                  />
-                ))
+              {searchedIssues.length > 0 ? (
+                <>
+                  {[...searchedIssues]
+                    .sort(
+                      (a, b) =>
+                        new Date(b.updatedAt).getTime() -
+                        new Date(a.updatedAt).getTime()
+                    )
+                    .slice(0, visibleCount) // 👈 only show up to `visibleCount`
+                    .map(issuedReports => (
+                      <IssuedCard
+                        key={issuedReports._id}
+                        issuedReports={issuedReports}
+                      />
+                    ))}
+
+                  {/* Show More Button */}
+                  {visibleCount < searchedIssues.length && (
+                    <div className="col-span-full flex justify-center mt-4">
+                      <Button
+                        onClick={handleShowMore}
+                        className="bg-blue-200 text-blue-900 hover:bg-blue-300"
+                      >
+                        Show More
+                      </Button>
+                    </div>
+                  )}
+                </>
               ) : (
-                <div className="px-4 py-2 text-gray-500">No reports found.</div>
+                <div className="px-4 py-2 text-gray-500">
+                  No reports found for selected status!
+                </div>
               )}
             </div>
           </div>
-
-       
 
           <IssueReportForm open={open} setOpen={setOpen} />
         </div>
