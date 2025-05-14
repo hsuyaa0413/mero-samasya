@@ -5,7 +5,6 @@ import {
   Check,
   Clock,
   FileText,
-  MapPin,
   Plus,
   Search,
   TriangleAlert,
@@ -15,7 +14,6 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Select } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
 import IssueReportForm from '@/components/IssueReportForm';
 import DashboardNav from '@/components/DashboardNav';
 import IssuedCard from '@/components/IssuedCard';
@@ -140,7 +138,7 @@ export default function UserDashboard() {
               status="Pending"
               statusColor="red"
               title="Pothole on Main Street"
-              location="123 Main St, Downtown"
+              location="123 Main St, Downtown kajhdfkasjdf aksjdhfkasjdhfkasjhfaskdjfh "
               reportedDate="Jun 15, 2023"
               description="A large pothole has formed on Main Street, causing damage to vehicles and posing a safety hazard."
             />
