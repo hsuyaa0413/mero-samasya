@@ -467,7 +467,11 @@ function IssueCard({
       <div className="flex items-center justify-between p-10 sm:p-4 text-sm text-gray-600">
         <div className="flex items-center gap-2">
           <Avatar className="cursor-pointer">
-            <AvatarImage src="https://avatar.iran.liara.run/public/boy" />
+            <AvatarImage
+              src={`https://avatar.iran.liara.run/public/${
+                Math.floor(Math.random() * 100) + 1
+              }`}
+            />
             <AvatarFallback className="bg-greyBlue text-darkBlue">
               {/* {user?.fullName
                 .split(' ')
