@@ -30,7 +30,7 @@ export default function IssuedCard({ issuedReports }: IssuedCardProps) {
 
   return (
     <div className="overflow-hidden  rounded-xl border py-0 shadow-sm h-60 bg-white">
-      <div className="flex items-center justify-between mb-2 px-4 pt-6 h-12 border-b-1 border-gray-300 bg-gray-200 pb-5">
+      <div className="flex items-center justify-between  px-4 pt-6 h-12 border-b-1 border-gray-300 bg-gray-200 pb-5">
         <div className="text-md font-semibold  ">{issuedReports.title}</div>
         <Badge
           className={
@@ -40,17 +40,17 @@ export default function IssuedCard({ issuedReports }: IssuedCardProps) {
           {issuedReports.status}
         </Badge>
       </div>
-
-      <p className="text-darkBlue px-4 h-30 line-clamp-5 ">
+<div className="px-5 pt-6 h-32">
+      <p className="text-darkBlue  line-clamp-3 ">
         {issuedReports.description}
-      </p>
+      </p></div>
 
       <div className="flex items-center justify-between p-3 sm:p-4 bg-gray-100 text-sm text-gray-600 mb-0 h-16">
-        <div className="flex-1 flex items-start  line-clamp-2 text-green-800">
+        <div className="flex-1 flex items-start gap-1 line-clamp-2 text-green-800">
           <MapPin size={16} className=" w-7" />
           <span className="text-xs line-clamp-2">{issuedReports.location}</span>
         </div>
-        <div className="whitespace-nowrap text-right text-xs flex-1 flex flex-col text-darkBlue ">
+        <div className="whitespace-nowrap text-right text-xs flex-1 flex flex-col text-darkBlue gap-1">
           Reported At: {formatDate(issuedReports.updatedAt)}
           <p className=" text-blue-700">View Details</p>
         </div>
