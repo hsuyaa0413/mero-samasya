@@ -2,8 +2,16 @@ import axios from 'axios';
 import Report from '../models/report.model.js';
 
 export const submitReport = async (req, res, next) => {
-  const { title, description, mediaUrls, location, lat, lng, category } =
-    req.body;
+  const {
+    title,
+    description,
+    mediaUrls,
+    location,
+    lat,
+    lng,
+    category,
+    status,
+  } = req.body;
 
   const newReport = new Report({
     title,
@@ -13,6 +21,7 @@ export const submitReport = async (req, res, next) => {
     lat,
     lng,
     category,
+    status,
   });
   try {
     await newReport.save();

@@ -5,23 +5,48 @@ import {
   Check,
   Clock,
   FileText,
-  MapPin,
   Plus,
   Search,
   TriangleAlert,
 } from 'lucide-react';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Select } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
 import IssueReportForm from '@/components/IssueReportForm';
 import DashboardNav from '@/components/DashboardNav';
+import { backendApi } from '@/lib/constant';
 import IssuedCard from '@/components/IssuedCard';
+
+interface ReportedIssue {
+  _id: string;
+  title: string;
+  status: 'pending' | 'resolved' | 'inProgress';
+  statusColor: string;
+  description: string;
+  location: string;
+  updatedAt: string;
+  mediaUrls: string[];
+}
 
 export default function UserDashboard() {
   const [open, setOpen] = useState(false);
+  const [reportedIssues, setReportedIssues] = useState<ReportedIssue[]>([]);
+
+  useEffect(() => {
+    const fetchReportedIssues = async () => {
+      const res = await fetch(`${backendApi}/report/get-reports`);
+      const data = await res.json();
+
+      if (data && Array.isArray(data.data)) {
+        setReportedIssues(data.data);
+      } else {
+        console.error('Expected an array in data, but received:', data);
+      }
+    };
+    fetchReportedIssues();
+  }, []);
 
   return (
     <>
@@ -132,35 +157,19 @@ export default function UserDashboard() {
           </div>
           <div className="mt-7">
             <h1>Recent Reported Issues:</h1>
-            <IssuedCard></IssuedCard>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {reportedIssues.length > 0 ? (
+                reportedIssues.map(issuedReports => (
+                  <IssuedCard
+                    key={issuedReports._id}
+                    issuedReports={issuedReports}
+                  />
+                ))
+              ) : (
+                <div className="px-4 py-2 text-gray-500">No reports found.</div>
+              )}
+            </div>
           </div>
-
-          {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-            <IssueCard
-              status="Pending"
-              statusColor="red"
-              title="Pothole on Main Street"
-              location="123 Main St, Downtown"
-              reportedDate="Jun 15, 2023"
-              description="A large pothole has formed on Main Street, causing damage to vehicles and posing a safety hazard."
-            />
-            <IssueCard
-              status="In Progress"
-              statusColor="yellow"
-              title="Pothole on Main Street"
-              location="123 Main St, Downtown"
-              reportedDate="Jun 15, 2023"
-              description="A large pothole has formed on Main Street, causing damage to vehicles and posing a safety hazard."
-            />
-            <IssueCard
-              status="Resolved"
-              statusColor="green"
-              title="Pothole on Main Street"
-              location="123 Main St, Downtown"
-              reportedDate="Jun 15, 2023"
-              description="A large pothole has formed on Main Street, causing damage to vehicles and posing a safety hazard."
-            />
-          </div> */}
 
           <IssueReportForm open={open} setOpen={setOpen} />
         </div>
@@ -190,49 +199,3 @@ function StatCard({
     </Card>
   );
 }
-
-// function IssueCard({
-//   status,
-//   statusColor,
-//   title,
-//   location,
-//   reportedDate,
-//   description,
-// }: {
-//   status: string;
-//   statusColor: 'yellow' | 'green' | 'blue' | 'red';
-//   title: string;
-//   location: string;
-//   reportedDate: string;
-//   description: string;
-// }) {
-//   const statusColors: {
-//     yellow: string;
-//     green: string;
-//     blue: string;
-//     red: string;
-//   } = {
-//     yellow: 'bg-yellow-100 text-yellow-800',
-//     green: 'bg-green-100 text-green-800',
-//     blue: 'bg-blue-100 text-blue-800',
-//     red: 'bg-red-100 text-red-800',
-//   };
-
-//   return (
-//     <Card className="overflow-hidden py-0">
-//       <div className="flex items-center justify-between px-4 pt-6">
-//         <div className="text-md font-semibold">{title}</div>
-//         <Badge className={`${statusColors[statusColor]}`}>{status}</Badge>
-//       </div>
-
-//       <p className="px-4 text-gray-500">{description}</p>
-
-//       <div className="flex items-center justify-between p-3 sm:p-4 bg-gray-100 text-sm text-gray-600">
-//         <div className="flex items-center gap-0.5 sm:gap-1 ">
-//           <MapPin /> {location}
-//         </div>
-//         <div>Reported: {reportedDate}</div>
-//       </div>
-//     </Card>
-//   );
-// }
