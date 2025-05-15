@@ -46,6 +46,19 @@ export const getReports = async (req, res, next) => {
   }
 };
 
+export const getReportById = async (req, res, next) => {
+  const id = req.params.id;
+
+  const issue = await Report.findById(id);
+  if (!issue) return next(errorHandler(404, 'Issue not found!'));
+
+  return res.status(200).json({
+    status: 'success',
+    message: 'Issue report found successfully!',
+    issue,
+  });
+};
+
 const NOMINATIM_BASE_URL = 'https://nominatim.openstreetmap.org';
 const CUSTOM_USER_AGENT = 'MeroSamasya/1.0 (merosamasya@gmail.com)';
 

@@ -98,8 +98,8 @@ export const NavBody = ({ children, className, visible }: NavBodyProps) => {
       }}
       transition={{
         type: 'spring',
-        stiffness: 200,
-        damping: 50,
+        stiffness: 500,
+        damping: 100,
       }}
       style={{
         minWidth: '800px',
@@ -171,8 +171,9 @@ export const MobileNav = ({ children, className, visible }: MobileNavProps) => {
       }}
       transition={{
         type: 'spring',
-        stiffness: 200,
-        damping: 50,
+        stiffness: 1000, // Very high stiffness
+        damping: 200,
+        mass: 0.1,
       }}
       className={cn(
         'relative z-50 mx-auto flex w-full max-w-[calc(100dvw-2rem)] flex-col items-center justify-between bg-transparent px-0 py-2 lg:hidden',
