@@ -198,7 +198,9 @@ export default function UserDashboard() {
             />
           </div>
           <div className="mt-7">
-            <h1>Recent Reported Issues:</h1>
+            <h1 className="text-darkBlue font-bold text-xl mb-3 pl-2">
+              Recent Reported Issues:
+            </h1>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {searchedIssues.length > 0 ? (
                 <>
@@ -221,7 +223,7 @@ export default function UserDashboard() {
                     <div className="col-span-full flex justify-center mt-4">
                       <Button
                         onClick={handleShowMore}
-                        className="bg-blue-200 text-blue-900 hover:bg-blue-300"
+                        className="bg-blue-200 text-blue-900 hover:bg-blue-300 cursor-pointer"
                       >
                         Show More
                       </Button>
