@@ -22,10 +22,6 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.listen(8000, () => {
-  console.log('Server is running in port 8000');
-});
-
 const corsOptions = {
   origin: process.env.NEXT_FRONTEND_URL,
   credentials: true,
@@ -42,4 +38,8 @@ app.use((err, req, res, next) => {
     statusCode,
     message,
   });
+});
+
+app.listen(8000, () => {
+  console.log('Server is running in port 8000');
 });

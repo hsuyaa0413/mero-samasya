@@ -16,6 +16,7 @@ import IssueReportForm from '@/components/IssueReportForm';
 import DashboardNav from '@/components/DashboardNav';
 import { backendApi } from '@/lib/constant';
 import IssuedCard from '@/components/IssuedCard';
+import axios from 'axios';
 
 interface ReportedIssue {
   _id: string;
@@ -35,19 +36,27 @@ export default function UserDashboard() {
   const [visibleCount, setVisibleCount] = useState(6);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
+
   useEffect(() => {
     const fetchReportedIssues = async () => {
-      const res = await fetch(`${backendApi}/report/get-reports`);
-      const data = await res.json();
+      try {
+        const res = await axios.get(`${backendApi}/report/get-reports`, {
+          withCredentials: true,
+        });
 
-      if (data && Array.isArray(data.data)) {
-        setReportedIssues(data.data);
-      } else {
-        console.error('Expected an array in data, but received:', data);
+        if (res.data && Array.isArray(res.data.data)) {
+          setReportedIssues(res.data.data);
+        } else {
+          console.error('Expected an array in data, but received:', res.data);
+        }
+      } catch (error) {
+        console.error('Error fetching reported issues:', error);
       }
     };
+
     fetchReportedIssues();
   }, []);
+
   const totalReports = reportedIssues.length;
   const inProgressCount = reportedIssues.filter(
     r => r.status === 'inProgress'
@@ -232,7 +241,7 @@ export default function UserDashboard() {
                 </>
               ) : (
                 <div className="px-4 py-2 text-gray-500">
-                  No reports found for selected status!
+                  No reports found !
                 </div>
               )}
             </div>
