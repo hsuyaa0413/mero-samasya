@@ -7,7 +7,7 @@ import {
   MapPin,
   TriangleAlert,
 } from 'lucide-react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { backendApi } from '@/lib/constant';
@@ -16,11 +16,10 @@ import DashboardNav from '@/components/DashboardNav';
 import ImageGallery from '@/components/image-gallery';
 import { Badge } from '@/components/ui/badge';
 import dynamic from 'next/dynamic';
-import Link from 'next/link';
 
 const Map = dynamic(() => import('@/components/map'), { ssr: false });
 
-interface issue {
+interface Issue {
   id: string;
   title: string;
   description: string;
@@ -36,8 +35,13 @@ export default function IssuePage() {
   const params = useParams();
   const id = params.id as string;
 
-  const [issue, setIssue] = useState<issue | null>(null);
+  const [issue, setIssue] = useState<Issue | null>(null);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+
+  const router = useRouter();
+  const handleGoBack = () => {
+    router.back();
+  };
 
   useEffect(() => {
     const fetchissue = async () => {
@@ -48,7 +52,6 @@ export default function IssuePage() {
 
         if (response.status === 200) {
           const { issue } = response.data;
-          console.log(response);
           setIssue(issue);
         }
       } catch (e) {
@@ -91,14 +94,14 @@ export default function IssuePage() {
     <>
       <DashboardNav />
       <div className="container max-w-7xl mx-auto px-4 py-8 min-h-screen">
-        <div className="flex justify-start max-w-5xl pl-28 mb-4">
-          <Link
-            href="/user-dashboard"
-            className="flex items-center hover:underline"
+        <div className="hidden sm:flex justify-start max-w-5xl pl-28 mb-4 ">
+          <button
+            onClick={handleGoBack}
+            className="flex items-center hover:underline cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Dashboard
-          </Link>
+          </button>
         </div>
 
         <div className="flex justify-center">

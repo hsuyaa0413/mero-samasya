@@ -41,6 +41,7 @@ interface FormDataState {
   location: string; // Text address
   lat: number;
   lng: number;
+  urgency: string;
   category: string;
   mediaUrls: string[];
 }
@@ -51,6 +52,7 @@ interface FormErrorsState {
   description?: string;
   location?: string;
   general?: string; // For general submission errors
+  urgency?: string;
   category?: string;
   mediaUrls?: string;
 }
@@ -70,6 +72,7 @@ export default function IssueReportForm({
     location: '',
     lat: 0,
     lng: 0,
+    urgency: '',
     category: '',
     mediaUrls: [] as string[],
   });
@@ -79,6 +82,7 @@ export default function IssueReportForm({
     description: '',
     location: '',
     category: '',
+    urgency: '',
     mediaUrls: '',
   });
 
@@ -243,6 +247,10 @@ export default function IssueReportForm({
     }));
   };
 
+  const handleUrgencyChange = (value: string) => {
+    setFormData({ ...formData, urgency: value });
+  };
+
   const handleSelectChange = (value: string) => {
     setFormData({ ...formData, category: value });
   };
@@ -262,6 +270,7 @@ export default function IssueReportForm({
         ? 'Description must be at least 10 characters long.'
         : '',
       location: !formData.location ? 'Location is required.' : '',
+      urgency: !formData.urgency ? 'Issue Urgency is required.' : '',
       category: !formData.category ? 'Category is required.' : '',
       mediaUrls:
         formData.mediaUrls.length === 0
@@ -298,7 +307,7 @@ export default function IssueReportForm({
           type: 'success',
           text: 'Issue report submitted successfully!',
         });
-        router.push('/');
+        router.push('/user-dashboard');
         setOpen(false);
         setFormData({
           title: '',
@@ -306,6 +315,7 @@ export default function IssueReportForm({
           location: '',
           lat: 0,
           lng: 0,
+          urgency: '',
           category: '',
           mediaUrls: [],
         });
@@ -516,6 +526,31 @@ export default function IssueReportForm({
             )}
           </div>
 
+          {/* Urgency */}
+          <div className="space-y-1">
+            <Label htmlFor="category">
+              Urgency<span className="text-red-500">*</span>
+            </Label>
+            <Select
+              onValueChange={handleUrgencyChange}
+              value={formData.urgency}
+              required
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select a urgency" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="low">Low</SelectItem>
+                <SelectItem value="medium">Medium</SelectItem>
+                <SelectItem value="high">High</SelectItem>
+                <SelectItem value="critical">Critical</SelectItem>
+              </SelectContent>
+            </Select>
+            {formErrors.urgency && (
+              <p className="text-red-500 text-sm">{formErrors.urgency}</p>
+            )}
+          </div>
+
           {/* Category */}
           <div className="space-y-1">
             <Label htmlFor="category">
@@ -549,7 +584,7 @@ export default function IssueReportForm({
               className="w-full bg-red-500 text-white hover:bg-red-600 py-6"
               disabled={isSubmitDisabled}
             >
-              {loading ? 'Submitting...' : 'SUBMIT REPORT'}
+              {loading ? 'SUBMITTING...' : 'SUBMIT REPORT'}
             </Button>
           </DialogFooter>
         </form>

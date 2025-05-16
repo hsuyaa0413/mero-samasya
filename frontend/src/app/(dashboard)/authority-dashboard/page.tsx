@@ -10,9 +10,13 @@ import {
   Clock,
   TriangleAlert,
   LogOut,
+  CheckCircle,
+  AlertCircle,
+  Flame,
+  CircleAlert,
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useUserStore } from '@/store/userStore';
+import { User, useUserStore } from '@/store/userStore';
 import {
   Select,
   SelectContent,
@@ -25,10 +29,47 @@ import Link from 'next/link';
 import axios from 'axios';
 import { backendApi } from '@/lib/constant';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+
+interface ReportedIssue {
+  _id: string;
+  title: string;
+  status: 'pending' | 'resolved' | 'inProgress';
+  statusColor: string;
+  description: string;
+  location: string;
+  createdAt: string;
+  urgency: 'low' | 'medium' | 'high' | 'critical';
+  reportedBy: User;
+  mediaUrls: string[];
+}
 
 export default function AuthorityDashboard() {
   const { user, logout } = useUserStore();
   const router = useRouter();
+
+  const [reportedIssues, setReportedIssues] = useState<ReportedIssue[]>([]);
+
+  useEffect(() => {
+    const fetchReportedIssues = async () => {
+      try {
+        const res = await axios.get(`${backendApi}/report/get-reports`, {
+          withCredentials: true,
+        });
+
+        if (res.data && Array.isArray(res.data.data)) {
+          console.log(res.data);
+          setReportedIssues(res.data.data);
+        } else {
+          console.error('Expected an array in data, but received:', res.data);
+        }
+      } catch (error) {
+        console.error('Error fetching reported issues:', error);
+      }
+    };
+
+    fetchReportedIssues();
+  }, []);
 
   async function handleLogOut() {
     try {
@@ -130,20 +171,20 @@ export default function AuthorityDashboard() {
               <div>
                 <p className="text-xs sm:text-sm text-gray-500">Total Issues</p>
                 <p className="text-2xl font-bold">142</p>
-                <div className="flex items-center text-xs gap-1 text-green-500">
+                <div className="flex items-center text-xs gap-1 text-emerald-500">
                   <ChevronUp size={12} /> 12% from last week
                 </div>
               </div>
             </div>
 
             <div className="flex items-center gap-4 border-1 rounded-lg shadow-sm px-4 min-h-32 bg-white">
-              <div className="bg-green-100 p-2 rounded-full flex items-center justify-center">
-                <Check className="text-green-500 size-10" />
+              <div className="bg-emerald-100 p-2 rounded-full flex items-center justify-center">
+                <Check className="text-emerald-500 size-10" />
               </div>
               <div>
                 <p className="text-xs sm:text-sm text-gray-500">Resolved</p>
                 <p className="text-2xl font-bold">89</p>
-                <div className="flex items-center text-xs gap-1 text-green-500">
+                <div className="flex items-center text-xs gap-1 text-emerald-500">
                   <ChevronUp size={12} /> 8% from last week
                 </div>
               </div>
@@ -232,114 +273,24 @@ export default function AuthorityDashboard() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6" id="#issues">
             {/* Recent Issues */}
             <div className="lg:col-span-2">
-              <div className="bg-white rounded-lg shadow-sm min-h-10/12 overflow-y-scroll">
+              <div className="bg-white rounded-lg shadow-sm max-h-87 overflow-y-scroll">
                 <div className="p-4 border-1 bg-gray-50">
                   <h2 className="text-lg font-medium ">Recent Issues</h2>
                 </div>
 
                 <div className="divide-y">
-                  {/* Issue 1 */}
-                  <IssueCard
-                    title="Road Damage"
-                    description="Large pothole causing traffic disruptions and vehicle damage"
-                    reported="5 hours ago"
-                    reporter="Ramesh Nepali"
-                    status="Pending"
-                    id="4324234234234"
-                  />
-
-                  <IssueCard
-                    title="Street Light Outage"
-                    description="Multiple street lights not working on Oak Avenue"
-                    reported="12 hours ago"
-                    reporter="Michael Brown"
-                    status="Resolved"
-                    id="567575565"
-                  />
-
-                  {/* Issue 3 */}
-                  {/* <div className="p-4">
-                    <div className="flex justify-between mb-2">
-                      <div className="flex gap-2">
-                        <span className="px-2 py-0.5 text-xs bg-green-100 text-green-800 rounded">
-                          Resolved
-                        </span>
-                      </div>
-                      <span className="text-xs text-gray-500">#ISSUE-243</span>
-                    </div>
-                    <h3 className="font-medium mb-1">
-                      Garbage Collection Missed
-                    </h3>
-                    <p className="text-sm text-gray-600 mb-3">
-                      Residential area garbage not collected on schedule
-                    </p>
-                    <div className="flex justify-between items-center">
-                      <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-full bg-gray-300 overflow-hidden">
-                          <Image
-                            src="/placeholder.svg?height=24&width=24"
-                            alt="Emily Wilson"
-                            width={24}
-                            height={24}
-                            className="object-cover"
-                          />
-                        </div>
-                        <span className="text-sm">Emily Wilson</span>
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <span className="text-xs text-gray-500">
-                          Reported: 3 days ago
-                        </span>
-                        <a
-                          href="#"
-                          className="text-sm text-blue-600 hover:underline"
-                        >
-                          View Details
-                        </a>
-                      </div>
-                    </div>
-                  </div> */}
-
-                  {/* Issue 4 */}
-                  {/* <div className="p-4">
-                    <div className="flex justify-between mb-2">
-                      <div className="flex gap-2">
-                        <span className="px-2 py-0.5 text-xs bg-purple-100 text-purple-800 rounded">
-                          Assigned
-                        </span>
-                      </div>
-                      <span className="text-xs text-gray-500">#ISSUE-242</span>
-                    </div>
-                    <h3 className="font-medium mb-1">Park Maintenance</h3>
-                    <p className="text-sm text-gray-600 mb-3">
-                      Playground equipment needs repair in Central Park
-                    </p>
-                    <div className="flex justify-between items-center">
-                      <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-full bg-gray-300 overflow-hidden">
-                          <Image
-                            src="/placeholder.svg?height=24&width=24"
-                            alt="David Miller"
-                            width={24}
-                            height={24}
-                            className="object-cover"
-                          />
-                        </div>
-                        <span className="text-sm">David Miller</span>
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <span className="text-xs text-gray-500">
-                          Reported: 4 days ago
-                        </span>
-                        <a
-                          href="#"
-                          className="text-sm text-blue-600 hover:underline"
-                        >
-                          View Details
-                        </a>
-                      </div>
-                    </div>
-                  </div> */}
+                  {reportedIssues.map(issue => (
+                    <IssueCard
+                      key={issue?._id}
+                      title={issue?.title}
+                      description={issue?.description}
+                      reported={issue?.createdAt.split('T')[0]}
+                      reportedBy={issue?.reportedBy?.fullName}
+                      status={issue?.status}
+                      urgency={issue?.urgency}
+                      id={issue?._id}
+                    />
+                  ))}
                 </div>
               </div>
             </div>
@@ -429,35 +380,77 @@ function ResolutionTimeChart() {
 function IssueCard({
   status,
   title,
-  reporter,
+  reportedBy,
   reported,
   description,
   id,
+  urgency,
 }: {
-  status: string;
+  status: 'pending' | 'resolved' | 'inProgress';
   title: string;
-  reporter: string;
+  reportedBy: string;
   reported: string;
   description: string;
   id: string;
+  urgency: 'low' | 'medium' | 'high' | 'critical';
 }) {
+  const getUrgencyColor = (urgency: string | undefined) => {
+    switch (urgency) {
+      case 'low':
+        return 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200';
+      case 'medium':
+        return 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200';
+      case 'high':
+        return 'bg-orange-100 text-orange-800 hover:bg-orange-200';
+      case 'critical':
+        return 'bg-red-100 text-red-800 hover:bg-red-200';
+      default:
+        return 'bg-gray-100 text-gray-800 hover:bg-gray-200';
+    }
+  };
+
+  const getUrgencyIcon = (urgency: string | undefined) => {
+    switch (urgency) {
+      case 'low':
+        return <CheckCircle className="h-4 w-4 mr-1 text-emerald-800" />;
+      case 'medium':
+        return <AlertCircle className="h-4 w-4 mr-1 text-yellow-800" />;
+      case 'high':
+        return <Flame className="h-4 w-4 mr-1 text-orange-800" />;
+      case 'critical':
+        return <CircleAlert className="h-4 w-4 mr-1 text-red-800" />;
+      default:
+        return null;
+    }
+  };
+
+  const getStatusColor = (status: string | undefined) => {
+    switch (status) {
+      case 'pending':
+        return 'bg-red-100 text-red-800 hover:bg-red-200';
+      case 'inProgress':
+        return 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200';
+      case 'resolved':
+        return 'bg-green-100 text-green-800 hover:bg-green-200';
+      default:
+        return 'bg-gray-100 text-gray-800 hover:bg-gray-200';
+    }
+  };
+
   return (
     <div className="overflow-hidden py-0 space-y-1">
       <div className="flex items-center justify-between px-4 pt-4">
         <div className="text-md font-semibold">{title}</div>
 
         <div className="flex items-center gap-1">
-          <Badge className="bg-red-100 text-red-800">Urgent</Badge>
-          <Badge
-            className={
-              status === 'Pending'
-                ? 'bg-yellow-100 text-yellow-800'
-                : status === 'In Progress'
-                ? 'bg-blue-100 text-blue-800'
-                : 'bg-green-100 text-green-800'
-            }
-          >
-            {status}
+          <Badge className={`${getUrgencyColor(urgency)} capitalize`}>
+            {getUrgencyIcon(urgency)}
+            {urgency}
+          </Badge>
+          <Badge className={getStatusColor(status)}>
+            <span className="capitalize">
+              {status === 'inProgress' ? 'In Progress' : status}
+            </span>
           </Badge>
         </div>
       </div>
@@ -473,14 +466,15 @@ function IssueCard({
               }`}
             />
             <AvatarFallback className="bg-greyBlue text-darkBlue">
-              {/* {user?.fullName
+              {reportedBy
                 .split(' ')
                 .map(n => n[0])
-                .join('')} */}{' '}
-              RN
+                .join('')}
             </AvatarFallback>
           </Avatar>
-          <div className="flex items-center gap-0.5 sm:gap-1 ">{reporter}</div>
+          <div className="flex items-center gap-0.5 sm:gap-1 ">
+            {reportedBy}
+          </div>
         </div>
         <div className="flex items-center justify-between gap-3">
           <div className="text-xs text-gray-500">Reported: {reported}</div>
