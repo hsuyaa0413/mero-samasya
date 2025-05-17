@@ -5,6 +5,7 @@ import {
   CheckCircle,
   Clock,
   MapPin,
+  SquarePen,
   TriangleAlert,
 } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
@@ -12,12 +13,17 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { backendApi } from '@/lib/constant';
 import DashboardNav from '@/components/DashboardNav';
-// import Map from '@/components/map';
 import ImageGallery from '@/components/image-gallery';
 import { Badge } from '@/components/ui/badge';
 import dynamic from 'next/dynamic';
+import { Button } from '@/components/ui/button';
+import { useUserStore } from '@/store/userStore';
+import { Skeleton } from '@/components/ui/skeleton';
 
-const Map = dynamic(() => import('@/components/map'), { ssr: false });
+const Map = dynamic(() => import('@/components/map'), {
+  ssr: false,
+  loading: () => <Skeleton className="h-[400px] w-full rounded-md" />,
+});
 
 interface Issue {
   id: string;
@@ -37,6 +43,9 @@ export default function IssuePage() {
 
   const [issue, setIssue] = useState<Issue | null>(null);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const { user } = useUserStore();
 
   const router = useRouter();
   const handleGoBack = () => {
@@ -45,6 +54,7 @@ export default function IssuePage() {
 
   useEffect(() => {
     const fetchissue = async () => {
+      setIsLoading(true);
       try {
         const response = await axios.get(`${backendApi}/report/${id}`, {
           withCredentials: true,
@@ -56,6 +66,8 @@ export default function IssuePage() {
         }
       } catch (e) {
         console.error(`Error: ${e}`);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -90,6 +102,75 @@ export default function IssuePage() {
     }
   };
 
+  if (isLoading) {
+    return (
+      <>
+        <DashboardNav />
+        <div className="container max-w-7xl mx-auto px-4 py-8 min-h-screen">
+          <div className="hidden sm:flex justify-start max-w-5xl pl-28 mb-4 ">
+            <Button
+              variant="outline"
+              onClick={handleGoBack}
+              className="flex items-center hover:underline cursor-pointer"
+              disabled
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Dashboard
+            </Button>
+          </div>
+
+          <div className="flex justify-center">
+            <Card className="container mb-8 max-w-5xl bg-gray-50">
+              <CardHeader className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                  <Skeleton className="h-8 w-3/4 mb-2" />
+                  <div className="flex items-center mt-2 text-muted-foreground">
+                    <Skeleton className="h-4 w-4" />
+                    <Skeleton className="h-4 w-1/2" />
+                  </div>
+                </div>
+                <div className="flex justify-end gap-5 items-center">
+                  <div className="flex flex-wrap gap-2">
+                    <Skeleton className="h-8 w-20 rounded-md" />
+                    <Skeleton className="h-8 w-24 rounded-md" />
+                  </div>
+                  {user?.role === 'authority' && (
+                    <Skeleton className="h-10 w-32 rounded-md" />
+                  )}
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div>
+                  <Skeleton className="h-6 w-1/4 mb-2" />
+                  <Skeleton className="h-4 w-full mb-1" />
+                  <Skeleton className="h-4 w-full mb-1" />
+                  <Skeleton className="h-4 w-3/4 mb-1" />
+                </div>
+
+                <div>
+                  <Skeleton className="h-6 w-1/4 mb-4" />
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                    <Skeleton className="aspect-square w-full rounded-md" />
+                    <Skeleton className="aspect-square w-full rounded-md" />
+                    <Skeleton className="aspect-square w-full rounded-md" />
+                  </div>
+                </div>
+
+                <div>
+                  <div style={{ display: isImageModalOpen ? 'none' : 'block' }}>
+                    <Skeleton className="h-6 w-1/4 mb-4" />{' '}
+                    <Skeleton className="h-[300px] sm:h-[400px] w-full rounded-md" />{' '}
+                  </div>
+                  <Skeleton className="h-4 w-1/2 mt-2" />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       <DashboardNav />
@@ -105,7 +186,7 @@ export default function IssuePage() {
         </div>
 
         <div className="flex justify-center">
-          <Card className="container mb-8 max-w-5xl">
+          <Card className="container mb-8 max-w-5xl bg-gray-50">
             <CardHeader className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div>
                 <CardTitle className="text-2xl font-bold">
@@ -116,22 +197,32 @@ export default function IssuePage() {
                   <span>{issue?.location}</span>
                 </div>
               </div>
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="outline" className="font-medium">
-                  {issue?.category}
-                </Badge>
-                <Badge
-                  className={`flex items-center ${getStatusColor(
-                    issue?.status
-                  )}`}
-                >
-                  {getStatusIcon(issue?.status)}
-                  <span className="capitalize">
-                    {issue?.status === 'inProgress'
-                      ? 'In Progress'
-                      : issue?.status}
-                  </span>
-                </Badge>
+
+              <div className="flex justify-end gap-5 items-center">
+                <div className="flex flex-wrap gap-2">
+                  <Badge variant="outline" className="font-medium">
+                    {issue?.category}
+                  </Badge>
+                  <Badge
+                    className={`flex items-center ${getStatusColor(
+                      issue?.status
+                    )}`}
+                  >
+                    {getStatusIcon(issue?.status)}
+                    <span className="capitalize">
+                      {issue?.status === 'inProgress'
+                        ? 'In Progress'
+                        : issue?.status}
+                    </span>
+                  </Badge>
+                </div>
+
+                {user?.role === 'authority' && (
+                  <Button className="flex gap-2 cursor-pointer bg-blue-700 text-lightBlue hover:bg-blue-800">
+                    <SquarePen />
+                    Update Issue
+                  </Button>
+                )}
               </div>
             </CardHeader>
             <CardContent className="space-y-6">
