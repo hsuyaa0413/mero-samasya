@@ -25,6 +25,7 @@ import Link from 'next/link';
 import axios from 'axios';
 import { backendApi } from '@/lib/constant';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 export default function AuthorityDashboard() {
   const { user, logout } = useUserStore();
@@ -258,7 +259,7 @@ export default function AuthorityDashboard() {
                   />
 
                   {/* Issue 3 */}
-                  {/* <div className="p-4">
+                  <div className="p-4">
                     <div className="flex justify-between mb-2">
                       <div className="flex gap-2">
                         <span className="px-2 py-0.5 text-xs bg-green-100 text-green-800 rounded">
@@ -298,7 +299,7 @@ export default function AuthorityDashboard() {
                         </a>
                       </div>
                     </div>
-                  </div> */}
+                  </div>
 
                   {/* Issue 4 */}
                   {/* <div className="p-4">
