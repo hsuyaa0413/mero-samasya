@@ -29,6 +29,11 @@ const reportSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    urgency: {
+      type: String,
+      enum: ['low', 'medium', 'high', 'critical'],
+      required: true,
+    },
     category: {
       type: String,
       required: true,
@@ -45,7 +50,12 @@ const reportSchema = new mongoose.Schema(
     status: {
       type: String,
       default: 'pending',
-      enum: ['pending', 'in-progress', 'resolved'],
+      enum: ['pending', 'inProgress', 'resolved'],
+    },
+    reportedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: [true, 'There must be a reporter of the issue'],
     },
   },
   { timestamps: true }

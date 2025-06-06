@@ -13,7 +13,9 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
 
 export function Testimonials() {
-  const plugin = React.useRef(Autoplay({ delay: 4000 }));
+  const plugin = React.useRef(
+    Autoplay({ delay: 3500, stopOnInteraction: false })
+  );
 
   const testimonials = [
     {

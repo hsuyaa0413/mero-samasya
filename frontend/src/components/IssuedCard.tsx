@@ -1,5 +1,6 @@
 import { MapPin } from 'lucide-react';
 import { Badge } from './ui/badge';
+import Link from 'next/link';
 
 export interface ReportedIssue {
   _id: string;
@@ -37,22 +38,31 @@ export default function IssuedCard({ issuedReports }: IssuedCardProps) {
             statusColors[issuedReports.status] || 'bg-gray-100 text-gray-800'
           }
         >
-          {issuedReports.status}
+          <span className="capitalize">
+            {issuedReports?.status === 'inProgress'
+              ? 'In Progress'
+              : issuedReports?.status}
+          </span>
         </Badge>
       </div>
-<div className="px-5 pt-6 h-32">
-      <p className="text-darkBlue  line-clamp-3 ">
-        {issuedReports.description}
-      </p></div>
+      <div className="px-5 pt-6 h-32">
+        <p className="text-darkBlue  line-clamp-3 ">
+          {issuedReports.description}
+        </p>
+      </div>
 
       <div className="flex items-center justify-between p-3 sm:p-4 bg-gray-100 text-sm text-gray-600 mb-0 h-16">
-        <div className="flex-1 flex items-start gap-1 line-clamp-2 text-green-800">
+        <div className="flex-1 flex items-start gap-1 line-clamp-2 text-darkBlue">
           <MapPin size={16} className=" w-7" />
           <span className="text-xs line-clamp-2">{issuedReports.location}</span>
         </div>
         <div className="whitespace-nowrap text-right text-xs flex-1 flex flex-col text-darkBlue gap-1">
           Reported At: {formatDate(issuedReports.updatedAt)}
-          <p className=" text-blue-700">View Details</p>
+          <Link href={`/issues/${issuedReports._id}`}>
+            <p className=" text-blue-700 cursor-pointer hover:underline">
+              View Details
+            </p>
+          </Link>
         </div>
       </div>
     </div>

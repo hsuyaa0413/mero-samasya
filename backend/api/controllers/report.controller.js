@@ -9,9 +9,12 @@ export const submitReport = async (req, res, next) => {
     location,
     lat,
     lng,
+    urgency,
     category,
     status,
   } = req.body;
+
+  const userId = req.user.id;
 
   const newReport = new Report({
     title,
@@ -20,8 +23,10 @@ export const submitReport = async (req, res, next) => {
     location,
     lat,
     lng,
+    urgency,
     category,
     status,
+    reportedBy: userId,
   });
   try {
     await newReport.save();
@@ -35,7 +40,9 @@ export const submitReport = async (req, res, next) => {
 
 export const getReports = async (req, res, next) => {
   try {
-    const reports = await Report.find();
+    const reports = await Report.find().populate({
+      path: 'reportedBy',
+    });
     res.status(200).json({
       status: 'success',
       message: 'Reports fetched successfully!',
@@ -44,6 +51,21 @@ export const getReports = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+};
+
+export const getReportById = async (req, res, next) => {
+  const id = req.params.id;
+
+  const issue = await Report.findById(id).populate({
+    path: 'reportedBy',
+  });
+  if (!issue) return next(errorHandler(404, 'Issue not found!'));
+
+  return res.status(200).json({
+    status: 'success',
+    message: 'Issue report found successfully!',
+    issue,
+  });
 };
 
 const NOMINATIM_BASE_URL = 'https://nominatim.openstreetmap.org';

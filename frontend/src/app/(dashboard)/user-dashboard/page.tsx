@@ -16,6 +16,7 @@ import IssueReportForm from '@/components/IssueReportForm';
 import DashboardNav from '@/components/DashboardNav';
 import { backendApi } from '@/lib/constant';
 import IssuedCard from '@/components/IssuedCard';
+import axios from 'axios';
 
 interface ReportedIssue {
   _id: string;
@@ -35,19 +36,27 @@ export default function UserDashboard() {
   const [visibleCount, setVisibleCount] = useState(6);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
+
   useEffect(() => {
     const fetchReportedIssues = async () => {
-      const res = await fetch(`${backendApi}/report/get-reports`);
-      const data = await res.json();
+      try {
+        const res = await axios.get(`${backendApi}/report/get-reports`, {
+          withCredentials: true,
+        });
 
-      if (data && Array.isArray(data.data)) {
-        setReportedIssues(data.data);
-      } else {
-        console.error('Expected an array in data, but received:', data);
+        if (res.data && Array.isArray(res.data.data)) {
+          setReportedIssues(res.data.data);
+        } else {
+          console.error('Expected an array in data, but received:', res.data);
+        }
+      } catch (error) {
+        console.error('Error fetching reported issues:', error);
       }
     };
+
     fetchReportedIssues();
   }, []);
+
   const totalReports = reportedIssues.length;
   const inProgressCount = reportedIssues.filter(
     r => r.status === 'inProgress'
@@ -198,7 +207,9 @@ export default function UserDashboard() {
             />
           </div>
           <div className="mt-7">
-            <h1>Recent Reported Issues:</h1>
+            <h1 className="text-darkBlue font-bold text-xl mb-3 pl-2">
+              Recent Reported Issues:
+            </h1>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {searchedIssues.length > 0 ? (
                 <>
@@ -221,7 +232,7 @@ export default function UserDashboard() {
                     <div className="col-span-full flex justify-center mt-4">
                       <Button
                         onClick={handleShowMore}
-                        className="bg-blue-200 text-blue-900 hover:bg-blue-300"
+                        className="bg-blue-200 text-blue-900 hover:bg-blue-300 cursor-pointer"
                       >
                         Show More
                       </Button>
@@ -230,7 +241,7 @@ export default function UserDashboard() {
                 </>
               ) : (
                 <div className="px-4 py-2 text-gray-500">
-                  No reports found for selected status!
+                  No reports found !
                 </div>
               )}
             </div>
