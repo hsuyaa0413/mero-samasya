@@ -4,9 +4,7 @@ import {
   Search,
   LayoutDashboard,
   FileText,
-  ChevronUp,
   Check,
-  ChevronDown,
   Clock,
   TriangleAlert,
   LogOut,
@@ -58,7 +56,7 @@ export default function AuthorityDashboard() {
         });
 
         if (res.data && Array.isArray(res.data.data)) {
-          console.log(res.data);
+          console.log(res.data.data);
           setReportedIssues(res.data.data);
         } else {
           console.error('Expected an array in data, but received:', res.data);
@@ -164,55 +162,61 @@ export default function AuthorityDashboard() {
         <main className="py-6 px-10">
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-            <div className="flex items-center gap-4 border-1 rounded-lg shadow-sm px-4 min-h-32 bg-white">
+            <div className="flex items-center gap-4 border-1 rounded-lg shadow-sm px-4 h-28 bg-white">
               <div className="bg-blue-100 p-2 rounded-full flex items-center justify-center">
                 <FileText className="text-blue-500 size-10" />
               </div>
               <div>
                 <p className="text-xs sm:text-sm text-gray-500">Total Issues</p>
-                <p className="text-2xl font-bold">142</p>
-                <div className="flex items-center text-xs gap-1 text-emerald-500">
-                  <ChevronUp size={12} /> 12% from last week
-                </div>
+                <p className="text-2xl font-bold">{reportedIssues?.length}</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-4 border-1 rounded-lg shadow-sm px-4 min-h-32 bg-white">
+            <div className="flex items-center gap-4 border-1 rounded-lg shadow-sm px-4 h-28 bg-white">
               <div className="bg-emerald-100 p-2 rounded-full flex items-center justify-center">
                 <Check className="text-emerald-500 size-10" />
               </div>
               <div>
                 <p className="text-xs sm:text-sm text-gray-500">Resolved</p>
-                <p className="text-2xl font-bold">89</p>
-                <div className="flex items-center text-xs gap-1 text-emerald-500">
-                  <ChevronUp size={12} /> 8% from last week
-                </div>
+                <p className="text-2xl font-bold">
+                  {
+                    reportedIssues?.filter(issue => issue.status === 'resolved')
+                      .length
+                  }
+                </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-4 border-1 rounded-lg shadow-sm px-4 min-h-32 bg-white">
+            <div className="flex items-center gap-4 border-1 rounded-lg shadow-sm px-4 h-28 bg-white">
               <div className="bg-yellow-100 p-2 rounded-full flex items-center justify-center">
                 <Clock className="text-yellow-500 size-10" />
               </div>
               <div>
                 <p className="text-xs sm:text-sm text-gray-500">In Progress</p>
-                <p className="text-2xl font-bold">32</p>
-                <div className="flex items-center text-xs gap-1 text-red-500">
-                  <ChevronDown size={12} /> 5% from last week
-                </div>
+                <p className="text-2xl font-bold">
+                  {
+                    reportedIssues?.filter(
+                      issue => issue.status === 'inProgress'
+                    ).length
+                  }
+                </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-4 border-1 rounded-lg shadow-sm px-4 min-h-32 bg-white">
+            <div className="flex items-center gap-4 border-1 rounded-lg shadow-sm px-4 h-28 bg-white">
               <div className="bg-red-100 p-2 rounded-full flex items-center justify-center">
                 <TriangleAlert className="text-red-500 size-10" />
               </div>
               <div>
                 <p className="text-xs sm:text-sm text-gray-500">Urgent</p>
-                <p className="text-2xl font-bold">21</p>
-                <div className="flex items-center text-xs gap-1 text-red-500">
-                  <ChevronUp size={12} /> 15% from last week
-                </div>
+                <p className="text-2xl font-bold">
+                  {
+                    reportedIssues?.filter(
+                      issue =>
+                        issue.urgency === 'critical' || issue.urgency === 'high'
+                    ).length
+                  }
+                </p>
               </div>
             </div>
           </div>
@@ -467,7 +471,7 @@ function IssueCard({
             />
             <AvatarFallback className="bg-greyBlue text-darkBlue">
               {reportedBy
-                .split(' ')
+                ?.split(' ')
                 .map(n => n[0])
                 .join('')}
             </AvatarFallback>

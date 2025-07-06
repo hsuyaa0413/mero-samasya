@@ -37,23 +37,23 @@ export default function UserDashboard() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
 
-  useEffect(() => {
-    const fetchReportedIssues = async () => {
-      try {
-        const res = await axios.get(`${backendApi}/report/get-reports`, {
-          withCredentials: true,
-        });
+  async function fetchReportedIssues() {
+    try {
+      const res = await axios.get(`${backendApi}/report/get-reports`, {
+        withCredentials: true,
+      });
 
-        if (res.data && Array.isArray(res.data.data)) {
-          setReportedIssues(res.data.data);
-        } else {
-          console.error('Expected an array in data, but received:', res.data);
-        }
-      } catch (error) {
-        console.error('Error fetching reported issues:', error);
+      if (res.data && Array.isArray(res.data.data)) {
+        setReportedIssues(res.data.data);
+      } else {
+        console.error('Expected an array in data, but received:', res.data);
       }
-    };
+    } catch (error) {
+      console.error('Error fetching reported issues:', error);
+    }
+  }
 
+  useEffect(() => {
     fetchReportedIssues();
   }, []);
 
