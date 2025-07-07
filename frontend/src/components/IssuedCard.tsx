@@ -31,7 +31,7 @@ export default function IssuedCard({ issuedReports }: IssuedCardProps) {
 
   return (
     <div className="overflow-hidden  rounded-xl border py-0 shadow-sm h-60 bg-white">
-      <div className="flex items-center justify-between  px-4 pt-6 h-12 border-b-1 border-gray-300 bg-gray-200 pb-5">
+      <div className="flex items-center justify-between  px-4 pt-6 h-12  border-gray-300 bg-gray-100 pb-5">
         <div className="text-md font-semibold  ">{issuedReports.title}</div>
         <Badge
           className={
@@ -51,7 +51,7 @@ export default function IssuedCard({ issuedReports }: IssuedCardProps) {
         </p>
       </div>
 
-      <div className="flex items-center justify-between p-3 sm:p-4 bg-gray-100 text-sm text-gray-600 mb-0 h-16">
+      <div className="flex items-center justify-between p-3 sm:p-4 bg-gray-50 border-t-1 text-sm text-gray-600 mb-0 h-16">
         <div className="flex-1 flex items-start gap-1 line-clamp-2 text-darkBlue">
           <MapPin size={16} className=" w-7" />
           <span className="text-xs line-clamp-2">{issuedReports.location}</span>
