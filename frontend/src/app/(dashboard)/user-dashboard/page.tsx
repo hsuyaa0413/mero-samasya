@@ -15,19 +15,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import IssueReportForm from '@/components/IssueReportForm';
 import DashboardNav from '@/components/DashboardNav';
 import { backendApi } from '@/lib/constant';
-import IssuedCard from '@/components/IssuedCard';
+import IssuedCard, { ReportedIssue } from '@/components/IssuedCard';
 import axios from 'axios';
-
-interface ReportedIssue {
-  _id: string;
-  title: string;
-  status: 'pending' | 'resolved' | 'inProgress';
-  statusColor: string;
-  description: string;
-  location: string;
-  updatedAt: string;
-  mediaUrls: string[];
-}
 
 export default function UserDashboard() {
   const [open, setOpen] = useState(false);

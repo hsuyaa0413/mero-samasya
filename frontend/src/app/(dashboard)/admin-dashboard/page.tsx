@@ -1,11 +1,39 @@
+'use client';
+
 import { Sidebar } from '@/components/sidebar';
 import { StatsCards } from '@/components/stats-cards';
 import { IssuesByCategory } from '@/components/issues-by-category';
 import { UserActivity } from '@/components/user-activity';
 import { PendingApprovals } from '@/components/pending-approvals';
 import { ReportedIssues } from '@/components/reported-issues';
+import { backendApi } from '@/lib/constant';
+import { ReportedIssue } from '@/components/IssuedCard';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 export default function AdminDashboard() {
+  const [reportedIssues, setReportedIssues] = useState<ReportedIssue[]>([]);
+
+  const fetchReportedIssues = async () => {
+    try {
+      const res = await axios.get(`${backendApi}/report/get-reports`, {
+        withCredentials: true,
+      });
+
+      if (res.data && Array.isArray(res.data.data)) {
+        setReportedIssues(res.data.data);
+      } else {
+        console.error('Expected an array in data, but received:', res.data);
+      }
+    } catch (error) {
+      console.error('Error fetching reported issues:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchReportedIssues();
+  }, []);
+
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
@@ -16,14 +44,14 @@ export default function AdminDashboard() {
           </header>
 
           <main className="p-6 px-10">
-            <StatsCards />
+            <StatsCards reportedIssues={reportedIssues} />
 
             <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
               <div className="flex flex-col border-1 rounded-lg shadow-sm px-4 bg-white">
                 <h2 className="text-lg font-semibold pt-6 px-4">
-                  Issues by Category (This month)
+                  Issues by Category (All Time)
                 </h2>
-                <IssuesByCategory />
+                <IssuesByCategory reportedIssues={reportedIssues} />
               </div>
 
               <div className="flex flex-col border-1 rounded-lg shadow-sm px-4 bg-white">

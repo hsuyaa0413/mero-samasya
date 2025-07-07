@@ -8,6 +8,8 @@ export interface ReportedIssue {
   status: 'pending' | 'resolved' | 'inProgress';
   description: string;
   location: string;
+  category: string;
+  createdAt: string;
   updatedAt: string;
   mediaUrls: string[];
 }

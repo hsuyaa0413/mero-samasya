@@ -565,13 +565,21 @@ export default function IssueReportForm({
                 <SelectValue placeholder="Select a category" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="roads">Roads & Sidewalks</SelectItem>
-                <SelectItem value="utilities">Public Utilities</SelectItem>
-                <SelectItem value="waste">Sanitation & Waste</SelectItem>
-                <SelectItem value="safety">Public Safety</SelectItem>
-                <SelectItem value="lighting">Street Lighting</SelectItem>
-                <SelectItem value="parks">Parks & Recreation</SelectItem>
-                <SelectItem value="other">Other</SelectItem>
+                <SelectItem value="roads-&-sidewalks">
+                  Roads & Sidewalks
+                </SelectItem>
+                <SelectItem value="public-utilities">
+                  Public Utilities
+                </SelectItem>
+                <SelectItem value="sanitation-&-waste">
+                  Sanitation & Waste
+                </SelectItem>
+                <SelectItem value="public-safety">Public Safety</SelectItem>
+                <SelectItem value="street-lighting">Street Lighting</SelectItem>
+                <SelectItem value="parks-&-recreation">
+                  Parks & Recreation
+                </SelectItem>
+                <SelectItem value="others">Others</SelectItem>
               </SelectContent>
             </Select>
             {formErrors.category && (

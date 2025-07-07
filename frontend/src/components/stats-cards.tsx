@@ -2,12 +2,19 @@
 
 import { Card, CardContent } from '@/components/ui/card';
 import { backendApi } from '@/lib/constant';
+import { User } from '@/store/userStore';
 import axios from 'axios';
 import { Users, Building2, FileText, Clock } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { ReportedIssue } from './IssuedCard';
 
-export function StatsCards() {
-  const [users, setUsers] = useState([]);
+export function StatsCards({
+  reportedIssues,
+}: {
+  reportedIssues: ReportedIssue[];
+}) {
+  const [users, setUsers] = useState<User[]>([]);
+  const [count, setCount] = useState<number>(0);
 
   const fetchUsers = async () => {
     try {
@@ -15,14 +22,31 @@ export function StatsCards() {
         withCredentials: true,
       });
 
-      setUsers(res.data.users);
+      if (res.status === 200) {
+        setUsers(res.data.users);
+      }
     } catch (e) {
       console.error(e);
     }
   };
 
+  const fetchTodayReports = async () => {
+    try {
+      const res = await axios.get(`${backendApi}/report/today-count`, {
+        withCredentials: true,
+      });
+
+      if (res.status === 200) {
+        setCount(res.data.count);
+      }
+    } catch (err) {
+      console.error('Failed to fetch today reports:', err);
+    }
+  };
+
   useEffect(() => {
     fetchUsers();
+    fetchTodayReports();
   }, []);
 
   return (
@@ -34,11 +58,7 @@ export function StatsCards() {
           </div>
           <div>
             <p className="text-xs sm:text-sm text-gray-500">Total Users</p>
-            {/* <p className="text-2xl font-bold">1,248</p> */}
             <p className="text-2xl font-bold">{users?.length}</p>
-            {/* <div className="flex items-center text-xs gap-1 text-green-500">
-              <ChevronUp size={12} /> 12.5% from last month
-            </div> */}
           </div>
         </CardContent>
       </Card>
@@ -50,10 +70,9 @@ export function StatsCards() {
           </div>
           <div>
             <p className="text-xs sm:text-sm text-gray-500">Authorities</p>
-            <p className="text-2xl font-bold">86</p>
-            {/* <div className="flex items-center text-xs gap-1 text-green-500">
-              <ChevronUp size={12} /> 3.2% from last month
-            </div> */}
+            <p className="text-2xl font-bold">
+              {users?.filter(user => user?.role === 'authority').length}
+            </p>
           </div>
         </CardContent>
       </Card>
@@ -65,10 +84,7 @@ export function StatsCards() {
           </div>
           <div>
             <p className="text-xs sm:text-sm text-gray-500">Reports Today</p>
-            <p className="text-2xl font-bold">27</p>
-            {/* <div className="flex items-center text-xs gap-1 text-red-500">
-              <ChevronDown size={12} /> 2.4% from last month
-            </div> */}
+            <p className="text-2xl font-bold">{count}</p>
           </div>
         </CardContent>
       </Card>
@@ -80,10 +96,12 @@ export function StatsCards() {
           </div>
           <div>
             <p className="text-xs sm:text-sm text-gray-500">Pending Actions</p>
-            <p className="text-2xl font-bold">15</p>
-            {/* <div className="flex items-center text-xs gap-1 text-green-500">
-              <ChevronUp size={12} /> 5.8% from yesterday
-            </div> */}
+            <p className="text-2xl font-bold">
+              {
+                reportedIssues?.filter(issue => issue.status === 'pending')
+                  .length
+              }
+            </p>
           </div>
         </CardContent>
       </Card>
