@@ -40,9 +40,10 @@ export const submitReport = async (req, res, next) => {
 
 export const getReports = async (req, res, next) => {
   try {
-    const reports = await Report.find().populate({
+    const reports = await Report.find().sort({ createdAt: -1 }).populate({
       path: 'reportedBy',
     });
+
     res.status(200).json({
       status: 'success',
       message: 'Reports fetched successfully!',
@@ -66,6 +67,30 @@ export const getReportById = async (req, res, next) => {
     message: 'Issue report found successfully!',
     issue,
   });
+};
+
+export const getTodayReportsCount = async (req, res, next) => {
+  try {
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfToday = new Date(startOfDay); // Start with today's start
+    endOfToday.setDate(startOfDay.getDate() + 1);
+
+    const count = await Report.countDocuments({
+      createdAt: {
+        $gte: startOfDay,
+        $lte: endOfToday,
+      },
+    });
+
+    res.status(200).json({
+      status: 'success',
+      count,
+    });
+  } catch (error) {
+    return next(error);
+  }
 };
 
 const NOMINATIM_BASE_URL = 'https://nominatim.openstreetmap.org';

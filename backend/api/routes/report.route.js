@@ -6,6 +6,7 @@ import {
   getReportById,
   reverseGeocode,
   submitReport,
+  getTodayReportsCount,
 } from '../controllers/report.controller.js';
 
 const router = express.Router();
@@ -17,6 +18,7 @@ router.use(isAuthenticated);
 
 router.post('/submit-report', submitReport);
 router.get('/get-reports', getReports);
+router.get('/today-count', getTodayReportsCount);
 router.get('/:id', getReportById);
 
 export default router;

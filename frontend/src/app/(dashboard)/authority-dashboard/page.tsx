@@ -27,7 +27,23 @@ import Link from 'next/link';
 import axios from 'axios';
 import { backendApi } from '@/lib/constant';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo, Fragment } from 'react';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart';
+import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 
 interface ReportedIssue {
   _id: string;
@@ -47,6 +63,10 @@ export default function AuthorityDashboard() {
   const router = useRouter();
 
   const [reportedIssues, setReportedIssues] = useState<ReportedIssue[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState<string>('all');
+  const [selectedLocation, setSelectedLocation] = useState<string>('all');
+  const [selectedUrgency, setSelectedUrgency] = useState<string>('all');
 
   useEffect(() => {
     const fetchReportedIssues = async () => {
@@ -56,7 +76,6 @@ export default function AuthorityDashboard() {
         });
 
         if (res.data && Array.isArray(res.data.data)) {
-          console.log(res.data.data);
           setReportedIssues(res.data.data);
         } else {
           console.error('Expected an array in data, but received:', res.data);
@@ -68,6 +87,40 @@ export default function AuthorityDashboard() {
 
     fetchReportedIssues();
   }, []);
+
+  const filteredIssues = useMemo(() => {
+    return reportedIssues.filter(issue => {
+      const searchTermLower = searchTerm.toLowerCase();
+
+      // Text search condition (checks title and description)
+      const matchesSearch =
+        issue.title.toLowerCase().includes(searchTermLower) ||
+        issue.description.toLowerCase().includes(searchTermLower);
+
+      // Status filter condition
+      const matchesStatus =
+        selectedStatus === 'all' || issue.status === selectedStatus;
+
+      // Location filter condition (checks if location string includes the selected value)
+      const matchesLocation =
+        selectedLocation === 'all' ||
+        issue.location.toLowerCase().includes(selectedLocation.toLowerCase());
+
+      // Urgency filter condition
+      const matchesUrgency =
+        selectedUrgency === 'all' || issue.urgency === selectedUrgency;
+
+      return (
+        matchesSearch && matchesStatus && matchesLocation && matchesUrgency
+      );
+    });
+  }, [
+    reportedIssues,
+    searchTerm,
+    selectedStatus,
+    selectedLocation,
+    selectedUrgency,
+  ]);
 
   async function handleLogOut() {
     try {
@@ -96,21 +149,21 @@ export default function AuthorityDashboard() {
         <nav className="flex-1 py-4">
           <ul className="space-y-1">
             <li className="hover:bg-blue-950">
-              <a href="" className="flex items-center gap-3 px-4 py-2">
+              <Link href="#" className="flex items-center gap-3 px-4 py-2">
                 <div className="w-5 h-5 flex items-center justify-center">
                   <LayoutDashboard />
                 </div>
                 <span>Dashboard</span>
-              </a>
+              </Link>
             </li>
 
             <li className="hover:bg-blue-950">
-              <a href="" className="flex items-center gap-3 px-4 py-2">
+              <Link href="" className="flex items-center gap-3 px-4 py-2">
                 <div className="w-5 h-5 flex items-center justify-center">
                   <FileText />
                 </div>
                 <span>Issues</span>
-              </a>
+              </Link>
             </li>
           </ul>
         </nav>
@@ -152,8 +205,10 @@ export default function AuthorityDashboard() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <input
                 type="text"
-                placeholder="Search..."
-                className="pl-10 pr-4 py-2 border rounded-lg w-64 focus:outline-none focus:ring-2 focus:ring-skyBlue"
+                placeholder="Search by title or description"
+                className="pl-10 pr-4 py-2 border rounded-lg w-72 focus:outline-none focus:ring-2 focus:ring-skyBlue"
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
               />
             </div>
           </div>
@@ -228,13 +283,17 @@ export default function AuthorityDashboard() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Status
                 </label>
-                <Select>
+                <Select
+                  value={selectedStatus}
+                  onValueChange={setSelectedStatus}
+                >
                   <SelectTrigger className="w-full border rounded px-3 py-1.5">
                     <SelectValue placeholder="Select a status" />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="all">All Statuses</SelectItem>
                     <SelectItem value="pending">Pending</SelectItem>
-                    <SelectItem value="inprogress">In Progress</SelectItem>
+                    <SelectItem value="inProgress">In Progress</SelectItem>
                     <SelectItem value="resolved">Resolved</SelectItem>
                   </SelectContent>
                 </Select>
@@ -244,11 +303,15 @@ export default function AuthorityDashboard() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Location
                 </label>
-                <Select>
+                <Select
+                  value={selectedLocation}
+                  onValueChange={setSelectedLocation}
+                >
                   <SelectTrigger className="w-full border rounded px-3 py-1.5">
                     <SelectValue placeholder="Select a location" />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="all">All Locations</SelectItem>
                     <SelectItem value="dharan">Dharan</SelectItem>
                     <SelectItem value="itahari">Itahari</SelectItem>
                     <SelectItem value="biratnagar">Biratnagar</SelectItem>
@@ -259,11 +322,15 @@ export default function AuthorityDashboard() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Urgency
                 </label>
-                <Select>
+                <Select
+                  value={selectedUrgency}
+                  onValueChange={setSelectedUrgency}
+                >
                   <SelectTrigger className="w-full border rounded px-3 py-1.5">
                     <SelectValue placeholder="Select urgency" />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="all">All Urgencies</SelectItem>
                     <SelectItem value="low">Low</SelectItem>
                     <SelectItem value="medium">Medium</SelectItem>
                     <SelectItem value="high">High</SelectItem>
@@ -274,67 +341,52 @@ export default function AuthorityDashboard() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6" id="#issues">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6" id="issues">
             {/* Recent Issues */}
             <div className="lg:col-span-2">
-              <div className="bg-white rounded-lg shadow-sm max-h-87 overflow-y-scroll">
-                <div className="p-4 border-1 bg-gray-50">
-                  <h2 className="text-lg font-medium ">Recent Issues</h2>
+              <ScrollArea className="bg-white rounded-lg shadow-sm h-[23rem]">
+                <div className="p-4 border-1 bg-gray-100">
+                  <h2 className="text-lg font-semibold">Recent Issues</h2>
                 </div>
 
-                <div className="divide-y">
-                  {reportedIssues.map(issue => (
-                    <IssueCard
-                      key={issue?._id}
-                      title={issue?.title}
-                      description={issue?.description}
-                      reported={issue?.createdAt.split('T')[0]}
-                      reportedBy={issue?.reportedBy?.fullName}
-                      status={issue?.status}
-                      urgency={issue?.urgency}
-                      id={issue?._id}
-                    />
-                  ))}
+                {/* <div className="divide-y"> */}
+                <div>
+                  {filteredIssues.length > 0 ? (
+                    filteredIssues.map(issue => (
+                      <Fragment key={issue?._id}>
+                        <IssueCard
+                          key={issue?._id}
+                          title={issue?.title}
+                          description={issue?.description}
+                          reported={issue?.createdAt.split('T')[0]}
+                          reportedBy={issue?.reportedBy?.fullName}
+                          status={issue?.status}
+                          urgency={issue?.urgency}
+                          id={issue?._id}
+                        />
+                        <Separator />
+                      </Fragment>
+                    ))
+                  ) : (
+                    <div className="p-4 text-center text-gray-500">
+                      No issues match the current filters.
+                    </div>
+                  )}
                 </div>
-              </div>
+              </ScrollArea>
             </div>
 
             {/* Right Column */}
             <div className="space-y-6">
               {/* Total Issues Reported */}
-              <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+              {/* <div className="bg-white rounded-lg shadow-sm overflow-hidden">
                 <div className="p-4 border-b">
                   <h2 className="text-lg font-medium">Total Issues Reported</h2>
                 </div>
                 <div className="p-4">
-                  <div className="h-64">
-                    <ResolutionTimeChart />
-                  </div>
-                </div>
-              </div>
-
-              {/* Quick Actions */}
-              {/* <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-                <div className="p-4 border-b">
-                  <h2 className="text-lg font-medium">Quick Actions</h2>
-                </div>
-                <div className="p-4 grid grid-cols-2 gap-4">
-                  <button className="bg-blue-50 p-4 rounded-lg flex flex-col items-center justify-center gap-2 hover:bg-blue-100 transition-colors">
-                    <UserPlus className="h-6 w-6 text-blue-600" />
-                    <span className="text-sm font-medium">Assign Issue</span>
-                  </button>
-                  <button className="bg-green-50 p-4 rounded-lg flex flex-col items-center justify-center gap-2 hover:bg-green-100 transition-colors">
-                    <CheckCircle className="h-6 w-6 text-green-600" />
-                    <span className="text-sm font-medium">Mark Resolved</span>
-                  </button>
-                  <button className="bg-purple-50 p-4 rounded-lg flex flex-col items-center justify-center gap-2 hover:bg-purple-100 transition-colors">
-                    <MessageSquare className="h-6 w-6 text-purple-600" />
-                    <span className="text-sm font-medium">Add Note</span>
-                  </button>
-                  <button className="bg-yellow-50 p-4 rounded-lg flex flex-col items-center justify-center gap-2 hover:bg-yellow-100 transition-colors">
-                    <Send className="h-6 w-6 text-yellow-600" />
-                    <span className="text-sm font-medium">Send Update</span>
-                  </button>
+                  <div className="h-64"> */}
+              <ResolutionTimeChart reportedIssues={reportedIssues} />
+              {/* </div>
                 </div>
               </div> */}
             </div>
@@ -345,39 +397,96 @@ export default function AuthorityDashboard() {
   );
 }
 
-function ResolutionTimeChart() {
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
-  const data = [32, 28, 23, 30, 34, 41];
-  const maxValue = Math.max(...data);
+function ResolutionTimeChart({
+  reportedIssues,
+}: {
+  reportedIssues: ReportedIssue[];
+}) {
+  interface ChartDataItem {
+    month: string;
+    issues: number;
+  }
+
+  const monthlyIssueCounts: { [key: string]: number } = {};
+
+  const monthNames = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
+  monthNames.forEach(month => {
+    monthlyIssueCounts[month] = 0;
+  });
+
+  reportedIssues.forEach(issue => {
+    const date = new Date(issue.createdAt);
+    const monthIndex = date.getMonth(); // getMonth() returns 0-11
+    const monthName = monthNames[monthIndex];
+    monthlyIssueCounts[monthName]++;
+  });
+
+  // Convert the aggregated data into the desired array format
+  const chartData: ChartDataItem[] = monthNames.map(month => ({
+    month: month,
+    issues: monthlyIssueCounts[month],
+  }));
+
+  const chartConfig = {
+    issues: {
+      label: 'Issues',
+      color: 'var(--chart-1)',
+    },
+  } satisfies ChartConfig;
 
   return (
-    <div className="h-full flex flex-col">
-      <div className="text-xs text-gray-500 mb-1">
-        Total Issues Reported (per month)
-      </div>
-      <div className="flex-1 flex items-end">
-        {data.map((value, index) => (
-          <div
-            key={index}
-            className="flex flex-col flex-1 items-center justify-end h-full"
+    <Card className="h-[23rem]">
+      <CardHeader>
+        <CardTitle className="text-lg">Total Issues Reported</CardTitle>
+        <p className="text-xs text-gray-500">Jan - Dec, 2025</p>
+      </CardHeader>
+      <CardContent className="h-full px-5 flex justify-center">
+        <ChartContainer config={chartConfig}>
+          <BarChart
+            accessibilityLayer
+            data={chartData}
+            margin={{
+              top: 20,
+            }}
           >
-            <div
-              className="w-full bg-blue-200 mx-0.5 hover:bg-blue-300 cursor-pointer group relative"
-              style={{
-                height: `${(value / maxValue) * 100}%`,
-                maxWidth: '30px',
-                margin: '0 auto',
-              }}
-            >
-              <span className="inset-0 flex items-center justify-center invisible group-hover:visible text-xs text-darkBlue">
-                {value}
-              </span>
-            </div>
-            <div className="text-xs mt-1">{months[index]}</div>
-          </div>
-        ))}
-      </div>
-    </div>
+            <CartesianGrid vertical={false} />
+            <XAxis
+              dataKey="month"
+              tickLine={false}
+              tickMargin={10}
+              axisLine={false}
+              tickFormatter={val => val.slice(0, 3)}
+            />
+            <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent hideLabel />}
+            />
+            <Bar dataKey="issues" fill="#8ec5fe" radius={8} />
+          </BarChart>
+        </ChartContainer>
+      </CardContent>
+      <CardFooter className="flex-col items-start gap-2 text-sm">
+        <div className="flex gap-2 leading-none font-medium">
+          Monthly Issues Overview
+        </div>
+        <div className="text-muted-foreground leading-none">
+          Showing total issues reported for the last 12 months
+        </div>
+      </CardFooter>
+    </Card>
   );
 }
 

@@ -6,6 +6,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import authRoutes from './routes/auth.route.js';
 import reportRoutes from './routes/report.route.js';
+import userRoutes from './routes/user.route.js';
 dotenv.config();
 
 mongoose
@@ -30,6 +31,7 @@ app.use(cors(corsOptions));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/report', reportRoutes);
+app.use('/api/users', userRoutes);
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   const message = err.message || 'Internal server error';
