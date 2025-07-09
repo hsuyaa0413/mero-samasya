@@ -348,7 +348,7 @@ export default function IssueReportForm({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="max-w-sm md:max-xl max-h-[95vh] overflow-y-auto text-darkBlue md:px-8">
+      <DialogContent className="max-w-sm md:max-w-xl lg:max-w-2xl max-h-[95vh] overflow-y-scroll text-darkBlue md:px-8">
         <DialogHeader className="mb-4">
           <DialogTitle className="text-center sm:text-xl">
             Report Issue

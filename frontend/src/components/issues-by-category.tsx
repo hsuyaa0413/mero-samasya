@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { Chart, registerables } from 'chart.js';
 import { ReportedIssue } from './IssuedCard';
-import { Skeleton } from './ui/skeleton';
+import { Loader2 } from 'lucide-react';
 
 Chart.register(...registerables);
 
@@ -15,15 +15,15 @@ export function IssuesByCategory({
   const chartRef = useRef<HTMLCanvasElement>(null);
   const chartInstance = useRef<Chart | null>(null);
 
-  // const [loading, setLoading] = useState<boolean>(false);
-
   const getIssueCategoryLabels = (issues: ReportedIssue[]) => {
-    return issues.map(issue =>
+    const labels = issues.map(issue =>
       issue.category
         .split('-')
         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ')
     );
+
+    return Array.from(new Set(labels));
   };
 
   useEffect(() => {
@@ -54,10 +54,12 @@ export function IssuesByCategory({
           {
             data: [35, 20, 25, 15, 5],
             backgroundColor: [
-              '#6366f1', // Infrastructure - Indigo
               '#10b981', // Sanitation - Green
-              '#ef4444', // Public Safety - Red
+              '#6366f1', // Infrastructure - Indigo
               '#f59e0b', // Environment - Amber
+              '#eab308', // Street Lighting - Yellow
+              '#ef4444', // Public Safety - Red
+              '#22c55e', // Parks and Recreation - Emerald
               '#6b7280', // Other - Gray
             ],
             borderWidth: 0,
@@ -89,11 +91,13 @@ export function IssuesByCategory({
 
   if (reportedIssues.length === 0) {
     return (
-      <div className="relative h-85 w-full flex items-center justify-center gap-3">
-        <Skeleton className="size-36" />
-        <Skeleton className="size-48 rounded-full" />
+      <div className="relative h-85 w-full flex items-center justify-center">
+        <p className="flex items-center justify-center gap-2">
+          <Loader2 className="animate-spin size-5 text-blue-500" /> Loading the
+          pie chart...
+        </p>
       </div>
-    ); // Or return null, a spinner, etc.
+    );
   }
   return (
     <div className="relative h-85 w-full flex items-center justify-center">
