@@ -26,6 +26,7 @@ export default function RoleSelectionPage() {
               className="absolute inset-0 w-full h-full object-cover"
               width={1920}
               height={1080}
+              priority
             />
             <div className="absolute inset-0 bg-black/50 z-10" />
             <div className="relative z-10 p-4 flex flex-col justify-between h-full">
@@ -67,6 +68,7 @@ export default function RoleSelectionPage() {
               className="absolute inset-0 w-full h-full object-cover"
               width={1920}
               height={1080}
+              priority
             />
             <div className="absolute inset-0 bg-black/50 z-10" />
             <div className="relative z-10 p-4 flex flex-col justify-between h-full">
