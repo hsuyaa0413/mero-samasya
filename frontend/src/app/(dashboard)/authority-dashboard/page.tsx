@@ -14,7 +14,7 @@ import {
   CircleAlert,
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { User, useUserStore } from '@/store/userStore';
+import { useUserStore } from '@/store/userStore';
 import {
   Select,
   SelectContent,
@@ -44,19 +44,21 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart';
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
+import timeAgo from '@/lib/timeAgo';
+import { ReportedIssue } from '@/components/IssuedCard';
 
-interface ReportedIssue {
-  _id: string;
-  title: string;
-  status: 'pending' | 'resolved' | 'inProgress';
-  statusColor: string;
-  description: string;
-  location: string;
-  createdAt: string;
-  urgency: 'low' | 'medium' | 'high' | 'critical';
-  reportedBy: User;
-  mediaUrls: string[];
-}
+// interface ReportedIssue {
+//   _id: string;
+//   title: string;
+//   status: 'pending' | 'resolved' | 'inProgress';
+//   statusColor: string;
+//   description: string;
+//   location: string;
+//   createdAt: Date;
+//   urgency: 'low' | 'medium' | 'high' | 'critical';
+//   reportedBy: User;
+//   mediaUrls: string[];
+// }
 
 export default function AuthorityDashboard() {
   const { user, logout } = useUserStore();
@@ -196,9 +198,9 @@ export default function AuthorityDashboard() {
 
       {/* Main Content */}
       <div className="flex-1 overflow-auto w-10/12">
-        <header className="bg-lightBlue p-4 border-b flex justify-between items-center sticky top-0 z-10 px-10 h-18">
-          <h1 className="text-xl font-bold text-darkBlue">
-            Issue Management Dashboard
+        <header className="bg-lightBlue p-4 flex justify-between items-center sticky top-0 z-10 px-10 h-18 border-b border-gray-300">
+          <h1 className="text-2xl font-bold text-darkBlue ">
+            Authority Dashboard
           </h1>
           <div className="flex items-center">
             <div className="relative bg-gray-50 rounded-lg">
@@ -358,7 +360,7 @@ export default function AuthorityDashboard() {
                           key={issue?._id}
                           title={issue?.title}
                           description={issue?.description}
-                          reported={issue?.createdAt.split('T')[0]}
+                          reported={issue?.createdAt}
                           reportedBy={issue?.reportedBy?.fullName}
                           status={issue?.status}
                           urgency={issue?.urgency}
@@ -590,7 +592,9 @@ function IssueCard({
           </div>
         </div>
         <div className="flex items-center justify-between gap-3">
-          <div className="text-xs text-gray-500">Reported: {reported}</div>
+          <div className="text-xs text-gray-500">
+            Reported: {timeAgo(new Date(reported))}
+          </div>
           <Link
             href={`/issues/${id}`}
             className="text-blue-600 hover:underline cursor-pointer"

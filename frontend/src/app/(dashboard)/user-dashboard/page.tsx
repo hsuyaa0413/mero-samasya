@@ -203,12 +203,7 @@ export default function UserDashboard() {
               {searchedIssues.length > 0 ? (
                 <>
                   {[...searchedIssues]
-                    .sort(
-                      (a, b) =>
-                        new Date(b.updatedAt).getTime() -
-                        new Date(a.updatedAt).getTime()
-                    )
-                    .slice(0, visibleCount) // 👈 only show up to `visibleCount`
+                    .slice(0, visibleCount)
                     .map(issuedReports => (
                       <IssuedCard
                         key={issuedReports._id}

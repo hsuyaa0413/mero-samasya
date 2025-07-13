@@ -37,7 +37,7 @@ const approvals: Approval[] = [
 
 export function PendingApprovals() {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 pt-2">
       {approvals.map(approval => (
         <div
           key={approval.id}

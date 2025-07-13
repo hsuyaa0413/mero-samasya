@@ -15,15 +15,26 @@ export function IssuesByCategory({
   const chartRef = useRef<HTMLCanvasElement>(null);
   const chartInstance = useRef<Chart | null>(null);
 
-  const getIssueCategoryLabels = (issues: ReportedIssue[]) => {
-    const labels = issues.map(issue =>
-      issue.category
+  const getIssueCategoryData = (issues: ReportedIssue[]) => {
+    const categoryCount = new Map<string, number>();
+
+    // Count occurrences of each formatted category
+    issues.forEach(issue => {
+      const formattedCategory = issue.category
         .split('-')
         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ')
-    );
+        .join(' ');
 
-    return Array.from(new Set(labels));
+      categoryCount.set(
+        formattedCategory,
+        (categoryCount.get(formattedCategory) || 0) + 1
+      );
+    });
+
+    const categoryLabels = Array.from(categoryCount.keys());
+    const categoryCounts = Array.from(categoryCount.values());
+
+    return { categoryLabels, categoryCounts };
   };
 
   useEffect(() => {
@@ -38,7 +49,9 @@ export function IssuesByCategory({
     const ctx = chartRef.current.getContext('2d');
     if (!ctx) return;
 
-    const categoryLabels = getIssueCategoryLabels(reportedIssues);
+    const { categoryLabels, categoryCounts } =
+      getIssueCategoryData(reportedIssues);
+
     chartInstance.current = new Chart(ctx, {
       type: 'doughnut',
       data: {
@@ -52,17 +65,18 @@ export function IssuesByCategory({
         // ],
         datasets: [
           {
-            data: [35, 20, 25, 15, 5],
+            // data: [35, 20, 25, 15, 5],
+            data: categoryCounts,
             backgroundColor: [
-              '#10b981', // Sanitation - Green
-              '#6366f1', // Infrastructure - Indigo
-              '#f59e0b', // Environment - Amber
-              '#eab308', // Street Lighting - Yellow
-              '#ef4444', // Public Safety - Red
-              '#22c55e', // Parks and Recreation - Emerald
-              '#6b7280', // Other - Gray
+              '#FF6384', // Pink/Red
+              '#36A2EB', // Blue
+              '#FFCD56', // Yellow
+              '#4BC0C0', // Teal
+              '#9966FF', // Purple
+              '#FF9F40', // Orange
+              '#C7C7C7', // Gray
             ],
-            borderWidth: 0,
+            borderWidth: 2,
           },
         ],
       },
