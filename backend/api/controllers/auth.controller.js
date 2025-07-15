@@ -73,9 +73,13 @@ export const login = async (req, res, next) => {
     if (!validPassword)
       return next(errorHandler(400, 'Password does not match!'));
 
-    const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET, {
-      expiresIn: process.env.JWT_EXPIRES_IN || '1d',
-    });
+    const token = jwt.sign(
+      { id: validUser._id, role: validUser.role },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: process.env.JWT_EXPIRES_IN || '1d',
+      }
+    );
     const { password: pass, ...rest } = validUser._doc;
 
     res
