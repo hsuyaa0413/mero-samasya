@@ -40,9 +40,13 @@ export default function SignIn() {
       });
 
       if (res.status === 200) {
-        setUser(res.data.user);
-        router.push('/user-dashboard');
-        // window.location.replace(`/`);
+        const { user } = res.data;
+        setUser(user);
+        if (user.role === 'citizen') {
+          router.push('/user-dashboard');
+        } else {
+          router.push(`/${user.role}-dashboard`);
+        }
       }
     } catch (error) {
       console.error(error);

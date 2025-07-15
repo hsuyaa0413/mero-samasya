@@ -54,10 +54,10 @@ export default function IssuedCard({ issuedReports }: IssuedCardProps) {
           <MapPin size={16} className=" w-7" />
           <span className="text-xs line-clamp-2">{issuedReports.location}</span>
         </div>
-        <div className="whitespace-nowrap text-right text-xs flex-1 flex flex-col text-darkBlue gap-1">
+        <div className="whitespace-nowrap text-right text-xs flex-1 flex flex-col text-darkBlue gap-0">
           Reported: {timeAgo(new Date(issuedReports.createdAt))}
           <Link href={`/issues/${issuedReports._id}`}>
-            <p className=" text-blue-700 cursor-pointer hover:underline">
+            <p className="text-blue-600 cursor-pointer hover:underline underline-offset-2">
               View Details
             </p>
           </Link>

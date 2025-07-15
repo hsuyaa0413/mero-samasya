@@ -9,12 +9,13 @@ export default function Hero() {
   return (
     <div className="relative w-full min-h-11/12 py-16 overflow-hidden">
       {/* Background Image */}
-      <div className="absolute aspect-[16/9] w-full inset-0 z-0">
+      <div className="absolute w-full h-full inset-0 z-0">
         <Image
           src="/hero-image.jpg"
           alt="City street view with buildings and people"
-          fill
-          className="object-cover"
+          className="w-full h-full object-cover"
+          height={1080}
+          width={1920}
           priority
         />
       </div>

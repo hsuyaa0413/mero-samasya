@@ -9,7 +9,6 @@ const userSchema = new mongoose.Schema(
     password: { type: String, required: true },
     confirmPassword: {
       type: String,
-
       validate: {
         validator: function (val) {
           return val === this.password;
@@ -23,8 +22,23 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['citizen', 'authority'],
+      enum: ['citizen', 'authority', 'admin'],
       default: 'citizen',
+      required: true,
+    },
+    approved: {
+      type: Boolean,
+      default: false,
+      required: function () {
+        return this.role === 'authority';
+      },
+    },
+    rejectedByAdmin: {
+      type: Boolean,
+      default: false,
+      required: function () {
+        return this.role === 'authority';
+      },
     },
     localBody: {
       type: String,

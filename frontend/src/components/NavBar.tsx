@@ -96,15 +96,21 @@ export function NavBar() {
                       <p className="text-sm text-gray-500">{user?.role}</p>
                     </div>
 
-                    <Link href="/user-dashboard">
-                      <div className="flex items-center justify-start gap-2 text-sm text-darkBlue cursor-pointer hover:underline">
+                    <Link
+                      href={
+                        user?.role === 'citizen'
+                          ? '/user-dashboard'
+                          : `/${user?.role}-dashboard`
+                      }
+                    >
+                      <div className="flex items-center justify-start gap-2 text-sm text-darkBlue cursor-pointer hover:underline underline-offset-2">
                         <p>My Dashboard</p>
                       </div>
                     </Link>
 
                     <button
                       onClick={handleLogOut}
-                      className="flex items-center justify-start gap-2 text-sm text-darkBlue cursor-pointer hover:underline"
+                      className="flex items-center justify-start gap-2 text-sm text-darkBlue cursor-pointer hover:underline underline-offset-2"
                     >
                       Log Out
                       <LogOut size={16} />

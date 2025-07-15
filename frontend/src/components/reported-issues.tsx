@@ -1,8 +1,8 @@
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import timeAgo from '@/lib/timeAgo';
 import { AlertCircle, CheckCircle, CircleAlert, Flame } from 'lucide-react';
 import { ReportedIssue } from './IssuedCard';
+import Link from 'next/link';
 
 export function ReportedIssues({
   reportedIssues,
@@ -76,13 +76,12 @@ export function ReportedIssues({
             <span className="text-xs text-gray-500">
               {timeAgo(new Date(issue.createdAt))}
             </span>
-            <Button
-              variant="link"
-              size="sm"
-              className="h-auto p-0 text-skyBlue cursor-pointer"
+            <Link
+              href={''}
+              className="text-blue-600 text-sm cursor-pointer hover:underline underline-offset-3"
             >
               View Details
-            </Button>
+            </Link>
           </div>
         </div>
       ))}

@@ -14,8 +14,10 @@ export const isAdmin = async (req, res, next) => {
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
     const currentUser = await User.findById(decoded.id);
-    if (currentUser.role !== 'admin')
+    if (currentUser.role !== 'admin') {
       return next(errorHandler(401, 'Only admin can perform this action!'));
+    }
+
     next();
   } catch (error) {
     next(error);

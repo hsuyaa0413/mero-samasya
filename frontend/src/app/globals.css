@@ -56,7 +56,7 @@
       box-shadow: 0 0 0 4px var(--pulse-color);
     }
   }
-  --color-lightBlue-75: rgba(225, 247, 245, 0.75);
+  --color-lightBlue-75: rgba(225, 247, 245, 0.65);
   --animate-rippling: rippling var(--duration) ease-out;
 
   @keyframes rippling {

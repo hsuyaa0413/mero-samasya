@@ -82,7 +82,7 @@ export default function DashboardNav() {
 
                     <button
                       onClick={handleLogOut}
-                      className="flex items-center justify-center gap-2 text-sm text-darkBlue cursor-pointer"
+                      className="flex items-center justify-center gap-2 text-sm text-darkBlue cursor-pointer hover:underline underline-offset-2"
                     >
                       Log Out
                       <LogOut size={16} />
