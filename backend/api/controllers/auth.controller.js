@@ -13,6 +13,7 @@ export const register = async (req, res, next) => {
     role,
     localBody,
     idCard,
+    approved,
   } = req.body;
 
   if (
@@ -46,6 +47,7 @@ export const register = async (req, res, next) => {
     password,
     address,
     role,
+    approved,
     localBody,
     idCard,
   });

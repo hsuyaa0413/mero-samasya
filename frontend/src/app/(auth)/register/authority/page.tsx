@@ -32,6 +32,7 @@ export default function AuthorityRegisterPage() {
     address: '',
     localBody: '',
     role: 'authority',
+    approved: false,
     idCard: '',
     terms: false,
   });

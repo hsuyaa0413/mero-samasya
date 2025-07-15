@@ -2,7 +2,7 @@ import { create, StateCreator } from 'zustand';
 import { persist, PersistOptions } from 'zustand/middleware';
 
 export type User = {
-  id: string;
+  _id: string;
   fullName: string;
   email: string;
   phoneNumber: number;
@@ -12,6 +12,8 @@ export type User = {
   idCard?: string;
   createdAt?: string;
   updatedAt?: string;
+  approved?: boolean;
+  rejectedByAdmin?: boolean;
   __v?: number;
 };
 

@@ -22,7 +22,6 @@ export default function AdminDashboard() {
       });
 
       if (res.data && Array.isArray(res.data.data)) {
-        console.log(res.data.data);
         setReportedIssues(res.data.data);
       } else {
         console.error('Expected an array in data, but received:', res.data);

@@ -127,7 +127,7 @@ export const geocode = async (req, res, next) => {
         displayName: display_name,
       });
     } else {
-      res.status(404).json({ message: 'Location not found.' });
+      return next(errorHandler(404, 'Location not found.'));
     }
   } catch (error) {
     next(error);
@@ -139,10 +139,12 @@ export const reverseGeocode = async (req, res, next) => {
   const { lat, lon } = req.query;
 
   if (!lat || !lon || typeof lat !== 'string' || typeof lon !== 'string') {
-    return res.status(400).json({
-      message:
-        'Latitude (lat) and Longitude (lon) query parameters are required.',
-    });
+    return next(
+      errorHandler(
+        400,
+        'Latitude (lat) and Longitude (lon) query parameters are required.'
+      )
+    );
   }
 
   try {
@@ -166,9 +168,9 @@ export const reverseGeocode = async (req, res, next) => {
         lon: parseFloat(response.data.lon),
       });
     } else {
-      res
-        .status(404)
-        .json({ message: 'Address not found for the given coordinates.' });
+      return next(
+        errorHandler(404, 'Address not found for the given coordinates.')
+      );
     }
   } catch (error) {
     next(error);

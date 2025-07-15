@@ -597,7 +597,7 @@ function IssueCard({
           </div>
           <Link
             href={`/issues/${id}`}
-            className="text-blue-600 hover:underline cursor-pointer"
+            className="text-blue-600 text-xs cursor-pointer hover:underline underline-offset-4"
           >
             View Details
           </Link>
