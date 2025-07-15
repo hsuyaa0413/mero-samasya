@@ -176,3 +176,42 @@ export const reverseGeocode = async (req, res, next) => {
     next(error);
   }
 };
+
+export const markAsUrgent = async (req, res, next) => {
+  const reportId = req.params.id;
+
+  try {
+    const report = await Report.findByIdAndUpdate(
+      reportId,
+      { urgency: 'critical' },
+      { new: true }
+    );
+
+    if (!report) return next(errorHandler(404, 'Report not found!'));
+
+    return res.status(200).json({
+      status: 'success',
+      message: 'Report marked as urgent!',
+      report,
+    });
+  } catch (e) {
+    next(errorHandler(e.status || 500, e.message || 'Server error'));
+  }
+};
+
+export const rejectIssue = async (req, res, next) => {
+  const reportId = req.params.id;
+
+  try {
+    const report = await Report.findByIdAndDelete(reportId);
+
+    if (!report) return next(errorHandler(404, 'Report not found!'));
+
+    return res.status(200).json({
+      status: 'success',
+      message: 'Report rejected and deleted successfully!',
+    });
+  } catch (e) {
+    next(errorHandler(e.status || 500, e.message || 'Server error'));
+  }
+};

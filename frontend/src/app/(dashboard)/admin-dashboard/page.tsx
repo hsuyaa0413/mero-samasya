@@ -96,7 +96,10 @@ export default function AdminDashboard() {
                   Recent Reported Issues
                 </h2>
                 <ScrollArea className="h-[330px] px-4 inset-x-0">
-                  <ReportedIssues reportedIssues={reportedIssues} />
+                  <ReportedIssues
+                    reportedIssues={reportedIssues}
+                    fetchReportedIssues={fetchReportedIssues}
+                  />
                 </ScrollArea>
               </div>
             </div>

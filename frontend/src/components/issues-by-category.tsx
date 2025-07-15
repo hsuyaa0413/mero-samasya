@@ -20,10 +20,10 @@ export function IssuesByCategory({
 
     // Count occurrences of each formatted category
     issues.forEach(issue => {
-      const formattedCategory = issue.category
-        .split('-')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
+      const formattedCategory = issue.category;
+      // .split('-')
+      // .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      // .join(' ');
 
       categoryCount.set(
         formattedCategory,

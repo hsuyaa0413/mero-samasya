@@ -1,14 +1,85 @@
+'use client';
+
 import { Badge } from '@/components/ui/badge';
 import timeAgo from '@/lib/timeAgo';
-import { AlertCircle, CheckCircle, CircleAlert, Flame } from 'lucide-react';
+import {
+  AlertCircle,
+  AlertTriangle,
+  Calendar,
+  Camera,
+  CheckCircle,
+  CircleAlert,
+  FileText,
+  Flag,
+  Flame,
+  Mail,
+  MapPin,
+  Phone,
+  User,
+  XCircle,
+} from 'lucide-react';
 import { ReportedIssue } from './IssuedCard';
-import Link from 'next/link';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from './ui/dialog';
+import { Separator } from './ui/separator';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { Button } from './ui/button';
+import { useEffect, useState } from 'react';
+import Image from 'next/image';
+import { backendApi } from '@/lib/constant';
+import axios from 'axios';
 
 export function ReportedIssues({
   reportedIssues,
+  fetchReportedIssues,
 }: {
   reportedIssues: ReportedIssue[];
+  fetchReportedIssues: () => Promise<void>;
 }) {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [issue, setIssue] = useState<ReportedIssue | null>(null);
+
+  const handleViewDetails = (id: string) => {
+    const issue = reportedIssues.find(issue => issue._id === id);
+    if (issue) {
+      setIssue(issue);
+      setIsDialogOpen(true);
+    }
+  };
+
+  const handleMarkUrgent = async (id: string | undefined) => {
+    try {
+      const res = await axios.get(`${backendApi}/report/mark-urgent/${id}`, {
+        withCredentials: true,
+      });
+
+      if (res.status === 200) {
+        setIsDialogOpen(false);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleReject = async (id: string | undefined) => {
+    try {
+      const res = await axios.get(`${backendApi}/report/reject-issue/${id}`, {
+        withCredentials: true,
+      });
+
+      if (res.status === 200) {
+        setIsDialogOpen(false);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const getStatusColor = (status: string | undefined) => {
     switch (status) {
       case 'pending':
@@ -52,6 +123,10 @@ export function ReportedIssues({
     }
   };
 
+  useEffect(() => {
+    fetchReportedIssues();
+  }, [isDialogOpen]);
+
   return (
     <div className="space-y-5 px-3 pt-3">
       {reportedIssues.slice(0, 5).map(issue => (
@@ -76,15 +151,177 @@ export function ReportedIssues({
             <span className="text-xs text-gray-500">
               {timeAgo(new Date(issue.createdAt))}
             </span>
-            <Link
-              href={''}
+            <button
               className="text-blue-600 text-sm cursor-pointer hover:underline underline-offset-3"
+              onClick={() => handleViewDetails(issue._id)}
             >
               View Details
-            </Link>
+            </button>
           </div>
         </div>
       ))}
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="min-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="size-5 text-orange-500" />
+              Issue Details - #{issue?._id}
+            </DialogTitle>
+            <DialogDescription>
+              Manage and track the resolution of this reported issue
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Main Content */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Issue Overview */}
+              <div className="space-y-4">
+                <div className="flex items-start justify-between">
+                  <h3 className="text-lg font-semibold">{issue?.title}</h3>
+                  <div className="flex gap-2">
+                    <Badge
+                      className={`${getStatusColor(issue?.status)} capitalize`}
+                    >
+                      {issue?.status === 'inProgress'
+                        ? 'In Progress'
+                        : issue?.status}
+                    </Badge>
+                    <Badge
+                      className={`${getUrgencyColor(
+                        issue?.urgency
+                      )} capitalize`}
+                    >
+                      {getUrgencyIcon(issue?.urgency)}
+                      {issue?.urgency}
+                    </Badge>
+                  </div>
+                </div>
+
+                <p className="text-gray-600">{issue?.description}</p>
+
+                <div className="grid grid-cols-2 gap-4 text-xs">
+                  <div className="flex items-center gap-2">
+                    <MapPin className="h-4 w-4 text-gray-500" />
+                    <span>{issue?.location}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Calendar className="h-4 w-4 text-gray-500" />
+                    <span>{issue?.createdAt.split('T')[0]}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <FileText className="h-4 w-4 text-gray-500" />
+                    <span>Category: {issue?.category}</span>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Images */}
+              {issue?.mediaUrls && issue?.mediaUrls.length > 0 && (
+                <div className="space-y-3">
+                  <h4 className="font-medium flex items-center gap-2">
+                    <Camera className="h-4 w-4" />
+                    Attached Images
+                  </h4>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {issue?.mediaUrls.map((image, index) => (
+                      <div
+                        key={index}
+                        className="aspect-square bg-gray-100 rounded-lg overflow-hidden"
+                      >
+                        <Image
+                          src={image}
+                          alt={`Issue image - ${issue?._id}`}
+                          className="w-full h-full object-cover"
+                          width={300}
+                          height={200}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Sidebar */}
+            <div className="space-y-6">
+              {/* Reporter Information */}
+              <div className="space-y-3">
+                <h4 className="font-medium flex items-center gap-2">
+                  <User className="h-4 w-4" />
+                  Reporter Information
+                </h4>
+                <div className="space-y-3 p-3 bg-gray-50 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <Avatar>
+                      <AvatarImage
+                        src={`https://avatar.iran.liara.run/public/${
+                          Math.floor(Math.random() * 100) + 1
+                        }`}
+                        alt={issue?.reportedBy?.fullName}
+                      />
+                      <AvatarFallback>
+                        {issue?.reportedBy?.fullName
+                          .split(' ')
+                          .map(n => n[0])
+                          .join('')}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="font-medium">
+                        {issue?.reportedBy?.fullName}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        {issue?.reportedBy?.role}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center gap-2">
+                      <Mail className="h-3 w-3 text-gray-500" />
+                      <span>{issue?.reportedBy?.email}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Phone className="h-3 w-3 text-gray-500" />
+                      <span>{issue?.reportedBy?.phoneNumber}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Quick Actions */}
+              <div className="space-y-3">
+                <h4 className="font-medium">Quick Actions</h4>
+                <div className="grid grid-cols-1 gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="cursor-pointer"
+                    onClick={() => handleMarkUrgent(issue?._id)}
+                  >
+                    <Flag className="h-4 w-4 mr-2" />
+                    Mark as Urgent
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-red-600 hover:text-red-700 bg-transparent cursor-pointer"
+                    onClick={() => handleReject(issue?._id)}
+                  >
+                    <XCircle className="h-4 w-4 mr-2" />
+                    Reject Issue
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

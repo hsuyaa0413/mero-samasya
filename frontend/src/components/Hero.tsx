@@ -14,8 +14,8 @@ export default function Hero() {
           src="/hero-image.jpg"
           alt="City street view with buildings and people"
           className="w-full h-full object-cover"
-          height={1080}
-          width={1920}
+          height={1440}
+          width={2560}
           priority
         />
       </div>
