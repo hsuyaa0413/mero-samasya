@@ -4,58 +4,67 @@ const reportSchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      required: true,
+      required: [true, 'Title is required'],
       trim: true,
-      maxLength: 100,
+      maxLength: [100, 'Title cannot exceed 100 characters'],
     },
     description: {
       type: String,
-      required: true,
+      required: [true, 'Description is required'],
     },
     mediaUrls: {
       type: Array,
-      required: true,
+      required: [true, 'At least one media URL is required'],
     },
     location: {
       type: String,
-      required: true,
+      required: [true, 'Location is required'],
       trim: true,
     },
     lat: {
       type: Number,
-      required: true,
+      required: [true, 'Latitude is required'],
     },
     lng: {
       type: Number,
-      required: true,
+      required: [true, 'Longitude is required'],
     },
     urgency: {
       type: String,
-      enum: ['low', 'medium', 'high', 'critical'],
-      required: true,
+      enum: {
+        values: ['low', 'medium', 'high', 'critical'],
+        message: 'Urgency must be one of: low, medium, high, critical',
+      },
+      required: [true, 'Urgency level is required'],
     },
     category: {
       type: String,
-      required: true,
-      enum: [
-        'roads',
-        'utilities',
-        'waste',
-        'safety',
-        'lighting',
-        'parks',
-        'other',
-      ],
+      required: [true, 'Category is required'],
+      enum: {
+        values: [
+          'Roads & Sidewalks',
+          'Public Utilities',
+          'Sanitation & Waste',
+          'Public Safety',
+          'Street Lighting',
+          'Parks & Recreation',
+          'Others',
+        ],
+        message: 'Invalid category selected',
+      },
     },
     status: {
       type: String,
       default: 'pending',
-      enum: ['pending', 'inProgress', 'resolved'],
+      enum: {
+        values: ['pending', 'inProgress', 'resolved'],
+        message: 'Status must be one of: pending, inProgress, resolved',
+      },
     },
     reportedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: [true, 'There must be a reporter of the issue'],
+      required: [true, 'Reporter of the issue is required'],
     },
   },
   { timestamps: true }

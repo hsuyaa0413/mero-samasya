@@ -374,15 +374,15 @@ export default function AuthorityRegisterPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen mx-auto p-4 sm:p-6 bg-lightBlue rounded-lg border-t-1 border-gray-400">
+    <div className="flex items-center justify-center min-h-screen mx-auto p-4 sm:p-6 bg-gray-100 rounded-lg border-t-1 border-gray-400">
       <MagicCard
         gradientColor={theme === 'dark' ? '#262626' : '#D9D9D955'}
         className="px-4 py-6"
       >
-        <div className="bg-greyBlue text-darkBlue max-w-6xl sm:p-5">
+        <div className="bg-greyBlue text-darkBlue max-w-6xl sm:p-5 inset-0">
           <div className="text-center mb-6">
             <h2 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">
-              Welcome to{' '}
+              Welcome to
               <span className="text-skyBlue text-xl">Mero समस्या</span>
             </h2>
             <p className="mt-2 max-w-sm text-sm text-neutral-600 dark:text-neutral-300 mx-auto">
