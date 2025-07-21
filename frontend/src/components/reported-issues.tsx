@@ -144,7 +144,7 @@ export function ReportedIssues({
             </div>
           </div>
           <p className="text-sm text-gray-500">
-            Reported by: {issue.reportedBy.fullName}
+            Reported by: {issue.reportedBy?.fullName}
           </p>
           <p className="my-1 text-sm">{issue.description}</p>
           <div className="flex items-center justify-between">
