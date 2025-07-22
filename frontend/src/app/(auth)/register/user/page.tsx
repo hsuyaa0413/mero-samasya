@@ -142,10 +142,7 @@ export default function Register() {
         }
       );
       if (res.status >= 200 && res.status < 300) {
-        alert('Registration successful!');
         router.push('/user-dashboard');
-      } else {
-        alert('Registration failed!');
       }
     } catch (error) {
       console.error('Error during registration:', error);

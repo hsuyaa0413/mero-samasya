@@ -55,7 +55,11 @@ export default function SignIn() {
     }
   }
   return (
-    <div className="flex items-center justify-center mx-auto p-4 sm:p-6 bg-lightBlue rounded-lg border-t-1 border-gray-400 sm:h-[calc(100vh-72px)] h-screen">
+    <div
+      className="flex items-center justify-center mx-auto p-4 sm:p-6 bg-lightBlue rounded-lg border-t-1 border-gray-400 
+    sm:h-[calc(100vh-72px)] h-[calc(100vh-64px)]"
+    >
+      {/* sm:h-[calc(100vh-72px)] min-h-screen" */}
       <MagicCard gradientColor={'#D9D9D955'} className="px-4 py-6">
         <div className="bg-greyBlue text-darkBlue max-w-6xl sm:p-5 ">
           <div className="p-4 items-center flex flex-col text-center">
