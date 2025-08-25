@@ -62,25 +62,25 @@ export default function AuthorityDashboard() {
     ? user.departments.charAt(0).toUpperCase() + user.departments.slice(1)
     : '';
 
-  useEffect(() => {
-    const fetchReportedIssues = async () => {
-      try {
-        const res = await axios.get(`${backendApi}/report/get-reports`, {
-          withCredentials: true,
-        });
+  const fetchReportedIssues = async () => {
+    try {
+      const res = await axios.get(`${backendApi}/report/get-reports`, {
+        withCredentials: true,
+      });
 
-        if (res.data && Array.isArray(res.data.data)) {
-          setReportedIssues(res.data.data);
-        } else {
-          console.error('Expected an array in data, but received:', res.data);
-        }
-      } catch (error) {
-        console.error('Error fetching reported issues:', error);
+      if (res.data && Array.isArray(res.data.data)) {
+        setReportedIssues(res.data.data);
+      } else {
+        console.error('Expected an array in data, but received:', res.data);
       }
-    };
+    } catch (error) {
+      console.error('Error fetching reported issues:', error);
+    }
+  };
 
+  useEffect(() => {
     fetchReportedIssues();
-  }, []);
+  }, []); // Fetch issues when the component mounts
 
   const filteredIssues = useMemo(() => {
     return reportedIssues.filter(issue => {
@@ -179,7 +179,7 @@ export default function AuthorityDashboard() {
                 <AvatarImage src="https://avatar.iran.liara.run/public/job/operator/male" />
                 <AvatarFallback className="bg-greyBlue text-darkBlue">
                   {user?.fullName
-                    .split(' ')
+                    ?.split(' ')
                     .map(n => n[0])
                     .join('')}
                 </AvatarFallback>

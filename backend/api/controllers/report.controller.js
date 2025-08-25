@@ -215,3 +215,32 @@ export const rejectIssue = async (req, res, next) => {
     next(errorHandler(e.status || 500, e.message || 'Server error'));
   }
 };
+export const updateReportStatus = async (req, res, next) => {
+  const reportId = req.params.id;
+  const { status } = req.body;
+
+  // Validate status
+  if (!['pending', 'inProgress', 'resolved'].includes(status)) {
+    return next(errorHandler(400, 'Invalid status provided.'));
+  }
+
+  try {
+    const report = await Report.findByIdAndUpdate(
+      reportId,
+      { status },
+      { new: true }
+    ).populate('reportedBy');
+
+    if (!report) {
+      return next(errorHandler(404, 'Report not found!'));
+    }
+
+    return res.status(200).json({
+      status: 'success',
+      message: 'Report status updated successfully!',
+      data: report,
+    });
+  } catch (error) {
+    next(errorHandler(500, error.message || 'Server error'));
+  }
+};
