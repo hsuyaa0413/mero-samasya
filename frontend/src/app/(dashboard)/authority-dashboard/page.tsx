@@ -47,19 +47,6 @@ import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 import timeAgo from '@/lib/timeAgo';
 import { ReportedIssue } from '@/components/IssuedCard';
 
-// interface ReportedIssue {
-//   _id: string;
-//   title: string;
-//   status: 'pending' | 'resolved' | 'inProgress';
-//   statusColor: string;
-//   description: string;
-//   location: string;
-//   createdAt: Date;
-//   urgency: 'low' | 'medium' | 'high' | 'critical';
-//   reportedBy: User;
-//   mediaUrls: string[];
-// }
-
 export default function AuthorityDashboard() {
   const { user, logout } = useUserStore();
   const router = useRouter();
@@ -69,6 +56,11 @@ export default function AuthorityDashboard() {
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
   const [selectedLocation, setSelectedLocation] = useState<string>('all');
   const [selectedUrgency, setSelectedUrgency] = useState<string>('all');
+
+  // Capitalize the department name for display
+  const departmentName = user?.departments
+    ? user.departments.charAt(0).toUpperCase() + user.departments.slice(1)
+    : '';
 
   useEffect(() => {
     const fetchReportedIssues = async () => {
@@ -103,7 +95,7 @@ export default function AuthorityDashboard() {
       const matchesStatus =
         selectedStatus === 'all' || issue.status === selectedStatus;
 
-      // Location filter condition (checks if location string includes the selected value)
+      // Location filter condition
       const matchesLocation =
         selectedLocation === 'all' ||
         issue.location.toLowerCase().includes(selectedLocation.toLowerCase());
@@ -112,8 +104,17 @@ export default function AuthorityDashboard() {
       const matchesUrgency =
         selectedUrgency === 'all' || issue.urgency === selectedUrgency;
 
+      // Department filter condition
+      const matchesDepartment =
+        user?.departments === 'municipality' ||
+        issue.category === user?.departments;
+
       return (
-        matchesSearch && matchesStatus && matchesLocation && matchesUrgency
+        matchesSearch &&
+        matchesStatus &&
+        matchesLocation &&
+        matchesUrgency &&
+        matchesDepartment
       );
     });
   }, [
@@ -122,6 +123,7 @@ export default function AuthorityDashboard() {
     selectedStatus,
     selectedLocation,
     selectedUrgency,
+    user?.departments,
   ]);
 
   async function handleLogOut() {
@@ -199,8 +201,8 @@ export default function AuthorityDashboard() {
       {/* Main Content */}
       <div className="flex-1 overflow-auto w-10/12">
         <header className="bg-lightBlue p-4 flex justify-between items-center sticky top-0 z-10 px-10 h-18 border-b border-gray-300">
-          <h1 className="text-2xl font-bold text-darkBlue ">
-            Authority Dashboard
+          <h1 className="text-2xl font-bold text-darkBlue">
+            Authority Dashboard {departmentName ? `(${departmentName})` : ''}
           </h1>
           <div className="flex items-center">
             <div className="relative bg-gray-50 rounded-lg">
@@ -225,7 +227,7 @@ export default function AuthorityDashboard() {
               </div>
               <div>
                 <p className="text-xs sm:text-sm text-gray-500">Total Issues</p>
-                <p className="text-2xl font-bold">{reportedIssues?.length}</p>
+                <p className="text-2xl font-bold">{filteredIssues.length}</p>
               </div>
             </div>
 
@@ -237,7 +239,7 @@ export default function AuthorityDashboard() {
                 <p className="text-xs sm:text-sm text-gray-500">Resolved</p>
                 <p className="text-2xl font-bold">
                   {
-                    reportedIssues?.filter(issue => issue.status === 'resolved')
+                    filteredIssues.filter(issue => issue.status === 'resolved')
                       .length
                   }
                 </p>
@@ -252,7 +254,7 @@ export default function AuthorityDashboard() {
                 <p className="text-xs sm:text-sm text-gray-500">In Progress</p>
                 <p className="text-2xl font-bold">
                   {
-                    reportedIssues?.filter(
+                    filteredIssues.filter(
                       issue => issue.status === 'inProgress'
                     ).length
                   }
@@ -268,7 +270,7 @@ export default function AuthorityDashboard() {
                 <p className="text-xs sm:text-sm text-gray-500">Urgent</p>
                 <p className="text-2xl font-bold">
                   {
-                    reportedIssues?.filter(
+                    filteredIssues.filter(
                       issue =>
                         issue.urgency === 'critical' || issue.urgency === 'high'
                     ).length
@@ -351,7 +353,6 @@ export default function AuthorityDashboard() {
                   <h2 className="text-lg font-semibold">Recent Issues</h2>
                 </div>
 
-                {/* <div className="divide-y"> */}
                 <div>
                   {filteredIssues.length > 0 ? (
                     filteredIssues.map(issue => (
@@ -380,17 +381,7 @@ export default function AuthorityDashboard() {
 
             {/* Right Column */}
             <div className="space-y-6">
-              {/* Total Issues Reported */}
-              {/* <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-                <div className="p-4 border-b">
-                  <h2 className="text-lg font-medium">Total Issues Reported</h2>
-                </div>
-                <div className="p-4">
-                  <div className="h-64"> */}
-              <ResolutionTimeChart reportedIssues={reportedIssues} />
-              {/* </div>
-                </div>
-              </div> */}
+              <ResolutionTimeChart reportedIssues={filteredIssues} />
             </div>
           </div>
         </main>
@@ -431,12 +422,11 @@ function ResolutionTimeChart({
 
   reportedIssues.forEach(issue => {
     const date = new Date(issue.createdAt);
-    const monthIndex = date.getMonth(); // getMonth() returns 0-11
+    const monthIndex = date.getMonth();
     const monthName = monthNames[monthIndex];
     monthlyIssueCounts[monthName]++;
   });
 
-  // Convert the aggregated data into the desired array format
   const chartData: ChartDataItem[] = monthNames.map(month => ({
     month: month,
     issues: monthlyIssueCounts[month],

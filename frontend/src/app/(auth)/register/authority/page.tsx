@@ -30,7 +30,7 @@ export default function AuthorityRegisterPage() {
     password: '',
     confirmPassword: '',
     address: '',
-    localBody: '',
+    departments: '',
     role: 'authority',
     approved: false,
     idCard: '',
@@ -51,7 +51,7 @@ export default function AuthorityRegisterPage() {
     password: '',
     confirmPassword: '',
     address: '',
-    localBody: '',
+    departments: '',
     idCard: '',
     terms: '',
   });
@@ -131,7 +131,7 @@ export default function AuthorityRegisterPage() {
       } else if (trimmed.length < 5) {
         error = 'Address must be at least 5 characters';
       }
-    } else if (name === 'localBody') {
+    } else if (name === 'departments') {
       if (!value) {
         error = 'Local body is required';
       }
@@ -161,11 +161,11 @@ export default function AuthorityRegisterPage() {
   };
 
   const handleSelectChange = (value: string) => {
-    setFormData({ ...formData, localBody: value });
-    const error = validateField('localBody', value);
+    setFormData({ ...formData, departments: value });
+    const error = validateField('departments', value);
     setFormErrors(prevErrors => ({
       ...prevErrors,
-      localBody: error,
+      departments: error,
     }));
   };
 
@@ -296,7 +296,7 @@ export default function AuthorityRegisterPage() {
       formData.password !== '' &&
       formData.confirmPassword !== '' &&
       formData.address.trim() !== '' &&
-      formData.localBody !== '' &&
+      formData.departments !== '' &&
       formData.idCard !== '' &&
       formData.terms === true;
 
@@ -318,7 +318,7 @@ export default function AuthorityRegisterPage() {
         formData.confirmPassword
       ),
       address: validateField('address', formData.address),
-      localBody: validateField('localBody', formData.localBody),
+      departments: validateField('departments', formData.departments),
       idCard: validateField('idCard', formData.idCard),
       terms: validateField('terms', formData.terms),
     };
@@ -374,7 +374,7 @@ export default function AuthorityRegisterPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen mx-auto p-4 sm:p-6 bg-gray-100 rounded-lg border-t-1 border-gray-400">
+    <div className="flex items-center justify-center min-h-screen mx-auto p-4 sm:p-6 bg-lightBlue rounded-lg border-t-1 border-gray-400">
       <MagicCard
         gradientColor={theme === 'dark' ? '#262626' : '#D9D9D955'}
         className="px-4 py-6"
@@ -383,7 +383,7 @@ export default function AuthorityRegisterPage() {
           <div className="text-center mb-6">
             <h2 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">
               Welcome to
-              <span className="text-skyBlue text-xl">Mero समस्या</span>
+              <span className="text-skyBlue text-xl"> Mero समस्या</span>
             </h2>
             <p className="mt-2 max-w-sm text-sm text-neutral-600 dark:text-neutral-300 mx-auto">
               Register as an authority to resolve local issues and reach out
@@ -530,27 +530,30 @@ export default function AuthorityRegisterPage() {
               )}
             </div>
             <div>
-              <Label htmlFor="localBody" className="text-darkBlue">
-                Local Body
+              <Label htmlFor="departments" className="text-darkBlue">
+                Department
               </Label>
               <Select
                 onValueChange={handleSelectChange}
-                value={formData.localBody}
+                value={formData.departments}
               >
-                <SelectTrigger className="mt-1 bg-lightBlue text-darkBlue">
-                  <SelectValue placeholder="Select your local body" />
+                <SelectTrigger className="mt-1 bg-lightBlue text-darkBlue w-full">
+                  <SelectValue placeholder="Select your department" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="municipality1">Municipality 1</SelectItem>
-                  <SelectItem value="municipality2">Municipality 2</SelectItem>
-                  <SelectItem value="ruralMunicipality1">
-                    Rural Municipality 1
+                  <SelectItem value="municipality">Municipality</SelectItem>
+                  <SelectItem value="water">Water</SelectItem>
+                  <SelectItem value="road">Road</SelectItem>
+                  <SelectItem value="electricity">Electricity</SelectItem>
+                  <SelectItem value="waste-sanitation">
+                    Waste and Sanitation
                   </SelectItem>
+                  <SelectItem value="others">Others</SelectItem>
                 </SelectContent>
               </Select>
-              {formErrors.localBody && (
+              {formErrors.departments && (
                 <p className="text-xs text-red-500 mt-1">
-                  {formErrors.localBody}
+                  {formErrors.departments}
                 </p>
               )}
             </div>
