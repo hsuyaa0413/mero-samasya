@@ -345,14 +345,14 @@ export default function IssuePage() {
             )}
             <div className="flex flex-col gap-4">
               <Button
-                className="bg-yellow-500 text-white hover:bg-yellow-600"
+                className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200 disabled:bg-gray-100 disabled:text-gray-500"
                 onClick={() => handleUpdateStatus('inProgress')}
                 disabled={issue?.status !== 'pending'} // Only allow "In Progress" from "pending"
               >
                 In Progress
               </Button>
               <Button
-                className="bg-green-500 text-white hover:bg-green-600"
+                className="bg-green-100 text-green-800 hover:bg-green-200 disabled:bg-gray-100 disabled:text-gray-500"
                 onClick={() => handleUpdateStatus('resolved')}
                 disabled={issue?.status !== 'inProgress'} // Only allow "Resolved" from "inProgress"
               >
