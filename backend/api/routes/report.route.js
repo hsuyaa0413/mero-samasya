@@ -10,6 +10,7 @@ import {
   getTodayReportsCount,
   markAsUrgent,
   rejectIssue,
+  updateReportStatus,
 } from '../controllers/report.controller.js';
 
 const router = express.Router();
@@ -26,5 +27,7 @@ router.get('/:id', getReportById);
 
 router.get('/mark-urgent/:id', isAdmin, markAsUrgent);
 router.get('/reject-issue/:id', isAdmin, rejectIssue);
+
+router.patch('/:id', updateReportStatus);
 
 export default router;

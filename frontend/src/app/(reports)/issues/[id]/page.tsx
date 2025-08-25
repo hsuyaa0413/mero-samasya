@@ -1,4 +1,5 @@
 'use client';
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   ArrowLeft,
@@ -10,7 +11,7 @@ import {
 } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { backendApi } from '@/lib/constant';
 import DashboardNav from '@/components/DashboardNav';
 import ImageGallery from '@/components/image-gallery';
@@ -19,6 +20,14 @@ import dynamic from 'next/dynamic';
 import { Button } from '@/components/ui/button';
 import { useUserStore } from '@/store/userStore';
 import { Skeleton } from '@/components/ui/skeleton';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 const Map = dynamic(() => import('@/components/map'), {
   ssr: false,
@@ -26,7 +35,7 @@ const Map = dynamic(() => import('@/components/map'), {
 });
 
 interface Issue {
-  id: string;
+  _id: string;
   title: string;
   description: string;
   mediaUrls: string[];
@@ -44,16 +53,21 @@ export default function IssuePage() {
   const [issue, setIssue] = useState<Issue | null>(null);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
+  const [updateStatusMessage, setUpdateStatusMessage] = useState<{
+    type: 'success' | 'error';
+    text: string;
+  } | null>(null);
 
   const { user } = useUserStore();
-
   const router = useRouter();
+
   const handleGoBack = () => {
     router.back();
   };
 
   useEffect(() => {
-    const fetchissue = async () => {
+    const fetchIssue = async () => {
       setIsLoading(true);
       try {
         const response = await axios.get(`${backendApi}/report/${id}`, {
@@ -65,16 +79,55 @@ export default function IssuePage() {
           setIssue(issue);
         }
       } catch (e) {
-        console.error(`Error: ${e}`);
+        console.error(`Error fetching issue: ${e}`);
       } finally {
         setIsLoading(false);
       }
     };
 
     if (id) {
-      fetchissue();
+      fetchIssue();
     }
   }, [id]);
+
+  const handleUpdateStatus = async (newStatus: 'inProgress' | 'resolved') => {
+    try {
+      const response = await axios.patch(
+        `${backendApi}/report/${id}`,
+        { status: newStatus },
+        { withCredentials: true }
+      );
+
+      if (response.status >= 200 && response.status < 300) {
+        setIssue(prev => (prev ? { ...prev, status: newStatus } : prev));
+        setUpdateStatusMessage({
+          type: 'success',
+          text: `Issue status updated to ${
+            newStatus === 'inProgress' ? 'In Progress' : 'Resolved'
+          }.`,
+        });
+        setTimeout(() => setIsUpdateDialogOpen(false), 1500); // Close dialog after 1.5s
+      } else {
+        setUpdateStatusMessage({
+          type: 'error',
+          text: `Failed to update issue status: ${
+            response.data?.message || 'Unknown error'
+          }`,
+        });
+      }
+    } catch (e) {
+      const error = e as AxiosError<{ message?: string }>;
+      setUpdateStatusMessage({
+        type: 'error',
+        text:
+          error.response?.status === 404
+            ? 'Issue not found. Please check if the issue ID is valid.'
+            : error.response?.data?.message ||
+              error.message ||
+              'An error occurred while updating the status.',
+      });
+    }
+  };
 
   const getStatusColor = (status: string | undefined) => {
     switch (status) {
@@ -158,8 +211,8 @@ export default function IssuePage() {
 
                 <div>
                   <div style={{ display: isImageModalOpen ? 'none' : 'block' }}>
-                    <Skeleton className="h-6 w-1/4 mb-4" />{' '}
-                    <Skeleton className="h-[300px] sm:h-[400px] w-full rounded-md" />{' '}
+                    <Skeleton className="h-6 w-1/4 mb-4" />
+                    <Skeleton className="h-[300px] sm:h-[400px] w-full rounded-md" />
                   </div>
                   <Skeleton className="h-4 w-1/2 mt-2" />
                 </div>
@@ -175,14 +228,15 @@ export default function IssuePage() {
     <>
       <DashboardNav />
       <div className="container max-w-7xl mx-auto px-4 py-8 min-h-screen">
-        <div className="hidden sm:flex justify-start max-w-5xl pl-28 mb-4 ">
-          <button
+        <div className="hidden sm:flex justify-start max-w-5xl pl-28 mb-4">
+          <Button
+            variant="outline"
             onClick={handleGoBack}
             className="flex items-center hover:underline cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Dashboard
-          </button>
+          </Button>
         </div>
 
         <div className="flex justify-center">
@@ -218,7 +272,10 @@ export default function IssuePage() {
                 </div>
 
                 {user?.role === 'authority' && (
-                  <Button className="flex gap-2 cursor-pointer bg-blue-700 text-lightBlue hover:bg-blue-800">
+                  <Button
+                    className="flex gap-2 cursor-pointer bg-blue-700 text-lightBlue hover:bg-blue-800"
+                    onClick={() => setIsUpdateDialogOpen(true)}
+                  >
                     <SquarePen />
                     Update Issue
                   </Button>
@@ -256,7 +313,7 @@ export default function IssuePage() {
                       />
                     </div>
 
-                    <p className=" text-gray-600 mt-2">
+                    <p className="text-gray-600 mt-2">
                       Coordinates: Lat: {issue?.lat.toFixed(5)}, Lng:{' '}
                       {issue?.lng.toFixed(5)}
                     </p>
@@ -265,6 +322,53 @@ export default function IssuePage() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Update Status Dialog */}
+        <Dialog open={isUpdateDialogOpen} onOpenChange={setIsUpdateDialogOpen}>
+          <DialogContent className="max-w-sm">
+            <DialogHeader>
+              <DialogTitle>Update Issue Status</DialogTitle>
+              <DialogDescription>
+                Select the new status for this issue.
+              </DialogDescription>
+            </DialogHeader>
+            {updateStatusMessage && (
+              <div
+                className={`p-2 text-sm rounded ${
+                  updateStatusMessage.type === 'success'
+                    ? 'bg-green-100 text-green-700'
+                    : 'bg-red-100 text-red-700'
+                }`}
+              >
+                {updateStatusMessage.text}
+              </div>
+            )}
+            <div className="flex flex-col gap-4">
+              <Button
+                className="bg-yellow-500 text-white hover:bg-yellow-600"
+                onClick={() => handleUpdateStatus('inProgress')}
+                disabled={issue?.status !== 'pending'} // Only allow "In Progress" from "pending"
+              >
+                In Progress
+              </Button>
+              <Button
+                className="bg-green-500 text-white hover:bg-green-600"
+                onClick={() => handleUpdateStatus('resolved')}
+                disabled={issue?.status !== 'inProgress'} // Only allow "Resolved" from "inProgress"
+              >
+                Resolved
+              </Button>
+            </div>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setIsUpdateDialogOpen(false)}
+              >
+                Cancel
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </>
   );
