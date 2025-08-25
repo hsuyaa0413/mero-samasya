@@ -8,7 +8,7 @@ export type User = {
   phoneNumber: number;
   address: string;
   role: Role;
-  localBody?: string;
+  departments?: string;
   idCard?: string;
   createdAt?: string;
   updatedAt?: string;

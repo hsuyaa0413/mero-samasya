@@ -41,15 +41,7 @@ const reportSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Category is required'],
       enum: {
-        values: [
-          'Roads & Sidewalks',
-          'Public Utilities',
-          'Sanitation & Waste',
-          'Public Safety',
-          'Street Lighting',
-          'Parks & Recreation',
-          'Others',
-        ],
+        values: ['water', 'road', 'electricity', 'waste_sanitation', 'others'],
         message: 'Invalid category selected',
       },
     },

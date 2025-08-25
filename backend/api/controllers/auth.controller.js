@@ -11,7 +11,7 @@ export const register = async (req, res, next) => {
     confirmPassword,
     address,
     role,
-    localBody,
+    departments,
     idCard,
     approved,
   } = req.body;
@@ -48,7 +48,7 @@ export const register = async (req, res, next) => {
     address,
     role,
     approved,
-    localBody,
+    departments,
     idCard,
   });
 
@@ -67,11 +67,13 @@ export const login = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
-    const validUser = await User.findOne({ email });
-    if (!validUser) return next(errorHandler(404, 'User not found!'));
+    const validUser = await User.findOne({ email }).select(
+      '+password +approved +rejectedByAdmin'
+    );
+    if (!validUser) return next(errorHandler(404, 'Email not found!'));
+    
     const validPassword = await validUser.matchPassword(password);
-    if (!validPassword)
-      return next(errorHandler(400, 'Password does not match!'));
+    if (!validPassword) return next(errorHandler(400, 'Incorrect password!'));
 
     const token = jwt.sign(
       { id: validUser._id, role: validUser.role },
@@ -89,7 +91,15 @@ export const login = async (req, res, next) => {
         sameSite: 'strict',
       })
       .status(200)
-      .json({ status: 'success', message: 'Login successful!', user: rest });
+      .json({
+        status: 'success',
+        message: 'Login successful!',
+        user: {
+          ...rest,
+          approved: validUser.approved,
+          rejectedByAdmin: validUser.rejectedByAdmin,
+        },
+      });
   } catch (error) {
     next(error);
   }

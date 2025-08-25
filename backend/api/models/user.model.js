@@ -20,6 +20,7 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: [true, 'Password is required'],
+      select: false,
     },
     confirmPassword: {
       type: String,
@@ -63,7 +64,7 @@ const userSchema = new mongoose.Schema(
         'Rejection status is required for authority role',
       ],
     },
-    localBody: {
+    departments: {
       type: String,
       required: [
         function () {

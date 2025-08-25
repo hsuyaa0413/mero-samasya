@@ -114,7 +114,7 @@ export function PendingApprovals() {
                 </Avatar>
                 <div>
                   <p className="font-medium">{user?.fullName}</p>
-                  <p className="text-sm text-gray-500">{`${user?.address} - ${user?.localBody}`}</p>
+                  <p className="text-sm text-gray-500">{`${user?.address} - ${user?.departments}`}</p>
                 </div>
               </div>
 
@@ -164,7 +164,7 @@ export function PendingApprovals() {
                     {selectedAuthority.fullName}
                   </h3>
                   <p className="text-gray-600">
-                    {`${selectedAuthority?.address} - ${selectedAuthority?.localBody}`}
+                    {`${selectedAuthority?.address} - ${selectedAuthority?.departments}`}
                   </p>
                   <div className="flex items-center space-x-2 mt-2">
                     <Badge
@@ -215,7 +215,7 @@ export function PendingApprovals() {
                     </div>
                     <div className="flex items-center space-x-2">
                       <Building className="h-4 w-4 text-gray-400" />
-                      <span>{selectedAuthority.localBody}</span>
+                      <span>{selectedAuthority.departments}</span>
                     </div>
                   </div>
                 </div>
