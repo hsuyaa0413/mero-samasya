@@ -17,17 +17,21 @@ export default function AdminDashboard() {
 
   const fetchReportedIssues = async () => {
     try {
+      console.log('Fetching reported issues at', new Date().toISOString());
       const res = await axios.get(`${backendApi}/report/get-reports`, {
         withCredentials: true,
       });
 
       if (res.data && Array.isArray(res.data.data)) {
         setReportedIssues(res.data.data);
+        console.log('Updated reportedIssues:', res.data.data);
       } else {
         console.error('Expected an array in data, but received:', res.data);
+        setReportedIssues([]);
       }
     } catch (error) {
       console.error('Error fetching reported issues:', error);
+      setReportedIssues([]);
     }
   };
 
@@ -57,15 +61,6 @@ export default function AdminDashboard() {
                 <IssuesByCategory reportedIssues={reportedIssues} />
               </div>
 
-              {/* <div className="flex flex-col border-1 rounded-lg shadow-sm px-4 bg-white">
-                <div className="mb-4 flex items-center justify-between">
-                  <h2 className="text-lg font-semibold pt-6 px-4">
-                    User Activity
-                  </h2>
-                </div>
-                <UserActivity />
-              </div> */}
-
               <div className="flex flex-col border-1 rounded-lg shadow-sm px-4 bg-white">
                 <h2 className="text-lg font-semibold py-6 px-4">
                   Engagement by Issue Type
@@ -75,13 +70,6 @@ export default function AdminDashboard() {
             </div>
 
             <div className="mt-6 grid gap-6 grid-cols-2">
-              {/* <ScrollArea className="h-[400px] flex flex-col border-1 rounded-lg shadow-sm px-4 bg-white">
-                <h2 className="mb-4 text-lg font-semibold p-4">
-                  Pending Authority Approvals
-                </h2>
-                <PendingApprovals />
-              </ScrollArea> */}
-
               <div className="shadow-sm rounded-lg border-1">
                 <h2 className="text-lg font-semibold p-4 pl-6 border-b bg-gray-100">
                   Pending Authority Approvals

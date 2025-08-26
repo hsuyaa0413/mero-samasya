@@ -25,6 +25,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
 } from './ui/dialog';
 import { Separator } from './ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
@@ -43,6 +44,8 @@ export function ReportedIssues({
 }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [issue, setIssue] = useState<ReportedIssue | null>(null);
+  const [isUrgentConfirmOpen, setIsUrgentConfirmOpen] = useState(false);
+  const [isRejectConfirmOpen, setIsRejectConfirmOpen] = useState(false);
 
   const handleViewDetails = (id: string) => {
     const issue = reportedIssues.find(issue => issue._id === id);
@@ -54,29 +57,37 @@ export function ReportedIssues({
 
   const handleMarkUrgent = async (id: string | undefined) => {
     try {
+      console.log('Marking issue as urgent:', id);
       const res = await axios.get(`${backendApi}/report/mark-urgent/${id}`, {
         withCredentials: true,
       });
 
       if (res.status === 200) {
+        console.log('Issue marked as urgent, fetching updated issues');
         setIsDialogOpen(false);
+        setIsUrgentConfirmOpen(false);
+        await fetchReportedIssues();
       }
     } catch (e) {
-      console.error(e);
+      console.error('Error marking issue as urgent:', e);
     }
   };
 
   const handleReject = async (id: string | undefined) => {
     try {
+      console.log('Rejecting issue:', id);
       const res = await axios.get(`${backendApi}/report/reject-issue/${id}`, {
         withCredentials: true,
       });
 
       if (res.status === 200) {
+        console.log('Issue rejected, fetching updated issues');
         setIsDialogOpen(false);
+        setIsRejectConfirmOpen(false);
+        await fetchReportedIssues();
       }
     } catch (e) {
-      console.error(e);
+      console.error('Error rejecting issue:', e);
     }
   };
 
@@ -124,8 +135,9 @@ export function ReportedIssues({
   };
 
   useEffect(() => {
+    console.log('ReportedIssues useEffect triggered');
     fetchReportedIssues();
-  }, [isDialogOpen]);
+  }, [fetchReportedIssues]);
 
   return (
     <div className="space-y-5 px-3 pt-3">
@@ -174,9 +186,7 @@ export function ReportedIssues({
           </DialogHeader>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Main Content */}
             <div className="lg:col-span-2 space-y-6">
-              {/* Issue Overview */}
               <div className="space-y-4">
                 <div className="flex items-start justify-between">
                   <h3 className="text-lg font-semibold">{issue?.title}</h3>
@@ -219,7 +229,6 @@ export function ReportedIssues({
 
               <Separator />
 
-              {/* Images */}
               {issue?.mediaUrls && issue?.mediaUrls.length > 0 && (
                 <div className="space-y-3">
                   <h4 className="font-medium flex items-center gap-2">
@@ -246,9 +255,7 @@ export function ReportedIssues({
               )}
             </div>
 
-            {/* Sidebar */}
             <div className="space-y-6">
-              {/* Reporter Information */}
               <div className="space-y-3">
                 <h4 className="font-medium flex items-center gap-2">
                   <User className="h-4 w-4" />
@@ -294,7 +301,6 @@ export function ReportedIssues({
 
               <Separator />
 
-              {/* Quick Actions */}
               <div className="space-y-3">
                 <h4 className="font-medium">Quick Actions</h4>
                 <div className="grid grid-cols-1 gap-2">
@@ -302,7 +308,7 @@ export function ReportedIssues({
                     variant="outline"
                     size="sm"
                     className="cursor-pointer"
-                    onClick={() => handleMarkUrgent(issue?._id)}
+                    onClick={() => setIsUrgentConfirmOpen(true)}
                   >
                     <Flag className="h-4 w-4 mr-2" />
                     Mark as Urgent
@@ -311,7 +317,7 @@ export function ReportedIssues({
                     variant="outline"
                     size="sm"
                     className="text-red-600 hover:text-red-700 bg-transparent cursor-pointer"
-                    onClick={() => handleReject(issue?._id)}
+                    onClick={() => setIsRejectConfirmOpen(true)}
                   >
                     <XCircle className="h-4 w-4 mr-2" />
                     Reject Issue
@@ -320,6 +326,59 @@ export function ReportedIssues({
               </div>
             </div>
           </div>
+
+          <Dialog
+            open={isUrgentConfirmOpen}
+            onOpenChange={setIsUrgentConfirmOpen}
+          >
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Confirm Mark as Urgent</DialogTitle>
+                <DialogDescription>
+                  Are you sure you want to mark this issue as urgent?
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsUrgentConfirmOpen(false)}
+                >
+                  No
+                </Button>
+                <Button onClick={() => handleMarkUrgent(issue?._id)}>
+                  Yes
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          <Dialog
+            open={isRejectConfirmOpen}
+            onOpenChange={setIsRejectConfirmOpen}
+          >
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Confirm Reject Issue</DialogTitle>
+                <DialogDescription>
+                  Are you sure you want to reject this issue?
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsRejectConfirmOpen(false)}
+                >
+                  No
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={() => handleReject(issue?._id)}
+                >
+                  Yes
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </DialogContent>
       </Dialog>
     </div>

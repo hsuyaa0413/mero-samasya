@@ -4,27 +4,37 @@ import { useEffect, useRef } from 'react';
 import { Chart, registerables } from 'chart.js';
 import { ReportedIssue } from './IssuedCard';
 import { Loader2 } from 'lucide-react';
+import { memo } from 'react';
+import isEqual from 'lodash/isEqual';
 
 Chart.register(...registerables);
 
-export function IssuesByCategory({
-  reportedIssues,
-}: {
+interface IssuesByCategoryProps {
   reportedIssues: ReportedIssue[];
-}) {
+}
+
+function IssuesByCategoryComponent({ reportedIssues }: IssuesByCategoryProps) {
   const chartRef = useRef<HTMLCanvasElement>(null);
   const chartInstance = useRef<Chart | null>(null);
+
+  useEffect(() => {
+    console.log(
+      'IssuesByCategory mounted/updated at',
+      new Date().toISOString()
+    );
+    return () => {
+      console.log('IssuesByCategory unmounted at', new Date().toISOString());
+      if (chartInstance.current) {
+        chartInstance.current.destroy();
+      }
+    };
+  }, []);
 
   const getIssueCategoryData = (issues: ReportedIssue[]) => {
     const categoryCount = new Map<string, number>();
 
-    // Count occurrences of each formatted category
     issues.forEach(issue => {
-      const formattedCategory = issue.category;
-      // .split('-')
-      // .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      // .join(' ');
-
+      const formattedCategory = issue.category || 'Uncategorized';
       categoryCount.set(
         formattedCategory,
         (categoryCount.get(formattedCategory) || 0) + 1
@@ -33,74 +43,77 @@ export function IssuesByCategory({
 
     const categoryLabels = Array.from(categoryCount.keys());
     const categoryCounts = Array.from(categoryCount.values());
+    console.log('Category counts:', { categoryLabels, categoryCounts });
 
     return { categoryLabels, categoryCounts };
   };
 
   useEffect(() => {
-    if (!chartRef.current) return;
+    console.log(
+      'IssuesByCategory useEffect triggered at',
+      new Date().toISOString()
+    );
 
-    // Destroy existing chart
-    if (chartInstance.current) {
-      chartInstance.current.destroy();
+    if (!chartRef.current) {
+      console.warn('chartRef.current is null, skipping chart creation');
+      return;
     }
 
-    // Create new chart
     const ctx = chartRef.current.getContext('2d');
-    if (!ctx) return;
+    if (!ctx) {
+      console.warn('Canvas context is null, skipping chart creation');
+      return;
+    }
 
     const { categoryLabels, categoryCounts } =
       getIssueCategoryData(reportedIssues);
 
-    chartInstance.current = new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels: categoryLabels,
-        // labels: [
-        //   'Roads & Sidewalks',
-        //   'Sanitation & Waste',
-        //   'Public Safety',
-        //   'Parks and Recreation',
-        //   'Other',
-        // ],
-        datasets: [
-          {
-            // data: [35, 20, 25, 15, 5],
-            data: categoryCounts,
-            backgroundColor: [
-              '#FF6384', // Pink/Red
-              '#36A2EB', // Blue
-              '#FFCD56', // Yellow
-              '#4BC0C0', // Teal
-              '#9966FF', // Purple
-              '#FF9F40', // Orange
-              '#C7C7C7', // Gray
-            ],
-            borderWidth: 2,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        cutout: '60%',
-        plugins: {
-          legend: {
-            position: 'left',
-            labels: {
-              boxWidth: 12,
-              padding: 15,
+    if (chartInstance.current) {
+      // Update existing chart
+      chartInstance.current.data.labels = categoryLabels;
+      chartInstance.current.data.datasets[0].data = categoryCounts;
+      chartInstance.current.update();
+      console.log('Chart updated with new data');
+    } else {
+      // Create new chart
+      chartInstance.current = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: categoryLabels,
+          datasets: [
+            {
+              data: categoryCounts,
+              backgroundColor: [
+                '#FF6384', // Pink/Red
+                '#36A2EB', // Blue
+                '#FFCD56', // Yellow
+                '#4BC0C0', // Teal
+                '#9966FF', // Purple
+                '#FF9F40', // Orange
+                '#C7C7C7', // Gray
+              ],
+              borderWidth: 2,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          cutout: '60%',
+          animation: false, // Disable animations to prevent flicker
+          plugins: {
+            legend: {
+              position: 'left',
+              labels: {
+                boxWidth: 12,
+                padding: 15,
+              },
             },
           },
         },
-      },
-    });
-
-    return () => {
-      if (chartInstance.current) {
-        chartInstance.current.destroy();
-      }
-    };
+      });
+      console.log('New chart created');
+    }
   }, [reportedIssues]);
 
   if (reportedIssues.length === 0) {
@@ -113,9 +126,22 @@ export function IssuesByCategory({
       </div>
     );
   }
+
   return (
     <div className="relative h-85 w-full flex items-center justify-center">
       <canvas ref={chartRef} />
     </div>
   );
 }
+
+export const IssuesByCategory = memo(
+  IssuesByCategoryComponent,
+  (prevProps, nextProps) => {
+    const isEqualProps = isEqual(
+      prevProps.reportedIssues,
+      nextProps.reportedIssues
+    );
+    console.log('IssuesByCategory memo check:', { isEqualProps });
+    return isEqualProps;
+  }
+);
