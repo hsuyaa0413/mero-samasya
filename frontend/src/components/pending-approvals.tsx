@@ -23,7 +23,6 @@ import Image from 'next/image';
 export function PendingApprovals() {
   const [users, setUsers] = useState<User[]>([]);
   const [selectedAuthority, setSelectedAuthority] = useState<User | null>(null);
-
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const fetchUsers = async () => {
@@ -82,17 +81,22 @@ export function PendingApprovals() {
     }
   };
 
+  const pendingUsers = users?.filter(
+    user =>
+      user?.role === 'authority' &&
+      !user?.approved &&
+      !user?.rejectedByAdmin
+  );
+
   return (
     <>
       <div className="space-y-4 pt-2">
-        {users
-          ?.filter(
-            user =>
-              user?.role === 'authority' &&
-              !user?.approved &&
-              !user?.rejectedByAdmin
-          )
-          .map(user => (
+        {pendingUsers.length === 0 ? (
+          <div className="flex items-center justify-center h-full text-gray-500 text-lg">
+            There are no pending requests for now
+          </div>
+        ) : (
+          pendingUsers.map(user => (
             <div
               key={user?._id}
               className="flex items-center justify-between border-b pb-4"
@@ -121,7 +125,6 @@ export function PendingApprovals() {
               <div className="flex items-center space-x-2">
                 <Button
                   variant="outline"
-                  // size="sm"
                   onClick={() => handleViewDetails(user?._id)}
                   className="text-gray-600 hover:text-gray-700 cursor-pointer "
                 >
@@ -130,7 +133,8 @@ export function PendingApprovals() {
                 </Button>
               </div>
             </div>
-          ))}
+          ))
+        )}
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

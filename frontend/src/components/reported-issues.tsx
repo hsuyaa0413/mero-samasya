@@ -30,7 +30,7 @@ import {
 import { Separator } from './ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Button } from './ui/button';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import { backendApi } from '@/lib/constant';
 import axios from 'axios';
@@ -133,11 +133,6 @@ export function ReportedIssues({
         return null;
     }
   };
-
-  useEffect(() => {
-    console.log('ReportedIssues useEffect triggered');
-    fetchReportedIssues();
-  }, [fetchReportedIssues]);
 
   return (
     <div className="space-y-5 px-3 pt-3">
