@@ -58,18 +58,6 @@ export function Sidebar() {
         >
           Reported Issues
         </Link>
-        <Link
-          href="#"
-          className="block rounded-md px-4 py-2 text-white hover:bg-blue-950"
-        >
-          Analytics
-        </Link>
-        <Link
-          href="#"
-          className="block rounded-md px-4 py-2 text-white hover:bg-blue-950"
-        >
-          Settings
-        </Link>
       </nav>
 
       <div className="mt-auto p-4 border-t border-lightBlue-75 flex items-center justify-between">
