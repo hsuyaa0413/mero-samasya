@@ -80,17 +80,17 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              <ScrollArea className="h-[calc(100vh + 10px)] shadow-sm rounded-lg border-1">
-                <div className="px-4">
-                  <h2 className="text-lg font-semibold p-4 pl-6 border-b bg-gray-100">
-                    Recent Reported Issues
-                  </h2>
+              <div className="shadow-sm rounded-lg border-1">
+                <h2 className="text-lg font-semibold p-4 pl-6 border-b bg-gray-100">
+                  Recent Reported Issues
+                </h2>
+                <ScrollArea className="h-[calc(100vh + 10px)] px-4 inset-x-0">
                   <ReportedIssues
                     reportedIssues={reportedIssues}
                     fetchReportedIssues={fetchReportedIssues}
                   />
-                </div>
-              </ScrollArea>
+                </ScrollArea>
+              </div>
             </div>
           </main>
         </div>
