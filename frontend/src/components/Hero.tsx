@@ -11,7 +11,7 @@ export default function Hero() {
       {/* Background Image */}
       <div className="absolute w-full h-full inset-0 z-0">
         <Image
-          src="/hero-image.jpg"
+          src="/dharanClockTower.jpg"
           alt="City street view with buildings and people"
           className="w-full h-full object-cover"
           width={1920}
