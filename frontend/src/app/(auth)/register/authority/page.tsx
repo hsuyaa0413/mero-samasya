@@ -69,6 +69,9 @@ export default function AuthorityRegisterPage() {
         error = 'Full name is required';
       } else if (trimmed.length < 3) {
         error = 'Full name must be at least 3 characters long';
+      } else if (!/^[A-Za-z\s]+$/.test(trimmed)) {
+        // Only letters and spaces allowed
+        error = 'Full name can only contain letters and spaces';
       } else {
         const isEachWordCapitalized = trimmed
           .split(' ')
@@ -308,6 +311,7 @@ export default function AuthorityRegisterPage() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    // Validate all fields first
     const currentErrors = {
       fullName: validateField('fullName', formData.fullName),
       email: validateField('email', formData.email),
@@ -326,17 +330,14 @@ export default function AuthorityRegisterPage() {
     setFormErrors(currentErrors);
 
     const hasErrors = Object.values(currentErrors).some(error => error !== '');
-
-    if (hasErrors) {
-      return;
-    }
+    if (hasErrors) return;
 
     const formattedData = {
       ...formData,
       phoneNumber: formData.phoneNumber.toString(),
     };
-
     setLoading(true);
+
     try {
       const res = await axios.post(
         `${backendApi}/auth/register`,
@@ -345,6 +346,7 @@ export default function AuthorityRegisterPage() {
           withCredentials: true,
         }
       );
+
       if (res.status >= 200 && res.status < 300) {
         alert('Registration successful! Please wait for admin approval.');
         router.push('/login');
@@ -352,22 +354,34 @@ export default function AuthorityRegisterPage() {
         alert(`Registration failed: ${res.data?.message || 'Unknown error'}`);
       }
     } catch (error: unknown) {
-      // Catch unknown error
       let errorMessage = 'Registration failed';
 
       if (axios.isAxiosError(error)) {
-        // Use Axios type guard
         if (error.response?.data?.message) {
           errorMessage = error.response.data.message;
+
+          // Show email error if backend says email exists
+          if (errorMessage.toLowerCase().includes('email')) {
+            setFormErrors(prev => ({
+              ...prev,
+              email: errorMessage,
+            }));
+          }
+          // Show phone error if backend says phone exists
+          else if (errorMessage.toLowerCase().includes('phone')) {
+            setFormErrors(prev => ({
+              ...prev,
+              phoneNumber: errorMessage,
+            }));
+          } else {
+            alert(errorMessage);
+          }
         } else if (error.message) {
-          errorMessage = error.message;
+          alert(error.message);
         }
       } else if (error instanceof Error) {
-        // Handle standard Error objects
-        errorMessage = error.message;
+        alert(error.message);
       }
-
-      alert(errorMessage);
     } finally {
       setLoading(false);
     }
