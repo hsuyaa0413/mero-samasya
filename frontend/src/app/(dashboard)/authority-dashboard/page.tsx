@@ -216,6 +216,7 @@ export default function AuthorityDashboard() {
           {currentView === 'dashboard' && (
             <>
               {/* Stats Cards */}
+
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
                 <div className="flex items-center gap-4 border-1 rounded-lg shadow-sm px-4 h-28 bg-white">
                   <div className="bg-blue-100 p-2 rounded-full flex items-center justify-center">
@@ -226,7 +227,9 @@ export default function AuthorityDashboard() {
                       Total Issues
                     </p>
                     <p className="text-2xl font-bold">
-                      {reportedIssues?.length}
+                      {user?.departments === 'municipality'
+                        ? reportedIssues.length
+                        : filteredIssues.length}
                     </p>
                   </div>
                 </div>
@@ -238,11 +241,13 @@ export default function AuthorityDashboard() {
                   <div>
                     <p className="text-xs sm:text-sm text-gray-500">Resolved</p>
                     <p className="text-2xl font-bold">
-                      {
-                        reportedIssues?.filter(
-                          issue => issue.status === 'resolved'
-                        ).length
-                      }
+                      {user?.departments === 'municipality'
+                        ? reportedIssues.filter(
+                            issue => issue.status === 'resolved'
+                          ).length
+                        : filteredIssues.filter(
+                            issue => issue.status === 'resolved'
+                          ).length}
                     </p>
                   </div>
                 </div>
@@ -256,11 +261,13 @@ export default function AuthorityDashboard() {
                       In Progress
                     </p>
                     <p className="text-2xl font-bold">
-                      {
-                        reportedIssues?.filter(
-                          issue => issue.status === 'inProgress'
-                        ).length
-                      }
+                      {user?.departments === 'municipality'
+                        ? reportedIssues.filter(
+                            issue => issue.status === 'inProgress'
+                          ).length
+                        : filteredIssues.filter(
+                            issue => issue.status === 'inProgress'
+                          ).length}
                     </p>
                   </div>
                 </div>
@@ -272,13 +279,17 @@ export default function AuthorityDashboard() {
                   <div>
                     <p className="text-xs sm:text-sm text-gray-500">Urgent</p>
                     <p className="text-2xl font-bold">
-                      {
-                        reportedIssues?.filter(
-                          issue =>
-                            issue.urgency === 'critical' ||
-                            issue.urgency === 'high'
-                        ).length
-                      }
+                      {user?.departments === 'municipality'
+                        ? reportedIssues.filter(
+                            issue =>
+                              issue.urgency === 'critical' ||
+                              issue.urgency === 'high'
+                          ).length
+                        : filteredIssues.filter(
+                            issue =>
+                              issue.urgency === 'critical' ||
+                              issue.urgency === 'high'
+                          ).length}
                     </p>
                   </div>
                 </div>
@@ -385,8 +396,13 @@ export default function AuthorityDashboard() {
 
             {/* Right Column */}
             <div className="space-y-6">
-              {/* Total Issues Reported */}
-              <ResolutionTimeChart reportedIssues={reportedIssues} />
+              <ResolutionTimeChart
+                reportedIssues={
+                  user?.departments === 'municipality'
+                    ? reportedIssues
+                    : filteredIssues
+                }
+              />
             </div>
           </div>
         </main>
