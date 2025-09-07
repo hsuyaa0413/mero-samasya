@@ -91,6 +91,7 @@ export default function SignIn() {
           router.push(`/${user.role}-dashboard`);
         }
       }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (error.response) {
         const message = error.response.data?.message || 'Login failed';
