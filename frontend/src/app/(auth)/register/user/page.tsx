@@ -9,7 +9,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
 import { Checkbox } from '@/components/ui/checkbox';
 import { PulsatingButton } from '@/components/magicui/pulsating-button';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { backendApi } from '@/lib/constant';
 import { useRouter } from 'next/navigation';
 
@@ -46,24 +46,33 @@ export default function Register() {
       ...prevData,
       [name]: value,
     }));
+
     let error = '';
+
     if (name === 'fullName') {
       const trimmed = value.trim();
-      const isEachWordCapitalized = trimmed
-        .split(' ')
-        .filter(word => word)
-        .every(
-          word =>
-            word[0] === word[0]?.toUpperCase() &&
-            word.slice(1) === word.slice(1).toLowerCase()
-        );
-      error = !trimmed
-        ? 'Full name is required'
-        : trimmed.length < 3
-        ? 'Full name must be at least 3 characters long'
-        : !isEachWordCapitalized
-        ? 'Each word must start with an uppercase letter'
-        : '';
+      const isValidChars = /^[A-Za-z\s]*$/.test(value);
+
+      if (!isValidChars) {
+        error = 'Full name can only contain letters and spaces';
+      } else {
+        const isEachWordCapitalized = trimmed
+          .split(' ')
+          .filter(word => word)
+          .every(
+            word =>
+              word[0] === word[0]?.toUpperCase() &&
+              word.slice(1) === word.slice(1).toLowerCase()
+          );
+
+        error = !trimmed
+          ? 'Full name is required'
+          : trimmed.length < 3
+          ? 'Full name must be at least 3 characters long'
+          : !isEachWordCapitalized
+          ? 'Each word must start with an uppercase letter'
+          : '';
+      }
     } else if (name === 'email') {
       const email = value.trim();
       error = !email
@@ -85,6 +94,7 @@ export default function Register() {
       const hasLowerCase = /[a-z]/.test(password);
       const hasNumber = /[0-9]/.test(password);
       const hasSpecialChar = /[^A-Za-z0-9]/.test(password);
+
       error = !password
         ? 'Password is required'
         : password.length < 8
@@ -107,6 +117,7 @@ export default function Register() {
         ? 'Address must be at least 5 characters'
         : '';
     }
+
     setFormErrors(prevErrors => ({
       ...prevErrors,
       [name]: error,
@@ -115,9 +126,10 @@ export default function Register() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     if (!formData.terms) {
-      setFormErrors(prevErrors => ({
-        ...prevErrors,
+      setFormErrors(prev => ({
+        ...prev,
         terms: 'You must agree to the terms and privacy policy.',
       }));
       return;
@@ -129,22 +141,42 @@ export default function Register() {
     };
 
     if (!/^\d{10}$/.test(formattedData.phoneNumber)) {
-      alert('Please enter a valid phone number with  10 digits.');
+      alert('Please enter a valid phone number with 10 digits.');
       return;
     }
+
     setLoading(true);
+
     try {
       const res = await axios.post(
         `${backendApi}/auth/register`,
         formattedData,
-        {
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
+
       if (res.status >= 200 && res.status < 300) {
         router.push('/user-dashboard');
       }
-    } catch (error) {
+    } catch (err) {
+      const error = err as AxiosError<{ message: string }>;
+      // If backend sends an error like "Email already exists"
+      const message = error.response?.data?.message || 'Registration failed';
+
+      // Show error below email field if message includes "email"
+      if (message.toLowerCase().includes('email')) {
+        setFormErrors(prev => ({
+          ...prev,
+          email: message,
+        }));
+      } else if (message.toLowerCase().includes('phone')) {
+        setFormErrors(prev => ({
+          ...prev,
+          phoneNumber: message,
+        }));
+      } else {
+        alert(message); // fallback
+      }
+
       console.error('Error during registration:', error);
     } finally {
       setLoading(false);
