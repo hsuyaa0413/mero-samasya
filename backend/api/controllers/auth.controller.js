@@ -71,7 +71,7 @@ export const login = async (req, res, next) => {
       '+password +approved +rejectedByAdmin'
     );
     if (!validUser) return next(errorHandler(404, 'Email not found!'));
-    
+
     const validPassword = await validUser.matchPassword(password);
     if (!validPassword) return next(errorHandler(400, 'Incorrect password!'));
 
@@ -88,7 +88,8 @@ export const login = async (req, res, next) => {
       .cookie('jwt', token, {
         expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
         httpOnly: true,
-        sameSite: 'strict',
+        secure: true, // only allow over HTTPS
+        sameSite: 'None',
       })
       .status(200)
       .json({
