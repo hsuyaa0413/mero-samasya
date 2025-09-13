@@ -5,7 +5,7 @@ export default function Footer() {
   return (
     <footer className="bg-skyBlue text-lightBlue">
       <div className="max-w-7xl container mx-auto px-6 pt-16 pb-10">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           <div>
             <h3 className="font-bold mb-4">ABOUT</h3>
             <ul className="space-y-3 text-lightBlue-75">
@@ -93,6 +93,20 @@ export default function Footer() {
                 <span className="sr-only">YouTube</span>
               </Link>
             </div>
+          </div>
+
+          <div className="relative flex flex-col items-center text-center">
+            <h3 className="font-bold mb-4">GET OUR APP</h3>
+            <div className="bg-white p-3 rounded-lg mb-3">
+              <img
+                src="/qr.png"
+                alt="QR Code to download mobile app"
+                className="w-20 h-20"
+              />
+            </div>
+            <p className="text-blue-100 text-sm">
+              Scan to download our mobile app
+            </p>
           </div>
         </div>
 
