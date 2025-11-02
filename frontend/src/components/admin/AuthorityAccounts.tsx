@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Eye, Trash2, Search, ShieldCheck, Building } from 'lucide-react';
+import { toast } from 'sonner';
 
 export function AuthorityAccounts() {
   const [users, setUsers] = useState<User[]>([]);
@@ -91,10 +92,11 @@ export function AuthorityAccounts() {
         await fetchUsers();
         setIsDeleteConfirmOpen(false);
         setUserToDelete(null);
+        toast.success('Authority deleted successfully');
       }
     } catch (e) {
       console.error('Error deleting authority:', e);
-      alert('Failed to delete authority. Please try again.');
+      toast.error('Failed to delete authority. Please try again.');
     }
   };
 

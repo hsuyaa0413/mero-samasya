@@ -10,6 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Eye, Trash2, Search, Users } from 'lucide-react';
+import { toast } from 'sonner';
 
 export function UserManagement() {
   const [users, setUsers] = useState<User[]>([]);
@@ -82,10 +83,11 @@ export function UserManagement() {
         await fetchUsers();
         setIsDeleteConfirmOpen(false);
         setUserToDelete(null);
+        toast.success('User deleted successfully');
       }
     } catch (e) {
       console.error('Error deleting user:', e);
-      alert('Failed to delete user. Please try again.');
+      toast.error('Failed to delete user. Please try again.');
     }
   };
 

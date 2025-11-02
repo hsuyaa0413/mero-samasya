@@ -12,6 +12,7 @@ import { PulsatingButton } from '@/components/magicui/pulsating-button';
 import axios, { AxiosError } from 'axios';
 import { backendApi } from '@/lib/constant';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -141,7 +142,7 @@ export default function Register() {
     };
 
     if (!/^\d{10}$/.test(formattedData.phoneNumber)) {
-      alert('Please enter a valid phone number with 10 digits.');
+      toast.error('Please enter a valid phone number with 10 digits.');
       return;
     }
 
@@ -174,7 +175,7 @@ export default function Register() {
           phoneNumber: message,
         }));
       } else {
-        alert(message); // fallback
+        toast.error(message); // fallback
       }
 
       console.error('Error during registration:', error);
