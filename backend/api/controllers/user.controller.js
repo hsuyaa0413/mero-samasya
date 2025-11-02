@@ -68,3 +68,20 @@ export const rejectAuthority = async (req, res, next) => {
     next(errorHandler(e.status || 500, e.message || 'Server error'));
   }
 };
+
+export const deleteUser = async (req, res, next) => {
+  const userId = req.params.id;
+
+  try {
+    const user = await User.findByIdAndDelete(userId);
+
+    if (!user) return next(errorHandler(404, 'User not found!'));
+
+    return res.status(200).json({
+      status: 'success',
+      message: 'User deleted successfully!',
+    });
+  } catch (e) {
+    next(errorHandler(e.status || 500, e.message || 'Server error'));
+  }
+};

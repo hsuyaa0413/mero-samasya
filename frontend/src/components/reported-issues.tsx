@@ -260,9 +260,7 @@ export function ReportedIssues({
                   <div className="flex items-center gap-3">
                     <Avatar>
                       <AvatarImage
-                        src={`https://avatar.iran.liara.run/public/${
-                          Math.floor(Math.random() * 100) + 1
-                        }`}
+                        src={`https://avatar.iran.liara.run/public/job/user/male`}
                         alt={issue?.reportedBy?.fullName}
                       />
                       <AvatarFallback>
