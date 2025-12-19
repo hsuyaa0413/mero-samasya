@@ -75,6 +75,22 @@ export const login = async (req, res, next) => {
     const validPassword = await validUser.matchPassword(password);
     if (!validPassword) return next(errorHandler(400, 'Incorrect password!'));
 
+    // For authorities, return user data without JWT if not approved or rejected
+    if (validUser.role === 'authority' && !validUser.approved) {
+      const { password: pass, ...rest } = validUser._doc;
+      return res.status(200).json({
+        status: 'success',
+        message: 'Login successful!',
+        user: {
+          ...rest,
+          approved: validUser.approved,
+          rejectedByAdmin: validUser.rejectedByAdmin,
+        },
+        pendingApproval: !validUser.rejectedByAdmin,
+        rejectedByAdmin: validUser.rejectedByAdmin,
+      });
+    }
+
     const token = jwt.sign(
       { id: validUser._id, role: validUser.role },
       process.env.JWT_SECRET,

@@ -58,7 +58,9 @@ export function StatsCards({
           </div>
           <div>
             <p className="text-xs sm:text-sm text-gray-500">Total Users</p>
-            <p className="text-2xl font-bold">{users?.length}</p>
+            <p className="text-2xl font-bold">
+              {users?.filter(user => user?.role === 'citizen').length}
+            </p>
           </div>
         </CardContent>
       </Card>

@@ -17,19 +17,6 @@ function IssuesByCategoryComponent({ reportedIssues }: IssuesByCategoryProps) {
   const chartRef = useRef<HTMLCanvasElement>(null);
   const chartInstance = useRef<Chart | null>(null);
 
-  useEffect(() => {
-    console.log(
-      'IssuesByCategory mounted/updated at',
-      new Date().toISOString()
-    );
-    return () => {
-      console.log('IssuesByCategory unmounted at', new Date().toISOString());
-      if (chartInstance.current) {
-        chartInstance.current.destroy();
-      }
-    };
-  }, []);
-
   const getIssueCategoryData = (issues: ReportedIssue[]) => {
     const categoryCount = new Map<string, number>();
 
@@ -70,11 +57,20 @@ function IssuesByCategoryComponent({ reportedIssues }: IssuesByCategoryProps) {
 
     if (chartInstance.current) {
       // Update existing chart
-      chartInstance.current.data.labels = categoryLabels;
-      chartInstance.current.data.datasets[0].data = categoryCounts;
-      chartInstance.current.update();
-      console.log('Chart updated with new data');
-    } else {
+      try {
+        chartInstance.current.data.labels = categoryLabels;
+        chartInstance.current.data.datasets[0].data = categoryCounts;
+        chartInstance.current.update();
+        console.log('Chart updated with new data');
+      } catch (error) {
+        console.warn('Chart update failed, recreating chart:', error);
+        // If update fails, destroy old chart and create new one
+        chartInstance.current.destroy();
+        chartInstance.current = null;
+      }
+    }
+    
+    if (!chartInstance.current) {
       // Create new chart
       chartInstance.current = new Chart(ctx, {
         type: 'doughnut',
@@ -114,6 +110,13 @@ function IssuesByCategoryComponent({ reportedIssues }: IssuesByCategoryProps) {
       });
       console.log('New chart created');
     }
+
+    return () => {
+      if (chartInstance.current) {
+        chartInstance.current.destroy();
+        chartInstance.current = null;
+      }
+    };
   }, [reportedIssues]);
 
   if (reportedIssues.length === 0) {
@@ -129,7 +132,7 @@ function IssuesByCategoryComponent({ reportedIssues }: IssuesByCategoryProps) {
 
   return (
     <div className="relative h-85 w-full flex items-center justify-center">
-      <canvas ref={chartRef} />
+      <canvas ref={chartRef} suppressHydrationWarning />
     </div>
   );
 }

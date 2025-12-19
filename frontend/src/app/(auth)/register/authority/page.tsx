@@ -20,6 +20,7 @@ import Image from 'next/image';
 import axios from 'axios';
 import { backendApi } from '@/lib/constant';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 export default function AuthorityRegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -348,10 +349,10 @@ export default function AuthorityRegisterPage() {
       );
 
       if (res.status >= 200 && res.status < 300) {
-        alert('Registration successful! Please wait for admin approval.');
+        toast.success('Registration successful! Please wait for admin approval.');
         router.push('/login');
       } else {
-        alert(`Registration failed: ${res.data?.message || 'Unknown error'}`);
+        toast.error(`Registration failed: ${res.data?.message || 'Unknown error'}`);
       }
     } catch (error: unknown) {
       let errorMessage = 'Registration failed';
@@ -374,13 +375,13 @@ export default function AuthorityRegisterPage() {
               phoneNumber: errorMessage,
             }));
           } else {
-            alert(errorMessage);
+            toast.error(errorMessage);
           }
         } else if (error.message) {
-          alert(error.message);
+          toast.error(error.message);
         }
       } else if (error instanceof Error) {
-        alert(error.message);
+        toast.error(error.message);
       }
     } finally {
       setLoading(false);

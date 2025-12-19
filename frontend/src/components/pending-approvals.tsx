@@ -104,9 +104,7 @@ export function PendingApprovals() {
               <div className="flex items-center gap-3">
                 <Avatar>
                   <AvatarImage
-                    src={`https://avatar.iran.liara.run/public/${
-                      Math.floor(Math.random() * 100) + 1
-                    }`}
+                    src={`https://avatar.iran.liara.run/public/job/operator/male`}
                     alt={user?.fullName}
                   />
                   <AvatarFallback className="bg-greyBlue text-darkBlue">
@@ -151,9 +149,7 @@ export function PendingApprovals() {
               <div className="flex items-start space-x-4 pb-4 border-b">
                 <Avatar>
                   <AvatarImage
-                    src={`https://avatar.iran.liara.run/public/${
-                      Math.floor(Math.random() * 100) + 1
-                    }`}
+                    src={`https://avatar.iran.liara.run/public/job/operator/male`}
                     alt={selectedAuthority?.fullName}
                   />
                   <AvatarFallback className="bg-greyBlue text-darkBlue">

@@ -73,18 +73,25 @@ export default function SignIn() {
       });
 
       if (res.status === 200) {
-        const { user } = res.data;
+        const { user, pendingApproval, rejectedByAdmin } = res.data;
+        
+        // If rejected by admin, show rejection message and don't set user in store
+        if (rejectedByAdmin) {
+          setStatusMessage('Your request has been rejected by the admin.');
+          return;
+        }
+        
+        // If pending approval, just show message and don't set user in store
+        if (pendingApproval) {
+          setStatusMessage('Your form is pending approval. Please wait for admin approval.');
+          return;
+        }
+        
         setUser(user);
 
         if (user.role === 'authority') {
-          if (user.rejectedByAdmin) {
-            setStatusMessage('Your request has been rejected by the admin.');
-          } else if (!user.approved) {
-            setStatusMessage('Your form is pending approval.');
-          } else {
-            setStatusMessage('Your request has been approved!');
-            router.push('/authority-dashboard');
-          }
+          setStatusMessage('Your request has been approved!');
+          router.push('/authority-dashboard');
         } else if (user.role === 'citizen') {
           router.push('/user-dashboard');
         } else {
